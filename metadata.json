@@ -1,0 +1,8 @@
+{
+  "name": "Copy of Easy Thai Speak ",
+  "description": "An application to help Japanese speakers learn and practice Thai conversation, with a goal of mastering 3000 words through interactive scenarios, role-playing, and vocabulary building.",
+  "requestFramePermissions": [
+    "microphone"
+  ],
+  "prompt": ""
+}

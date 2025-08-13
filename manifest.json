@@ -1,0 +1,21 @@
+{
+  "short_name": "Thai Talk",
+  "name": "Thai Talk Tutor",
+  "description": "An application to help Japanese speakers learn and practice Thai conversation.",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3e%3cdefs%3e%3cclipPath id='a'%3e%3cpath d='M5 19.5C5 20.3284 5.67157 21 6.5 21H14.2929L18 24.7071V21H25.5C26.3284 21 27 20.3284 27 19.5V8.5C27 7.67157 26.3284 7 25.5 7H6.5C5.67157 7 5 7.67157 5 8.5V19.5Z'/%3e%3c/clipPath%3e%3c/defs%3e%3cg clip-path='url(%23a)'%3e%3crect width='32' height='32' fill='%2300247D'/%3e%3crect y='0' width='32' height='5.33' fill='%23EF3340'/%3e%3crect y='26.67' width='32' height='5.33' fill='%23EF3340'/%3e%3crect y='5.33' width='32' height='5.33' fill='%23FFFFFF'/%3e%3crect y='21.34' width='32' height='5.33' fill='%23FFFFFF'/%3e%3c/g%3e%3c/svg%3e",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "data:image/svg+xml,%3csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3e%3cdefs%3e%3cclipPath id='a'%3e%3cpath d='M5 19.5C5 20.3284 5.67157 21 6.5 21H14.2929L18 24.7071V21H25.5C26.3284 21 27 20.3284 27 19.5V8.5C27 7.67157 26.3284 7 25.5 7H6.5C5.67157 7 5 7.67157 5 8.5V19.5Z'/%3e%3c/clipPath%3e%3c/defs%3e%3cg clip-path='url(%23a)'%3e%3crect width='32' height='32' fill='%2300247D'/%3e%3crect y='0' width='32' height='5.33' fill='%23EF3340'/%3e%3crect y='26.67' width='32' height='5.33' fill='%23EF3340'/%3e%3crect y='5.33' width='32' height='5.33' fill='%23FFFFFF'/%3e%3crect y='21.34' width='32' height='5.33' fill='%23FFFFFF'/%3e%3c/g%3e%3c/svg%3e",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#0284c7",
+  "background_color": "#f8fafc"
+}
