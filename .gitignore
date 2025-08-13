@@ -35,3 +35,8 @@ dist-ssr
 
 # Build artifacts
 build/
+
+# Google Cloud credentials
+keys/
+!keys/.keep
+!keys/README.md

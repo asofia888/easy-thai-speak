@@ -47,7 +47,8 @@
     <div id="root"></div>
     <script type="module" src="/index.tsx"></script>
     <script>
-      if ('serviceWorker' in navigator) {
+      if ('serviceWorker' in navigator && window.location.hostname !== 'localhost') {
+        // Service Workerは本番環境でのみ有効化
         window.addEventListener('load', () => {
           navigator.serviceWorker.register('/service-worker.js').then(registration => {
             console.log('ServiceWorker registration successful with scope: ', registration.scope);
@@ -55,6 +56,8 @@
             console.log('ServiceWorker registration failed: ', err);
           });
         });
+      } else if (window.location.hostname === 'localhost') {
+        console.log('🔧 開発環境ではService Workerを無効化しています');
       }
     </script>
   </body>

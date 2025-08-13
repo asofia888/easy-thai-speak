@@ -13,6 +13,7 @@ import { ErrorBoundary, AsyncErrorBoundary } from './components/ErrorBoundary';
 import { FavoritesProvider } from './contexts/FavoritesContext';
 import { AudioProvider } from './contexts/AudioContext';
 import SettingsModal from './components/SettingsModal';
+import TTSDemoPage from './components/TTSDemoPage';
 
 function App() {
     const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
@@ -62,6 +63,9 @@ function App() {
                                             <Route path="/roleplay" element={<RoleplayView />} />
                                             <Route path="/pronunciation" element={<PronunciationPracticeView />} />
                                             <Route path="/pronunciation/:category" element={<PronunciationPracticeView />} />
+                                            <Route path="/tts-demo" element={
+                                                <TTSDemoPage />
+                                            } />
                                             <Route path="/legal" element={<LegalView />} />
                                             <Route path="*" element={<NotFoundView />} />
                                         </Routes>

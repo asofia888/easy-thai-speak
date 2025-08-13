@@ -3,7 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { VoiceFeedback } from './VoiceFeedback';
 import { PitchVisualization } from './PitchVisualization';
 import { useAdvancedSpeechRecognition } from '../hooks/useAdvancedSpeechRecognition';
-import { useTextToSpeech } from '../hooks/useTextToSpeech';
+import { useGoogleCloudTTS } from '../hooks/useGoogleCloudTTS';
+import { getEnvConfig } from '../utils/envConfig';
 import { PronunciationScore, ThaiTone, PitchAnalysis, speechAnalysisService } from '../services/speechAnalysisService';
 import ArrowRightIcon from './icons/ArrowRightIcon';
 import PlayIcon from './icons/PlayIcon';
@@ -53,7 +54,13 @@ export const PronunciationPracticeView: React.FC = () => {
     needsWork: 0
   });
 
-  const { speak, isSpeaking } = useTextToSpeech();
+  const ENV_CONFIG = getEnvConfig();
+  const [ttsState, ttsControls] = useGoogleCloudTTS({
+    voice: ENV_CONFIG.googleCloud.defaultVoice,
+    quality: ENV_CONFIG.googleCloud.defaultQuality,
+    autoPlay: true,
+    enableMetrics: false
+  });
   const {
     isListening,
     isAnalyzing,
@@ -99,8 +106,8 @@ export const PronunciationPracticeView: React.FC = () => {
     }
   };
 
-  const handlePlayExample = () => {
-    speak(currentWord.thai, 'th-TH');
+  const handlePlayExample = async () => {
+    await ttsControls.synthesize({ thaiText: currentWord.thai });
   };
 
   const nextWord = () => {
@@ -225,7 +232,7 @@ export const PronunciationPracticeView: React.FC = () => {
               <div className="flex justify-center gap-4 mb-4">
                 <button
                   onClick={handlePlayExample}
-                  disabled={isSpeaking}
+                  disabled={ttsState.isLoading || ttsState.isPlaying}
                   className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
                 >
                   <PlayIcon className="w-4 h-4" />

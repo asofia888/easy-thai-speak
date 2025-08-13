@@ -15,8 +15,14 @@ self.addEventListener('fetch', event => {
     return;
   }
   
-  // For API calls to Gemini, always go to the network.
-  if (event.request.url.includes('generativelanguage.googleapis.com')) {
+  // Skip chrome-extension and other non-http(s) schemes
+  if (!event.request.url.startsWith('http://') && !event.request.url.startsWith('https://')) {
+    return;
+  }
+  
+  // For API calls to Gemini and Google Cloud TTS, always go to the network.
+  if (event.request.url.includes('generativelanguage.googleapis.com') || 
+      event.request.url.includes('texttospeech.googleapis.com')) {
     // This will fall back to the browser's default fetch behavior.
     return;
   }
@@ -25,10 +31,13 @@ self.addEventListener('fetch', event => {
     // Try the network first
     fetch(event.request).then(fetchResponse => {
       // If we get a valid response, we cache it
-      if (fetchResponse && fetchResponse.status === 200) {
+      if (fetchResponse && fetchResponse.status === 200 && 
+          (event.request.url.startsWith('http://') || event.request.url.startsWith('https://'))) {
         const responseToCache = fetchResponse.clone();
         caches.open(CACHE_NAME).then(cache => {
-          cache.put(event.request, responseToCache);
+          cache.put(event.request, responseToCache).catch(error => {
+            console.warn('キャッシュの保存に失敗:', error);
+          });
         });
       }
       return fetchResponse;
