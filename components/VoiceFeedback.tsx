@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { speechAnalysisService, PronunciationScore, ThaiTone, PitchAnalysis } from '../services/speechAnalysisService';
-import { MicIcon } from './icons/MicIcon';
-import { LoadingSpinner } from './icons/LoadingSpinner';
-import { PlayIcon } from './icons/PlayIcon';
+import MicIcon from './icons/MicIcon';
+import LoadingSpinner from './icons/LoadingSpinner';
+import PlayIcon from './icons/PlayIcon';
 
 interface VoiceFeedbackProps {
   targetText: string;

@@ -5,10 +5,10 @@ import { PitchVisualization } from './PitchVisualization';
 import { useAdvancedSpeechRecognition } from '../hooks/useAdvancedSpeechRecognition';
 import { useTextToSpeech } from '../hooks/useTextToSpeech';
 import { PronunciationScore, ThaiTone, PitchAnalysis, speechAnalysisService } from '../services/speechAnalysisService';
-import { ArrowRightIcon } from './icons/ArrowRightIcon';
-import { PlayIcon } from './icons/PlayIcon';
-import { MicIcon } from './icons/MicIcon';
-import { LoadingSpinner } from './icons/LoadingSpinner';
+import ArrowRightIcon from './icons/ArrowRightIcon';
+import PlayIcon from './icons/PlayIcon';
+import MicIcon from './icons/MicIcon';
+import LoadingSpinner from './icons/LoadingSpinner';
 
 interface PracticeWord {
   thai: string;

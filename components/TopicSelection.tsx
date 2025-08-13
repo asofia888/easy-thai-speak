@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { TOPIC_CATEGORIES } from '../constants';
 import { ConversationTopic, CustomTopicHistoryItem } from '../types';
 import SparklesIcon from './icons/SparklesIcon';
-import { MicIcon } from './icons/MicIcon';
+import MicIcon from './icons/MicIcon';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import TrashIcon from './icons/TrashIcon';
 
