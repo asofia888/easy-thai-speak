@@ -8,6 +8,7 @@ import FavoritesView from './components/FavoritesView';
 import RoleplayView from './components/RoleplayView';
 import LegalView from './components/LegalView';
 import NotFoundView from './components/NotFoundView';
+import { PronunciationPracticeView } from './components/PronunciationPracticeView';
 import { FavoritesProvider } from './contexts/FavoritesContext';
 import { AudioProvider } from './contexts/AudioContext';
 import SettingsModal from './components/SettingsModal';
@@ -42,6 +43,8 @@ function App() {
                                 <Route path="/conversation/:topicId" element={<ConversationView />} />
                                 <Route path="/favorites" element={<FavoritesView />} />
                                 <Route path="/roleplay" element={<RoleplayView />} />
+                                <Route path="/pronunciation" element={<PronunciationPracticeView />} />
+                                <Route path="/pronunciation/:category" element={<PronunciationPracticeView />} />
                                 <Route path="/legal" element={<LegalView />} />
                                 <Route path="*" element={<NotFoundView />} />
                             </Routes>
