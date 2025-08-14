@@ -159,22 +159,38 @@ export const useGoogleCloudTTS = (config: TTSHookConfig): [TTSState, TTSControls
         audioRef.current.src = '';
       }
 
-      // ArrayBufferをBlobに変換
-      const blob = new Blob([audioResult.audioContent], { type: 'audio/mp3' });
+      // ArrayBufferをBlobに変換（モバイル最適化）
+      const mimeType = config.mobileOptimization ? 'audio/mpeg' : 'audio/mp3';
+      const blob = new Blob([audioResult.audioContent], { type: mimeType });
       const audioUrl = URL.createObjectURL(blob);
 
       // 新しいAudioオブジェクト作成
       const audio = new Audio(audioUrl);
       audioRef.current = audio;
 
+      // モバイル最適化設定
+      if (config.mobileOptimization) {
+        audio.preload = 'auto';
+        audio.autoplay = false; // モバイルでは手動再生を推奨
+      }
+
       setState(prev => ({ ...prev, isPlaying: true, error: null }));
 
       // 音声イベントリスナー設定
       return new Promise((resolve, reject) => {
-        audio.onloadeddata = () => {
-          audio.play()
-            .then(resolve)
-            .catch(reject);
+        audio.onloadeddata = async () => {
+          try {
+            // AudioContextの復帰（モバイル対応）
+            if (audioContextRef.current && audioContextRef.current.state === 'suspended') {
+              await audioContextRef.current.resume();
+            }
+            
+            // 音声再生
+            await audio.play();
+            resolve();
+          } catch (error) {
+            reject(error);
+          }
         };
 
         audio.onended = () => {
@@ -202,7 +218,7 @@ export const useGoogleCloudTTS = (config: TTSHookConfig): [TTSState, TTSControls
       }));
       throw error;
     }
-  }, []);
+  }, [config.mobileOptimization]);
 
   // 音声停止メソッド
   const stop = useCallback(() => {
@@ -324,8 +340,10 @@ export const useSimpleGoogleTTS = (config: GoogleCloudTTSConfig) => {
  */
 export const useTTSSettings = () => {
   const [settings, setSettings] = useState<TTSHookConfig>({
-    voice: 'neural2-a',
+    voice: 'chirp3hd-a', // デフォルトをChirp3HD音声に変更
     quality: 'premium',
+    preferredEngine: 'chirp3hd', // デフォルトエンジンをChirp3HDに設定
+    mobileOptimization: true, // モバイル最適化を有効化
     autoPlay: true,
     preloadCommonPhrases: true,
     maxConcurrentRequests: 3,
@@ -338,8 +356,10 @@ export const useTTSSettings = () => {
 
   const resetSettings = useCallback(() => {
     setSettings({
-      voice: 'neural2-a',
+      voice: 'chirp3hd-a',
       quality: 'premium',
+      preferredEngine: 'chirp3hd',
+      mobileOptimization: true,
       autoPlay: true,
       preloadCommonPhrases: true,
       maxConcurrentRequests: 3,
@@ -347,9 +367,25 @@ export const useTTSSettings = () => {
     });
   }, []);
 
+  // 利用可能な音声一覧
+  const availableVoices = [
+    { value: 'chirp3hd-a', label: 'Chirp3HD A (高品質)', engine: 'chirp3hd' },
+    { value: 'chirp3hd-c', label: 'Chirp3HD C (高品質)', engine: 'chirp3hd' },
+    { value: 'neural2-a', label: 'Standard A (互換性)', engine: 'standard' },
+    { value: 'neural2-c', label: 'Standard C (互換性)', engine: 'standard' }
+  ];
+
+  // 利用可能なエンジン一覧
+  const availableEngines = [
+    { value: 'chirp3hd', label: 'Chirp3HD (高品質・モバイル対応)' },
+    { value: 'standard', label: 'Standard (互換性重視)' }
+  ];
+
   return {
     settings,
     updateSettings,
-    resetSettings
+    resetSettings,
+    availableVoices,
+    availableEngines
   };
 };

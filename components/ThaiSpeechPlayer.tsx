@@ -12,16 +12,12 @@ interface ThaiSpeechPlayerProps {
   thaiText: string;
   paiboonText?: string;
   japaneseText?: string;
-  onPlayStart?: () => void;
-  onPlayEnd?: () => void;
-  onError?: (error: string) => void;
   learningLevel?: 'beginner' | 'intermediate' | 'advanced';
-  showControls?: boolean;
   showMetrics?: boolean;
   className?: string;
-  // 追加: 音声設定の上書き
-  voiceOverride?: 'neural2-a' | 'neural2-c';
+  voiceOverride?: 'neural2-a' | 'neural2-c' | 'chirp3hd-a' | 'chirp3hd-c';
   qualityOverride?: 'standard' | 'premium';
+  showDebugInfo?: boolean;
 }
 
 // 環境設定を取得
@@ -31,6 +27,8 @@ const CONFIG_VALIDATION = validateConfig(ENV_CONFIG);
 const DEFAULT_TTS_CONFIG: TTSHookConfig = {
   voice: ENV_CONFIG.googleCloud.defaultVoice,
   quality: ENV_CONFIG.googleCloud.defaultQuality,
+  preferredEngine: ENV_CONFIG.googleCloud.preferredEngine,
+  mobileOptimization: ENV_CONFIG.tts.mobileOptimization,
   autoPlay: false,
   preloadCommonPhrases: true,
   enableMetrics: ENV_CONFIG.tts.enableMetrics,
@@ -40,15 +38,12 @@ export const ThaiSpeechPlayer: React.FC<ThaiSpeechPlayerProps> = ({
   thaiText,
   paiboonText,
   japaneseText,
-  onPlayStart,
-  onPlayEnd,
-  onError,
   learningLevel = 'intermediate',
-  showControls = true,
   showMetrics = false,
   className = '',
   voiceOverride,
-  qualityOverride
+  qualityOverride,
+  showDebugInfo = false
 }) => {
   const [ttsConfig] = useState<TTSHookConfig>(() => ({
     ...DEFAULT_TTS_CONFIG,
@@ -82,8 +77,6 @@ export const ThaiSpeechPlayer: React.FC<ThaiSpeechPlayerProps> = ({
     if (!thaiText) return;
 
     try {
-      onPlayStart?.();
-
       // タイ文字のみを抽出してTTSに送信
       const processedText = prepareTTSText(thaiText);
       
@@ -104,20 +97,18 @@ export const ThaiSpeechPlayer: React.FC<ThaiSpeechPlayerProps> = ({
         await ttsControls.play(audioResult);
       }
 
-      onPlayEnd?.();
-
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : '音声再生に失敗しました';
-      onError?.(errorMessage);
+      console.error('TTS Error:', errorMessage);
     }
-  }, [thaiText, paiboonText, japaneseText, learningLevel, onPlayStart, onPlayEnd, onError, ttsControls, ttsConfig.autoPlay]);
+  }, [thaiText, paiboonText, japaneseText, learningLevel, ttsControls, ttsConfig.autoPlay]);
 
   // エラー処理
   React.useEffect(() => {
     if (ttsState.error) {
-      onError?.(ttsState.error);
+      console.error('TTS State Error:', ttsState.error);
     }
-  }, [ttsState.error, onError]);
+  }, [ttsState.error]);
 
   // レベル別の表示スタイル
   const getLevelStyle = () => {
@@ -187,10 +178,23 @@ export const ThaiSpeechPlayer: React.FC<ThaiSpeechPlayerProps> = ({
 
         {/* 品質インジケーター */}
         <QualityIndicator />
+
+        {/* デバッグ情報表示 */}
+        {showDebugInfo && (
+          <div className="mt-2 p-2 bg-gray-100 rounded text-xs">
+            <div className="font-medium mb-1">🔧 TTS設定情報</div>
+            <div className="grid grid-cols-2 gap-1 text-gray-600">
+              <div>エンジン: {ttsConfig.preferredEngine === 'chirp3hd' ? 'Chirp3HD' : 'Standard'}</div>
+              <div>音声: {ttsConfig.voice}</div>
+              <div>品質: {ttsConfig.quality}</div>
+              <div>モバイル最適化: {ttsConfig.mobileOptimization ? 'ON' : 'OFF'}</div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* 再生コントロール */}
-      {showControls && (
+      {/* showControls && ( */}
         <div className="flex items-center space-x-2">
           <button
             onClick={handlePlay}
@@ -241,7 +245,7 @@ export const ThaiSpeechPlayer: React.FC<ThaiSpeechPlayerProps> = ({
             レベル: {learningLevel}
           </span>
         </div>
-      )}
+      {/* ) */}
 
       {/* エラー表示 */}
       {(ttsState.error || !CONFIG_VALIDATION.isValid) && (
@@ -352,8 +356,6 @@ export const ThaiPhraseList: React.FC<ThaiPhraseListProps> = ({
             paiboonText={phrase.paiboon}
             japaneseText={phrase.japanese}
             learningLevel={learningLevel}
-            onPlayStart={() => setIsPlaying(true)}
-            onPlayEnd={index === currentIndex ? handlePlayEnd : undefined}
             showMetrics={index === currentIndex}
             className={index === currentIndex ? 'border-blue-300' : ''}
           />
