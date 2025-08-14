@@ -176,30 +176,6 @@ const TopicSelection = () => {
                 <p className="mt-2 text-lg text-slate-600">3000語の習得を目指して、興味のあるトピックでタイ語の会話練習を始めましょう。</p>
             </div>
 
-            {/* Quick Actions */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <button
-                    onClick={() => navigate('/pronunciation')}
-                    className="bg-gradient-to-r from-purple-600 to-blue-600 text-white p-6 rounded-xl hover:from-purple-700 hover:to-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1"
-                >
-                    <div className="flex items-center justify-center mb-3">
-                        <MicIcon className="w-8 h-8 mr-3" />
-                        <span className="text-xl font-bold">発音練習</span>
-                    </div>
-                    <p className="text-purple-100">タイ語の声調を正確に習得しよう</p>
-                </button>
-                
-                <button
-                    onClick={() => navigate('/roleplay')}
-                    className="bg-gradient-to-r from-green-600 to-teal-600 text-white p-6 rounded-xl hover:from-green-700 hover:to-teal-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1"
-                >
-                    <div className="flex items-center justify-center mb-3">
-                        <SparklesIcon className="w-8 h-8 mr-3" />
-                        <span className="text-xl font-bold">ロールプレイ</span>
-                    </div>
-                    <p className="text-green-100">実践的な会話シミュレーション</p>
-                </button>
-            </div>
 
             <CustomTopicGenerator onGenerate={handleGenerateCustomTopic} />
 

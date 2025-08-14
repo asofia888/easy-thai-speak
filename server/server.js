@@ -6,6 +6,8 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import { TextToSpeechClient } from '@google-cloud/text-to-speech';
 import 'dotenv/config';
+import fs from 'node:fs';
+import path from 'node:path';
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -27,7 +29,7 @@ app.post('/api/tts', async (req, res) => {
       return res.status(400).json({ error: 'Invalid text' });
     }
 
-    const client = new TextToSpeechClient();
+    const client = await getTTSClient();
 
     const audioConfig = {
       audioEncoding: 'MP3',
@@ -75,29 +77,18 @@ function getEffectsProfile(profile) {
 function sanitizeVoice(requested) {
   const fallback = {
     languageCode: 'th-TH',
-    name: 'th-TH-Chirp3-HD-Achernar', // 女性のChirp3-HD音声
-    ssmlGender: 'FEMALE'
+    name: 'th-TH-Standard-A',
+    ssmlGender: 'NEUTRAL'
   };
 
-  // 利用可能な音声のマッピング
-  const voiceMap = {
-    'neural2-a': 'th-TH-Chirp3-HD-Achernar',    // 女性
-    'neural2-c': 'th-TH-Chirp3-HD-Charon',      // 男性
-    'th-TH-Neural2-A': 'th-TH-Chirp3-HD-Achernar',
-    'th-TH-Neural2-C': 'th-TH-Neural2-C',       // 実際のNeural2
-    'th-TH-Standard-A': 'th-TH-Standard-A'
-  };
+  const allowed = new Set([
+    'th-TH-Standard-A',
+    'th-TH-Standard-B'
+  ]);
 
-  if (requested && voiceMap[requested]) {
-    const voiceName = voiceMap[requested];
-    const gender = voiceName.includes('Achernar') || voiceName.includes('Aoede') ? 'FEMALE' : 'MALE';
-    return { 
-      languageCode: 'th-TH', 
-      name: voiceName, 
-      ssmlGender: gender 
-    };
+  if (requested && typeof requested === 'string' && allowed.has(requested)) {
+    return { languageCode: 'th-TH', name: requested, ssmlGender: 'NEUTRAL' };
   }
-  
   return fallback;
 }
 
@@ -118,5 +109,20 @@ function createSSML(text, options) {
     default:
       return `<speak>${escapedText}</speak>`;
   }
+}
+
+async function getTTSClient() {
+  if (process.env.GOOGLE_APPLICATION_CREDENTIALS) {
+    return new TextToSpeechClient();
+  }
+
+  const candidate = path.resolve(process.cwd(), 'keys', 'google-cloud-key.json');
+  if (fs.existsSync(candidate)) {
+    console.warn('[server] GOOGLE_APPLICATION_CREDENTIALS not set. Using local key file for development:', candidate);
+    return new TextToSpeechClient({ keyFilename: candidate });
+  }
+
+  console.error('[server] No credentials configured. Set GOOGLE_APPLICATION_CREDENTIALS or place keys/google-cloud-key.json');
+  return new TextToSpeechClient();
 }
 

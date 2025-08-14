@@ -8,7 +8,6 @@ import FavoritesView from './components/FavoritesView';
 import RoleplayView from './components/RoleplayView';
 import LegalView from './components/LegalView';
 import NotFoundView from './components/NotFoundView';
-import { PronunciationPracticeView } from './components/PronunciationPracticeView';
 import { ErrorBoundary, AsyncErrorBoundary } from './components/ErrorBoundary';
 import { FavoritesProvider } from './contexts/FavoritesContext';
 import { AudioProvider } from './contexts/AudioContext';
@@ -61,8 +60,6 @@ function App() {
                                             <Route path="/conversation/:topicId" element={<ConversationView />} />
                                             <Route path="/favorites" element={<FavoritesView />} />
                                             <Route path="/roleplay" element={<RoleplayView />} />
-                                            <Route path="/pronunciation" element={<PronunciationPracticeView />} />
-                                            <Route path="/pronunciation/:category" element={<PronunciationPracticeView />} />
                                             <Route path="/tts-demo" element={
                                                 <TTSDemoPage />
                                             } />

@@ -47,43 +47,8 @@ describe('TopicSelection', () => {
     expect(screen.getByText(/3000語の習得を目指して/)).toBeInTheDocument();
   });
 
-  it('renders quick action buttons', () => {
-    render(
-      <TestWrapper>
-        <TopicSelection />
-      </TestWrapper>
-    );
 
-    expect(screen.getByText('発音練習')).toBeInTheDocument();
-    expect(screen.getByText('ロールプレイ')).toBeInTheDocument();
-    expect(screen.getByText('タイ語の声調を正確に習得しよう')).toBeInTheDocument();
-  });
 
-  it('navigates to pronunciation practice when button is clicked', () => {
-    render(
-      <TestWrapper>
-        <TopicSelection />
-      </TestWrapper>
-    );
-
-    const pronunciationButton = screen.getByText('発音練習');
-    fireEvent.click(pronunciationButton);
-
-    expect(mockNavigate).toHaveBeenCalledWith('/pronunciation');
-  });
-
-  it('navigates to roleplay when button is clicked', () => {
-    render(
-      <TestWrapper>
-        <TopicSelection />
-      </TestWrapper>
-    );
-
-    const roleplayButton = screen.getByText('ロールプレイ');
-    fireEvent.click(roleplayButton);
-
-    expect(mockNavigate).toHaveBeenCalledWith('/roleplay');
-  });
 
   it('renders custom topic generator', () => {
     render(

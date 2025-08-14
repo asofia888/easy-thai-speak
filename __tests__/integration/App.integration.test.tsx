@@ -78,8 +78,6 @@ describe('App Integration Tests', () => {
 
     // Should render home page with topic selection
     expect(screen.getByText('会話トピックを選ぼう')).toBeInTheDocument();
-    expect(screen.getByText('発音練習')).toBeInTheDocument();
-    expect(screen.getByText('ロールプレイ')).toBeInTheDocument();
 
     // Should show topic categories
     expect(screen.getByText('初級者向け')).toBeInTheDocument();
@@ -87,20 +85,6 @@ describe('App Integration Tests', () => {
     expect(screen.getByText('上級者向け')).toBeInTheDocument();
   });
 
-  it('navigates to pronunciation practice', async () => {
-    const user = userEvent.setup();
-    
-    render(<App />);
-
-    // Click pronunciation practice button
-    const pronunciationButton = screen.getByText('発音練習');
-    await user.click(pronunciationButton);
-
-    // Should navigate to pronunciation practice page
-    await waitFor(() => {
-      expect(screen.getByText('発音練習')).toBeInTheDocument();
-    });
-  });
 
   it('creates and navigates to custom topic conversation', async () => {
     const user = userEvent.setup();
