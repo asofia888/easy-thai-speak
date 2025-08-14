@@ -8,9 +8,11 @@ import { prepareTTSText, escapeForSSML, isValidThaiText } from '../utils/thaiTex
 
 // Google Cloud TTS設定インターfaces
 export interface GoogleCloudTTSConfig {
-  voice: 'neural2-a' | 'neural2-c';
+  voice: 'neural2-a' | 'neural2-c' | 'chirp3hd-a' | 'chirp3hd-c';
   quality: 'standard' | 'premium';
   region?: string;
+  preferredEngine?: 'standard' | 'chirp3hd';
+  mobileOptimization?: boolean;
 }
 
 export interface TTSRequest {
@@ -370,13 +372,29 @@ export class GoogleCloudTTSService {
    * 音声名取得
    */
   private getVoiceName(): string {
-    // タイ語は Neural2 のボイスが提供されていないため、Standard にマップ
-    // UI上の 'neural2-a' / 'neural2-c' を、それぞれ 'Standard-A' / 'Standard-B' に対応付け
-    const map = {
-      'neural2-a': 'th-TH-Standard-A',
-      'neural2-c': 'th-TH-Standard-B'
-    } as const;
-    return map[this.config.voice] || 'th-TH-Standard-A';
+    const config = this.config;
+    const preferredEngine = config.preferredEngine || 'standard';
+    
+    // エンジン別の音声マッピング
+    if (preferredEngine === 'chirp3hd') {
+      // Chirp3HD音声（高品質、モバイル対応）
+      const chirp3hdMap = {
+        'chirp3hd-a': 'th-TH-Chirp3-HD-Achernar',
+        'chirp3hd-c': 'th-TH-Chirp3-HD-Bellatrix',
+        'neural2-a': 'th-TH-Chirp3-HD-Achernar', // フォールバック
+        'neural2-c': 'th-TH-Chirp3-HD-Bellatrix' // フォールバック
+      } as const;
+      return chirp3hdMap[config.voice] || 'th-TH-Chirp3-HD-Achernar';
+    } else {
+      // Standard音声（互換性重視）
+      const standardMap = {
+        'neural2-a': 'th-TH-Standard-A',
+        'neural2-c': 'th-TH-Standard-B',
+        'chirp3hd-a': 'th-TH-Standard-A', // フォールバック
+        'chirp3hd-c': 'th-TH-Standard-B'  // フォールバック
+      } as const;
+      return standardMap[config.voice] || 'th-TH-Standard-A';
+    }
   }
 
   /**

@@ -1,255 +1,197 @@
-# Google Cloud Text-to-Speech Chirp3HD セットアップガイド
+# Google Cloud TTS セットアップガイド
 
 ## 概要
 
-このプロジェクトでは、Google Cloud Text-to-Speech APIのChirp3HDモデルを使用して、高品質なタイ語音声合成を提供しています。
+このアプリケーションでは、Google Cloud Text-to-Speech APIを使用して高品質なタイ語音声を生成します。Chirp3HD音声エンジンとStandard音声エンジンの両方をサポートしており、モバイルデバイスでも安定した音声再生が可能です。
 
-## 特徴
+## 音声エンジンの選択
 
-- 🎵 **高品質音声**: Google Cloud Chirp3HDによる自然なタイ語音声
-- 🔤 **タイ文字フィルタリング**: Paiboon+や日本語を除外し、純粋なタイ文字のみをTTSに送信
-- 💾 **インテリジェントキャッシュ**: 使用頻度と期限を考慮したLRUキャッシュ
-- 📊 **コスト最適化**: リクエスト数と文字数の追跡による費用管理
-- 🎚️ **学習レベル対応**: 初心者、中級者、上級者向けの音声設定
+### 1. Chirp3HD音声エンジン（推奨）
+- **特徴**: 最高品質の音声、モバイル対応、自然な発音
+- **利用可能な音声**:
+  - `th-TH-Chirp3-HD-Achernar` (女性風)
+  - `th-TH-Chirp3-HD-Bellatrix` (男性風)
+- **用途**: 学習用、本格的な音声合成
 
-## セットアップ手順
+### 2. Standard音声エンジン
+- **特徴**: 互換性重視、安定性、軽量
+- **利用可能な音声**:
+  - `th-TH-Standard-A` (女性風)
+  - `th-TH-Standard-B` (男性風)
+- **用途**: 互換性が必要な場合、軽量な処理
 
-### 1. Google Cloud Console設定
+## 環境変数設定
 
-1. [Google Cloud Console](https://console.cloud.google.com/) にアクセス
-2. 新しいプロジェクトを作成または既存のプロジェクトを選択
-3. Text-to-Speech APIを有効化:
-   ```bash
-   gcloud services enable texttospeech.googleapis.com
-   ```
-
-### 2. サービスアカウント作成
-
-1. Google Cloud Console > IAM > サービスアカウント
-2. 「サービスアカウントを作成」をクリック
-3. 以下の権限を付与:
-   - Cloud Text-to-Speech Client
-   - プロジェクト閲覧者
-4. キーファイル（JSON）をダウンロード
-
-### 3. 環境変数設定
-
-クライアント側は Vite の接頭辞 `VITE_` を使用します（秘密情報は含めない）。
-
-```env
-# client/.env
-VITE_TTS_DEFAULT_VOICE=neural2-a
+### クライアント側 (.env)
+```bash
+# Chirp3HD音声を使用する場合（推奨）
+VITE_TTS_PREFERRED_ENGINE=chirp3hd
+VITE_TTS_DEFAULT_VOICE=chirp3hd-a
 VITE_TTS_DEFAULT_QUALITY=premium
+
+# モバイル最適化
+VITE_TTS_MOBILE_OPTIMIZATION=true
+
+# デバッグとメトリクス
+VITE_DEBUG_TTS=true
+VITE_ENABLE_TTS_METRICS=true
+
+# キャッシュ設定
+VITE_TTS_CACHE_SIZE=1000
+VITE_TTS_CACHE_DURATION=604800000
+
+# リージョン設定（オプション）
 VITE_GOOGLE_CLOUD_REGION=us-central1
 ```
 
-サーバ側は Google 認証情報を環境変数で設定します。
-
-```env
-# server/.env
-GOOGLE_APPLICATION_CREDENTIALS=./keys/google-cloud-key.json
-GOOGLE_CLOUD_PROJECT=your-project-id
-```
-
-### 4. 依存関係インストール
-
+### サーバー側 (.env)
 ```bash
-npm install @google-cloud/text-to-speech
+# Google Cloud認証情報
+GOOGLE_APPLICATION_CREDENTIALS=./keys/google-cloud-key.json
+
+# TTSエンジン設定（サーバー側で使用）
+TTS_ENGINE=chirp3hd
+
+# Gemini API設定
+GEMINI_API_KEY=your_gemini_api_key_here
 ```
 
-## 使用方法
+## サーバー側セットアップ
 
-### 基本的な使用
+### 1. Google Cloud Consoleでの設定
+1. [Google Cloud Console](https://console.cloud.google.com/)にアクセス
+2. プロジェクトを作成または選択
+3. Text-to-Speech APIを有効化
+4. サービスアカウントを作成
+5. JSONキーファイルをダウンロード
 
-```tsx
-import { useGoogleCloudTTS } from './hooks/useGoogleCloudTTS';
-
-const MyComponent = () => {
-  const [ttsState, ttsControls] = useGoogleCloudTTS({
-    voice: 'neural2-a',
-    quality: 'premium',
-    autoPlay: true
-  });
-
-  const handleSpeak = async () => {
-    await ttsControls.synthesize({
-      thaiText: 'สวัสดีครับ',
-      options: {
-        learningLevel: 'beginner',
-        speed: 0.8
-      }
-    });
-  };
-
-  return (
-    <button onClick={handleSpeak} disabled={ttsState.isLoading}>
-      {ttsState.isLoading ? '合成中...' : '再生'}
-    </button>
-  );
-};
+### 2. サーバーでのファイル配置
+```
+server/
+├── keys/
+│   └── google-cloud-key.json  # ダウンロードしたキーファイル
+├── server.js
+└── .env                        # 環境変数設定
 ```
 
-### コンポーネントでの使用
-
-```tsx
-import { ThaiSpeechPlayer } from './components/ThaiSpeechPlayer';
-
-const MyLearningComponent = () => {
-  return (
-    <ThaiSpeechPlayer
-      thaiText="สวัสดีครับ ยินดีที่ได้รู้จัก"
-      paiboonText="sà-wàt-dii khráp yin-dii thîi dâai rúu-jàk"
-      japaneseText="こんにちは、お会いできて嬉しいです"
-      learningLevel="intermediate"
-      showMetrics={true}
-    />
-  );
-};
+### 3. 環境変数の設定
+```bash
+# サーバーの .env ファイル
+GOOGLE_APPLICATION_CREDENTIALS=./keys/google-cloud-key.json
+TTS_ENGINE=chirp3hd
+GEMINI_API_KEY=your_gemini_api_key_here
 ```
 
-## API設定オプション
+## モバイル最適化
 
-### 音声設定
+### 1. 音声再生の最適化
+- **AudioContext.resume()**: ブラウザの自動再生制限を回避
+- **MIMEタイプ最適化**: `audio/mpeg`を使用してモバイル互換性を向上
+- **プリロード設定**: 音声ファイルの事前読み込み
 
-- **neural2-a**: 女性風の自然な音声
-- **neural2-c**: 男性風の自然な音声
-
-### 品質設定
-
-- **standard**: 標準品質（低コスト）
-- **premium**: プレミアム品質（高コスト、高品質）
-
-### 学習レベル設定
-
+### 2. 設定オプション
 ```typescript
-const learningSettings = {
-  beginner: { 
-    speed: 0.7,      // ゆっくり
-    pitch: 0.0,      // 標準ピッチ
-    useSSML: true,   // 強調表現使用
-    emphasis: 'clarity' // 明瞭性重視
-  },
-  intermediate: { 
-    speed: 0.85,     // やや遅め
-    useSSML: false 
-  },
-  advanced: { 
-    speed: 1.0,      // 標準速度
-    useSSML: false 
-  }
+// モバイル最適化を有効化
+const ttsConfig = {
+  preferredEngine: 'chirp3hd',
+  voice: 'chirp3hd-a',
+  quality: 'premium',
+  mobileOptimization: true
 };
 ```
 
-## コスト管理
+## 音声品質の設定
 
-### 料金体系（2024年時点）
+### 1. 品質レベル
+- **Standard**: 標準品質、軽量処理
+- **Premium**: 高品質、より自然な音声
 
-- 標準音声: $4 per 1M characters
-- プレミアム音声（Chirp3HD）: $16 per 1M characters
-
-### コスト最適化機能
-
-1. **インテリジェントキャッシュ**
-   - よく使用されるフレーズを自動キャッシュ
-   - LRU（Least Recently Used）による効率的な管理
-   - 7日間のキャッシュ保持期間
-
-2. **バッチ処理**
-   - 複数のテキストを効率的に一括処理
-   - 同時リクエスト数の制限（デフォルト: 5）
-
-3. **使用量監視**
-   - リアルタイムでのリクエスト数追跡
-   - 文字数カウントによる費用推定
-   - キャッシュヒット率の監視
-
-## パフォーマンス最適化
-
-### プリロード機能
-
+### 2. 音声選択
 ```typescript
-// よく使用されるフレーズの事前キャッシュ
-const commonPhrases = [
-  'สวัสดี', 'ขอบคุณ', 'ขอโทษ', 
-  'ใช่', 'ไม่ใช่', 'ดี', 'ไม่ดี'
-];
+// Chirp3HD音声
+const chirp3hdVoices = {
+  'chirp3hd-a': 'th-TH-Chirp3-HD-Achernar',
+  'chirp3hd-c': 'th-TH-Chirp3-HD-Bellatrix'
+};
 
-await ttsControls.preloadPhrases(commonPhrases);
+// Standard音声
+const standardVoices = {
+  'neural2-a': 'th-TH-Standard-A',
+  'neural2-c': 'th-TH-Standard-B'
+};
 ```
-
-### キャッシュ戦略
-
-- **メモリベース**: 高速アクセスのためメモリにキャッシュ
-- **頻度ベース**: 使用頻度の高いアイテムを優先保持
-- **期限ベース**: 7日経過後に自動削除
 
 ## トラブルシューティング
 
-### よくある問題
+### 1. 音声が再生されない場合
+- モバイル最適化を有効化
+- ブラウザの音声設定を確認
+- AudioContextの状態を確認
 
-1. **認証エラー**
-   ```
-   Error: Could not load the default credentials
-   ```
-   → 環境変数とサービスアカウントキーを確認
+### 2. 音声品質が低い場合
+- Chirp3HDエンジンを使用
+- Premium品質を選択
+- キャッシュをクリア
 
-2. **API無効エラー**
-   ```
-   Error: Text-to-Speech API has not been used
-   ```
-   → Google Cloud ConsoleでText-to-Speech APIを有効化
+### 3. モバイルでの問題
+- `VITE_TTS_MOBILE_OPTIMIZATION=true`を設定
+- 音声ファイルのプリロードを有効化
+- ブラウザの自動再生制限を確認
 
-3. **権限エラー**
-   ```
-   Error: The caller does not have permission
-   ```
-   → サービスアカウントの権限を確認
+## パフォーマンス最適化
 
-### デバッグ設定
+### 1. キャッシュ設定
+- 音声ファイルのキャッシュサイズ: 1000件
+- キャッシュ期間: 7日間
+- よく使用するフレーズのプリロード
 
-```env
-REACT_APP_DEBUG_TTS=true
-REACT_APP_ENABLE_TTS_METRICS=true
+### 2. 同時リクエスト制限
+- 最大同時リクエスト数: 3-5件
+- セマフォによる制御
+- レート制限の回避
+
+## セキュリティ
+
+### 1. APIキーの管理
+- クライアント側ではAPIキーを扱わない
+- サーバー側で環境変数として管理
+- キーファイルは公開リポジトリにコミットしない
+
+### 2. アクセス制御
+- CORS設定による適切なアクセス制御
+- サーバーサイドでの認証情報管理
+- クライアント側での資格情報の露出防止
+
+## 開発・テスト
+
+### 1. ローカル開発
+```bash
+# フルスタック開発（フロントエンド + バックエンド）
+npm run dev:full
+
+# フロントエンドのみ
+npm run dev
+
+# バックエンドのみ
+npm run server
 ```
 
-デバッグモードでは詳細なログが出力されます：
+### 2. 音声テスト
+- TTSデモページで音声品質を確認
+- 異なる音声エンジンでの比較
+- モバイルデバイスでの動作確認
 
+### 3. 設定の確認
 ```typescript
-const debugInfo = debugThaiText('สวัสดี Hello สบายดี');
-console.log(debugInfo);
-// {
-//   original: 'สวัสดี Hello สบายดี',
-//   extracted: 'สวัสดี สบายดี',
-//   analysis: { quality: 'high', isValid: true, ... }
-// }
+import { logConfigStatus } from '../utils/envConfig';
+
+// 設定状況をログ出力
+logConfigStatus(getEnvConfig());
 ```
 
-## セキュリティ考慮事項
+## 参考資料
 
-1. **キーファイル管理**
-   - サービスアカウントキーは安全な場所に保存
-   - `.gitignore`でバージョン管理から除外
-   - 本番環境では環境変数または秘密管理サービスを使用
-
-2. **アクセス制限**
-   - サービスアカウントには最小権限の原則を適用
-   - IP制限やAPIキー制限を検討
-
-3. **ログ管理**
-   - 音声データやテキストの機密情報をログに含めない
-   - エラーログの適切な管理
-
-## 追加リソース
-
-- [Google Cloud Text-to-Speech Documentation](https://cloud.google.com/text-to-speech/docs)
-- [Thai Language Support](https://cloud.google.com/text-to-speech/docs/voices)
-- [Pricing Calculator](https://cloud.google.com/products/calculator)
-
-## サポート
-
-問題が発生した場合は、以下の情報を含めてissueを作成してください：
-
-- エラーメッセージの詳細
-- 使用している環境（OS、Node.jsバージョンなど）
-- 再現手順
-- 設定情報（機密情報は除く）
+- [Google Cloud Text-to-Speech API ドキュメント](https://cloud.google.com/text-to-speech/docs)
+- [Chirp3HD音声について](https://cloud.google.com/text-to-speech/docs/chirp3hd)
+- [Vite環境変数の設定](https://vitejs.dev/guide/env-and-mode.html)
+- [Web Audio API ドキュメント](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API)

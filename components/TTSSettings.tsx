@@ -18,11 +18,17 @@ export const TTSSettings: React.FC<TTSSettingsProps> = ({
   showAdvancedOptions = false,
   className = ''
 }) => {
-  const { settings, updateSettings, resetSettings } = useTTSSettings();
+  const { settings, updateSettings, resetSettings, availableVoices, availableEngines } = useTTSSettings();
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const handleVoiceChange = useCallback((voice: 'neural2-a' | 'neural2-c') => {
+  const handleVoiceChange = useCallback((voice: 'neural2-a' | 'neural2-c' | 'chirp3hd-a' | 'chirp3hd-c') => {
     const newSettings = { ...settings, voice };
+    updateSettings(newSettings);
+    onSettingsChange?.(newSettings);
+  }, [settings, updateSettings, onSettingsChange]);
+
+  const handleEngineChange = useCallback((preferredEngine: 'standard' | 'chirp3hd') => {
+    const newSettings = { ...settings, preferredEngine };
     updateSettings(newSettings);
     onSettingsChange?.(newSettings);
   }, [settings, updateSettings, onSettingsChange]);
@@ -71,32 +77,51 @@ export const TTSSettings: React.FC<TTSSettingsProps> = ({
 
       {/* 基本設定 */}
       <div className="space-y-4">
+        {/* エンジン選択 */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            音声エンジン
+          </label>
+          <div className="flex space-x-4">
+            {availableEngines.map(engine => (
+              <label key={engine.value} className="flex items-center">
+                <input
+                  type="radio"
+                  value={engine.value}
+                  checked={settings.preferredEngine === engine.value}
+                  onChange={(e) => handleEngineChange(e.target.value as 'standard' | 'chirp3hd')}
+                  className="mr-2"
+                />
+                <span className="text-sm">{engine.label}</span>
+              </label>
+            ))}
+          </div>
+          <p className="text-xs text-gray-500 mt-1">
+            Chirp3HD: 高品質音声、モバイル対応 | Standard: 互換性重視
+          </p>
+        </div>
+
         {/* 音声選択 */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             音声タイプ
           </label>
-          <div className="flex space-x-4">
-            <label className="flex items-center">
-              <input
-                type="radio"
-                value="neural2-a"
-                checked={settings.voice === 'neural2-a'}
-                onChange={(e) => handleVoiceChange(e.target.value as 'neural2-a')}
-                className="mr-2"
-              />
-              <span className="text-sm">Neural2-A (女性風)</span>
-            </label>
-            <label className="flex items-center">
-              <input
-                type="radio"
-                value="neural2-c"
-                checked={settings.voice === 'neural2-c'}
-                onChange={(e) => handleVoiceChange(e.target.value as 'neural2-c')}
-                className="mr-2"
-              />
-              <span className="text-sm">Neural2-C (男性風)</span>
-            </label>
+          <div className="grid grid-cols-2 gap-3">
+            {availableVoices.map(voice => (
+              <label key={voice.value} className="flex items-center p-2 border rounded hover:bg-gray-50">
+                <input
+                  type="radio"
+                  value={voice.value}
+                  checked={settings.voice === voice.value}
+                  onChange={(e) => handleVoiceChange(e.target.value as 'neural2-a' | 'neural2-c' | 'chirp3hd-a' | 'chirp3hd-c')}
+                  className="mr-2"
+                />
+                <div>
+                  <span className="text-sm font-medium">{voice.label}</span>
+                  <span className="text-xs text-gray-500 block">({voice.engine})</span>
+                </div>
+              </label>
+            ))}
           </div>
         </div>
 
@@ -149,6 +174,16 @@ export const TTSSettings: React.FC<TTSSettingsProps> = ({
               className="mr-2"
             />
             <span className="text-sm">よく使用するフレーズを事前読み込み</span>
+          </label>
+
+          <label className="flex items-center">
+            <input
+              type="checkbox"
+              checked={settings.mobileOptimization || false}
+              onChange={(e) => handleToggleChange('mobileOptimization', e.target.checked)}
+              className="mr-2"
+            />
+            <span className="text-sm">モバイル最適化（音声再生の安定性向上）</span>
           </label>
 
           <label className="flex items-center">
@@ -223,11 +258,13 @@ export const TTSSettings: React.FC<TTSSettingsProps> = ({
         <div className="text-sm text-blue-800">
           <div className="font-medium mb-1">現在の設定</div>
           <div className="space-y-1 text-xs">
+            <div>エンジン: {settings.preferredEngine === 'chirp3hd' ? 'Chirp3HD (高品質)' : 'Standard (互換性)'}</div>
             <div>音声: {settings.voice} ({settings.quality}品質)</div>
             <div>
               オプション: 
               {settings.autoPlay && ' 自動再生'}
               {settings.preloadCommonPhrases && ' プリロード'}
+              {settings.mobileOptimization && ' モバイル最適化'}
               {settings.enableMetrics && ' 統計表示'}
             </div>
             <div>同時リクエスト: 最大{settings.maxConcurrentRequests || 3}件</div>
@@ -243,30 +280,58 @@ export const TTSSettings: React.FC<TTSSettingsProps> = ({
  * クイック設定コンポーネント（コンパクト版）
  */
 interface QuickTTSSettingsProps {
-  currentVoice: 'neural2-a' | 'neural2-c';
+  currentVoice: 'neural2-a' | 'neural2-c' | 'chirp3hd-a' | 'chirp3hd-c';
   currentQuality: 'standard' | 'premium';
-  onVoiceChange: (voice: 'neural2-a' | 'neural2-c') => void;
+  currentEngine: 'standard' | 'chirp3hd';
+  onVoiceChange: (voice: 'neural2-a' | 'neural2-c' | 'chirp3hd-a' | 'chirp3hd-c') => void;
   onQualityChange: (quality: 'standard' | 'premium') => void;
+  onEngineChange: (engine: 'standard' | 'chirp3hd') => void;
   className?: string;
 }
 
 export const QuickTTSSettings: React.FC<QuickTTSSettingsProps> = ({
   currentVoice,
   currentQuality,
+  currentEngine,
   onVoiceChange,
   onQualityChange,
+  onEngineChange,
   className = ''
 }) => {
+  const getVoiceLabel = (voice: string) => {
+    if (voice.includes('chirp3hd')) {
+      return voice.includes('a') ? '👩 Chirp3HD-A' : '👨 Chirp3HD-C';
+    }
+    return voice.includes('a') ? '👩 Standard-A' : '👨 Standard-C';
+  };
+
   return (
     <div className={`flex items-center space-x-4 p-2 bg-gray-50 rounded-md ${className}`}>
+      {/* エンジン切替 */}
+      <div className="flex items-center space-x-2">
+        <span className="text-xs text-gray-600">エンジン:</span>
+        <button
+          onClick={() => onEngineChange(currentEngine === 'standard' ? 'chirp3hd' : 'standard')}
+          className="px-2 py-1 text-xs bg-white border rounded hover:bg-gray-50"
+        >
+          {currentEngine === 'chirp3hd' ? '🚀 Chirp3HD' : '📱 Standard'}
+        </button>
+      </div>
+
       {/* 音声切替 */}
       <div className="flex items-center space-x-2">
         <span className="text-xs text-gray-600">音声:</span>
         <button
-          onClick={() => onVoiceChange(currentVoice === 'neural2-a' ? 'neural2-c' : 'neural2-a')}
+          onClick={() => {
+            if (currentEngine === 'chirp3hd') {
+              onVoiceChange(currentVoice === 'chirp3hd-a' ? 'chirp3hd-c' : 'chirp3hd-a');
+            } else {
+              onVoiceChange(currentVoice === 'neural2-a' ? 'neural2-c' : 'neural2-a');
+            }
+          }}
           className="px-2 py-1 text-xs bg-white border rounded hover:bg-gray-50"
         >
-          {currentVoice === 'neural2-a' ? '👩 女性' : '👨 男性'}
+          {getVoiceLabel(currentVoice)}
         </button>
       </div>
 
