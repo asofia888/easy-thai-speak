@@ -2,11 +2,14 @@
 import { GoogleGenAI, Type, GenerateContentResponse } from "@google/genai";
 import { ConversationLine, Feedback } from '../types';
 
-if (!process.env.API_KEY) {
-    throw new Error("API_KEY environment variable is not set.");
+// Vite環境変数を使用
+const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+
+if (!apiKey || apiKey === 'your_gemini_api_key_here') {
+    throw new Error("VITE_GEMINI_API_KEY environment variable is not set or is using placeholder value. Please set a valid Google Gemini API key.");
 }
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+const ai = new GoogleGenAI({ apiKey });
 const model = "gemini-2.5-flash";
 
 const conversationSchema = {
@@ -70,12 +73,23 @@ export const generateConversation = async (topic: string): Promise<ConversationL
             },
         });
 
-        const jsonText = response.text.trim();
-        const conversation = JSON.parse(jsonText);
+        const jsonText = await (typeof response.text === 'function' ? response.text() : response.text);
+        
+        if (!jsonText || jsonText === 'undefined') {
+            throw new Error("Gemini APIからの応答が空でした。");
+        }
+        
+        const conversation = JSON.parse(String(jsonText).trim());
         return conversation as ConversationLine[];
     } catch (error) {
         console.error("Error generating conversation:", error);
-        throw new Error("AIとの会話生成に失敗しました。");
+        
+        // APIキーエラーの場合は分かりやすいメッセージを表示
+        if (error?.message?.includes('API key not valid') || error?.message?.includes('API_KEY_INVALID')) {
+            throw new Error("Google Gemini APIキーが無効です。.envファイルでVITE_GEMINI_API_KEYを正しく設定してください。");
+        }
+        
+        throw new Error(`AIとの会話生成に失敗しました: ${error?.message || '不明なエラー'}`);
     }
 };
 
@@ -110,8 +124,13 @@ export const getPronunciationFeedback = async (transcript: string, correctPhrase
             },
         });
         
-        const jsonText = response.text.trim();
-        const feedback = JSON.parse(jsonText);
+        const jsonText = await (typeof response.text === 'function' ? response.text() : response.text);
+        
+        if (!jsonText || jsonText === 'undefined') {
+            throw new Error("Gemini APIからの応答が空でした。");
+        }
+        
+        const feedback = JSON.parse(String(jsonText).trim());
         return feedback as Feedback;
 
     } catch (error) {
