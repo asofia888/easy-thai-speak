@@ -326,7 +326,7 @@ export const VoiceFeedback: React.FC<VoiceFeedbackProps> = ({
 
             <div className="space-y-2">
               <h5 className="text-slate-300 text-sm font-medium">フィードバック:</h5>
-              {currentScore.feedback.map((feedback, index) => (
+              {Array.isArray(currentScore.feedback) && currentScore.feedback.map((feedback, index) => (
                 <div key={index} className="text-slate-200 text-sm bg-slate-600 rounded p-2">
                   {feedback}
                 </div>
