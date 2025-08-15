@@ -108,7 +108,7 @@ const CustomTopicHistory = ({
                 </button>
             </div>
             <div className="space-y-3">
-                {history.map(item => (
+                {Array.isArray(history) && history.map(item => (
                     <div key={item.id} className="bg-white p-4 rounded-lg shadow-sm flex items-center justify-between transition-shadow hover:shadow-md">
                         <div className="min-w-0 flex-1">
                             <p className="font-semibold text-slate-800 truncate">{item.title}</p>
@@ -186,11 +186,11 @@ const TopicSelection = () => {
                 onClearAll={handleClearAllHistory}
             />
 
-            {TOPIC_CATEGORIES.map(category => (
+            {Array.isArray(TOPIC_CATEGORIES) && TOPIC_CATEGORIES.map(category => (
                 <section key={category.name}>
                     <h2 className="text-2xl font-bold mb-6 border-l-4 border-blue-500 pl-4 text-slate-700">{category.name}</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {category.topics.map(topic => (
+                        {Array.isArray(category.topics) && category.topics.map(topic => (
                             <TopicCard key={topic.id} topic={topic} />
                         ))}
                     </div>
