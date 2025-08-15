@@ -18,8 +18,9 @@ export const TTSSettings: React.FC<TTSSettingsProps> = ({
   showAdvancedOptions = false,
   className = ''
 }) => {
-  const { settings, updateSettings, resetSettings, availableVoices, availableEngines } = useTTSSettings();
+  const { settings, updateSettings, saveSettings, resetSettings, availableVoices, availableEngines } = useTTSSettings();
   const [isExpanded, setIsExpanded] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
 
   const handleVoiceChange = useCallback((voice: 'neural2-a' | 'neural2-c' | 'chirp3hd-a' | 'chirp3hd-c') => {
     const newSettings = { ...settings, voice };
@@ -48,7 +49,25 @@ export const TTSSettings: React.FC<TTSSettingsProps> = ({
   const handleReset = useCallback(() => {
     resetSettings();
     onSettingsChange?.(settings);
+    setSaveStatus('idle');
   }, [resetSettings, onSettingsChange, settings]);
+
+  const handleSave = useCallback(async () => {
+    setSaveStatus('saving');
+    const success = saveSettings();
+    if (success) {
+      setSaveStatus('saved');
+      setTimeout(() => setSaveStatus('idle'), 2000);
+    } else {
+      setSaveStatus('error');
+      setTimeout(() => setSaveStatus('idle'), 2000);
+    }
+  }, [saveSettings]);
+
+  const getCurrentVoiceLabel = useCallback(() => {
+    const voice = availableVoices.find(v => v.value === settings.voice);
+    return voice ? voice.label : settings.voice;
+  }, [settings.voice, availableVoices]);
 
   return (
     <div className={`bg-white border border-gray-200 rounded-lg p-4 ${className}`}>
@@ -67,11 +86,41 @@ export const TTSSettings: React.FC<TTSSettingsProps> = ({
           </button>
           
           <button
+            onClick={handleSave}
+            disabled={saveStatus === 'saving'}
+            className={`px-3 py-1 text-xs rounded ${
+              saveStatus === 'saved' 
+                ? 'bg-green-100 text-green-700'
+                : saveStatus === 'error'
+                ? 'bg-red-100 text-red-700'
+                : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
+            }`}
+          >
+            {saveStatus === 'saving' ? '保存中...' : 
+             saveStatus === 'saved' ? '✓ 保存済み' :
+             saveStatus === 'error' ? '✗ エラー' : '設定を保存'}
+          </button>
+          
+          <button
             onClick={handleReset}
             className="px-3 py-1 text-xs bg-gray-100 text-gray-600 rounded hover:bg-gray-200"
           >
             リセット
           </button>
+        </div>
+      </div>
+
+      {/* 現在の選択音声表示 */}
+      <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+        <div className="flex items-center justify-between">
+          <div>
+            <span className="text-sm font-medium text-blue-800">現在選択中の音声:</span>
+            <span className="ml-2 text-sm text-blue-700">{getCurrentVoiceLabel()}</span>
+          </div>
+          <div className="text-xs text-blue-600">
+            {settings.preferredEngine === 'chirp3hd' ? '🚀 Chirp3HD' : '📱 Standard'} | 
+            {settings.quality === 'premium' ? ' ⭐ プレミアム' : ' 📱 標準'}
+          </div>
         </div>
       </div>
 

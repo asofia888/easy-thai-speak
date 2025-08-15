@@ -339,7 +339,19 @@ export const useSimpleGoogleTTS = (config: GoogleCloudTTSConfig) => {
  * TTS設定管理用フック
  */
 export const useTTSSettings = () => {
-  const [settings, setSettings] = useState<TTSHookConfig>({
+  const loadSettingsFromStorage = (): TTSHookConfig => {
+    try {
+      const saved = localStorage.getItem('tts-settings');
+      if (saved) {
+        return { ...getDefaultSettings(), ...JSON.parse(saved) };
+      }
+    } catch (error) {
+      console.warn('TTS設定の読み込みに失敗:', error);
+    }
+    return getDefaultSettings();
+  };
+
+  const getDefaultSettings = (): TTSHookConfig => ({
     voice: 'chirp3hd-a', // デフォルトをChirp3HD音声に変更
     quality: 'premium',
     preferredEngine: 'chirp3hd', // デフォルトエンジンをChirp3HDに設定
@@ -350,21 +362,30 @@ export const useTTSSettings = () => {
     enableMetrics: true
   });
 
+  const [settings, setSettings] = useState<TTSHookConfig>(loadSettingsFromStorage);
+
   const updateSettings = useCallback((newSettings: Partial<TTSHookConfig>) => {
     setSettings(prev => ({ ...prev, ...newSettings }));
   }, []);
 
+  const saveSettings = useCallback(() => {
+    try {
+      localStorage.setItem('tts-settings', JSON.stringify(settings));
+      return true;
+    } catch (error) {
+      console.error('TTS設定の保存に失敗:', error);
+      return false;
+    }
+  }, [settings]);
+
   const resetSettings = useCallback(() => {
-    setSettings({
-      voice: 'chirp3hd-a',
-      quality: 'premium',
-      preferredEngine: 'chirp3hd',
-      mobileOptimization: true,
-      autoPlay: true,
-      preloadCommonPhrases: false,
-      maxConcurrentRequests: 3,
-      enableMetrics: true
-    });
+    const defaultSettings = getDefaultSettings();
+    setSettings(defaultSettings);
+    try {
+      localStorage.setItem('tts-settings', JSON.stringify(defaultSettings));
+    } catch (error) {
+      console.error('TTS設定のリセットに失敗:', error);
+    }
   }, []);
 
   // 利用可能な音声一覧
@@ -384,6 +405,7 @@ export const useTTSSettings = () => {
   return {
     settings,
     updateSettings,
+    saveSettings,
     resetSettings,
     availableVoices,
     availableEngines
