@@ -85,7 +85,7 @@ const ConversationView = () => {
                 </div>
             )}
             <div className="space-y-6">
-                {conversation.map((line, index) => (
+                {(conversation || []).map((line, index) => (
                     <ConversationCard key={index} line={line} isListeningMode={isListeningMode} />
                 ))}
             </div>

@@ -11,7 +11,7 @@ const RoleSelectionModal = ({ speakers, onSelect }: RoleSelectionModalProps) => 
         <div className="bg-white p-8 rounded-lg shadow-xl text-center w-full max-w-md">
             <h2 className="text-2xl font-bold mb-6 text-slate-800">どちらの役を練習しますか？</h2>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                {speakers.map(speaker => (
+                {(speakers || []).map(speaker => (
                     <button
                         key={speaker}
                         onClick={() => onSelect(speaker)}

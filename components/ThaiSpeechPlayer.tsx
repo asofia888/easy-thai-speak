@@ -259,14 +259,14 @@ export const ThaiSpeechPlayer: React.FC<ThaiSpeechPlayerProps> = ({
           {!CONFIG_VALIDATION.isValid && (
             <div className="text-xs text-red-600">
               <div className="font-semibold mb-1">設定エラー:</div>
-              {CONFIG_VALIDATION.errors.map((error, index) => (
+              {(CONFIG_VALIDATION.errors || []).map((error, index) => (
                 <div key={index}>{error}</div>
               ))}
               
               <details className="mt-2">
                 <summary className="cursor-pointer hover:text-red-800">設定手順を見る</summary>
                 <div className="mt-2 pl-2 border-l-2 border-red-300">
-                  {getConfigAdvice().map((line, index) => (
+                  {(getConfigAdvice() || []).map((line, index) => (
                     <div key={index} className="text-xs text-gray-600">
                       {line}
                     </div>

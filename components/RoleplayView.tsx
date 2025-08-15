@@ -94,7 +94,7 @@ const RoleplayView = () => {
 
     if (!conversation) return null;
     if (status === 'selecting_role') {
-        const speakers = [...new Set(conversation.map(line => line.speaker))];
+        const speakers = [...new Set((conversation || []).map(line => line.speaker))];
         return <RoleSelectionModal speakers={speakers} onSelect={selectRole} />;
     }
 
@@ -123,7 +123,7 @@ const RoleplayView = () => {
             </header>
 
             <div className="flex-grow p-4 space-y-4 overflow-y-auto bg-slate-50/50">
-                {messages.map((msg) => (
+                {(messages || []).map((msg) => (
                     <RoleplayMessage key={msg.id} msg={msg} />
                 ))}
                 <div ref={chatEndRef} />
