@@ -70,8 +70,8 @@ export const useGoogleCloudTTS = (config: TTSHookConfig): [TTSState, TTSControls
         audioContextRef.current = new AudioContext();
       }
 
-      // よく使用されるフレーズのプリロード
-      if (config.preloadCommonPhrases && serviceRef.current) {
+      // よく使用されるフレーズのプリロード（一時的に無効化）
+      if (false && config.preloadCommonPhrases && serviceRef.current) {
         const commonPhrases = [
           'สวัสดี', 'ขอบคุณ', 'ขอโทษ', 'ใช่', 'ไม่ใช่',
           'ดี', 'ไม่ดี', 'เข้าใจ', 'ไม่เข้าใจ'
@@ -345,7 +345,7 @@ export const useTTSSettings = () => {
     preferredEngine: 'chirp3hd', // デフォルトエンジンをChirp3HDに設定
     mobileOptimization: true, // モバイル最適化を有効化
     autoPlay: true,
-    preloadCommonPhrases: true,
+    preloadCommonPhrases: false,
     maxConcurrentRequests: 3,
     enableMetrics: true
   });
@@ -361,7 +361,7 @@ export const useTTSSettings = () => {
       preferredEngine: 'chirp3hd',
       mobileOptimization: true,
       autoPlay: true,
-      preloadCommonPhrases: true,
+      preloadCommonPhrases: false,
       maxConcurrentRequests: 3,
       enableMetrics: true
     });
