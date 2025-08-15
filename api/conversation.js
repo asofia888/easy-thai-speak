@@ -1,5 +1,5 @@
 // Vercel Serverless Function for Gemini Conversation API
-import { GoogleGenAI, Type } from "@google/genai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export default async function handler(req, res) {
     // CORS headers
@@ -37,8 +37,8 @@ export default async function handler(req, res) {
             topic: topic.substring(0, 50) + '...'
         });
 
-        const ai = new GoogleGenAI(apiKey);
-        const model = ai.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const genAI = new GoogleGenerativeAI(apiKey);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
         
         const conversationSchema = {
             type: "array",

@@ -1,5 +1,5 @@
 // Vercel Serverless Function for Gemini Pronunciation Feedback API
-import { GoogleGenAI, Type } from "@google/genai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export default async function handler(req, res) {
     // CORS headers
@@ -28,8 +28,8 @@ export default async function handler(req, res) {
             return res.status(400).json({ error: 'Missing transcript or correctPhrase' });
         }
 
-        const ai = new GoogleGenAI(apiKey);
-        const model = ai.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const genAI = new GoogleGenerativeAI(apiKey);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
         
         const feedbackSchema = {
             type: "object",
