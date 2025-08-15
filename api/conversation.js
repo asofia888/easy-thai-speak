@@ -95,34 +95,60 @@ export default async function handler(req, res) {
                 parts: [{
                     text: `トピック: 「${topic}」
 
-以下のJSONスキーマに厳密に従って、タイ語初心者の日本人学習者向けの自然で実用的な会話文（4-6ターン）を生成してください。
+タイ語初心者の日本人学習者向けの自然で実用的な会話文（4-6ターン）をJSON形式で生成してください。
 
-要求:
+必須項目:
 1. 二人の話者間（AとB）の会話
 2. Paiboon+方式のローマ字発音表記を使用
 3. 各セリフを単語に分割
 4. 重要な文法ポイントがある場合は解説を含める
 
-JSON形式で出力してください:
-${JSON.stringify(conversationSchema, null, 2)}`
+出力はこの形式の配列で:
+[
+  {
+    "speaker": "A",
+    "thai": "タイ語のセリフ",
+    "pronunciation": "Paiboon+方式の発音",
+    "japanese": "日本語訳",
+    "words": [
+      {
+        "thai": "単語",
+        "pronunciation": "発音",
+        "japanese": "意味"
+      }
+    ]
+  }
+]
+
+純粋なJSONのみを出力し、説明文やマークダウンは含めないでください。`
                 }]
             }],
             generationConfig: {
                 temperature: 0.7,
                 topP: 0.9,
                 topK: 40,
-                maxOutputTokens: 2048,
-                responseMimeType: "application/json"
+                maxOutputTokens: 2048
             },
         });
 
-        const text = response.response.text();
+        let text = response.response.text();
         
         if (!text || text === 'undefined') {
             throw new Error('Empty response from Gemini API');
         }
+
+        // マークダウンのコードブロックを取り除く
+        text = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
         
-        const conversation = JSON.parse(String(text).trim());
+        // 余分なテキストを除去（JSONの前後にある説明文など）
+        const jsonMatch = text.match(/\[[\s\S]*\]/);
+        if (jsonMatch) {
+            text = jsonMatch[0];
+        }
+        
+        console.log('🤖 Cleaned response text:', text.substring(0, 500) + '...');
+        
+        const conversation = JSON.parse(text);
         
         res.status(200).json({ conversation });
     } catch (error) {
