@@ -37,7 +37,7 @@
     "react/": "https://esm.sh/react@19.1.1/",
     "react": "https://esm.sh/react@19.1.1",
     "react-router-dom": "https://esm.sh/react-router-dom@7.8.0",
-    "@google/genai": "https://esm.sh/@google/genai@1.13.0"
+    "@google/generative-ai": "https://esm.sh/@google/generative-ai@0.21.0"
   }
 }
 </script>
@@ -47,18 +47,8 @@
     <div id="root"></div>
     <script type="module" src="/index.tsx"></script>
     <script>
-      if ('serviceWorker' in navigator && window.location.hostname !== 'localhost') {
-        // Service Workerは本番環境でのみ有効化
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/service-worker.js').then(registration => {
-            console.log('ServiceWorker registration successful with scope: ', registration.scope);
-          }).catch(err => {
-            console.log('ServiceWorker registration failed: ', err);
-          });
-        });
-      } else if (window.location.hostname === 'localhost') {
-        console.log('🔧 開発環境ではService Workerを無効化しています');
-      }
+      // Service Workerを一時的に無効化
+      console.log('🔧 Service Workerは一時的に無効化されています');
     </script>
   </body>
 </html>

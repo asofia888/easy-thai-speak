@@ -96,7 +96,7 @@ const TTSDemoPage: React.FC = () => {
           <div>Config: {JSON.stringify(ttsConfig)}</div>
         </div>
         
-        {demoTexts.map((demo, index) => {
+        {(demoTexts || []).map((demo, index) => {
           console.log(`🔄 Rendering demo ${index}:`, demo);
           return (
             <div key={demo.id} className="border border-gray-200 rounded-lg p-4">
