@@ -65,17 +65,37 @@ export const useGoogleCloudTTS = (config: TTSHookConfig): [TTSState, TTSControls
       // フロントエンドでは資格情報を扱わず、サーバAPIに委譲
       serviceRef.current = createGoogleCloudTTSService(config);
       
-      // Web Audio APIのコンテキスト初期化（PCとモバイル両方に対応）
+      // Web Audio APIのコンテキスト初期化（PC環境を優先して対応）
       if (typeof window !== 'undefined') {
         try {
+          // PC環境でのAudioContext初期化を改善
           // @ts-ignore - ブラウザ互換性のため
           const AudioContextClass = window.AudioContext || window.webkitAudioContext;
           if (AudioContextClass) {
-            audioContextRef.current = new AudioContextClass();
+            console.log('🎼 Initializing AudioContext for PC...');
+            audioContextRef.current = new AudioContextClass({
+              // PC環境でのレイテンシー最適化
+              latencyHint: 'interactive',
+              sampleRate: 44100
+            });
+            
+            // PC環境でのAudioContext状態監視
+            if (audioContextRef.current) {
+              console.log('✅ AudioContext initialized:', {
+                state: audioContextRef.current.state,
+                sampleRate: audioContextRef.current.sampleRate
+              });
+              
+              // 状態変更の監視
+              audioContextRef.current.onstatechange = () => {
+                console.log('🔄 AudioContext state changed:', audioContextRef.current?.state);
+              };
+            }
           }
         } catch (contextError) {
-          console.warn('AudioContext初期化に失敗しました（HTML5 Audioを使用）:', contextError);
+          console.warn('❌ AudioContext初期化に失敗しました（HTML5 Audioを使用）:', contextError);
           // AudioContextが使用できない場合はHTML5 Audioのみを使用
+          audioContextRef.current = null;
         }
       }
 
@@ -162,24 +182,73 @@ export const useGoogleCloudTTS = (config: TTSHookConfig): [TTSState, TTSControls
   // 音声再生メソッド
   const play = useCallback(async (audioResult: AudioResult): Promise<void> => {
     try {
+      // PC環境でのユーザーインタラクション確保
+      if (audioContextRef.current && audioContextRef.current.state === 'suspended') {
+        // ユーザーのクリックなどのインタラクションが必要な場合の処理
+        console.log('🖱️ AudioContext suspended, user interaction required for PC audio');
+        
+        // DOM要素にクリックイベントを一時的に追加
+        const enableAudio = async () => {
+          try {
+            if (audioContextRef.current && audioContextRef.current.state === 'suspended') {
+              await audioContextRef.current.resume();
+              console.log('✅ AudioContext resumed after user interaction');
+            }
+          } catch (error) {
+            console.warn('AudioContext resume failed:', error);
+          }
+        };
+
+        // document全体でクリックイベントをリスンし、AudioContextを復帰
+        const clickHandler = () => {
+          enableAudio();
+          document.removeEventListener('click', clickHandler);
+          document.removeEventListener('keydown', clickHandler);
+        };
+        
+        document.addEventListener('click', clickHandler, { once: true });
+        document.addEventListener('keydown', clickHandler, { once: true });
+      }
+      
       // 前の音声を停止
       if (audioRef.current) {
         audioRef.current.pause();
         audioRef.current.src = '';
       }
 
-      // ArrayBufferをBlobに変換（PC/モバイル対応）
-      const mimeType = 'audio/mpeg';
+      // ArrayBufferをBlobに変換（PC環境最適化）
+      const mimeType = 'audio/mpeg'; // PC環境ではMP3が最も互換性が高い
       const blob = new Blob([audioResult.audioContent], { type: mimeType });
       const audioUrl = URL.createObjectURL(blob);
 
       // 新しいAudioオブジェクト作成
-      const audio = new Audio(audioUrl);
+      const audio = new Audio();
       audioRef.current = audio;
 
-      // 共通設定（PC/モバイル対応）
+      // PC環境での設定最適化
       audio.preload = 'auto';
       audio.volume = 1.0;
+      audio.muted = false;
+      
+      // PC環境でのCORS設定
+      audio.crossOrigin = 'anonymous';
+      
+      // PC環境でのmedia sessionサポート（可能な場合）
+      if ('mediaSession' in navigator) {
+        try {
+          navigator.mediaSession.metadata = new MediaMetadata({
+            title: 'Thai Talk Tutor Audio',
+            artist: 'Google Cloud TTS',
+            artwork: []
+          });
+        } catch (mediaSessionError) {
+          console.log('MediaSession not available:', mediaSessionError);
+        }
+      }
+      
+      // 音源を設定（PC環境では明示的に設定）
+      console.log('🔊 Setting audio source for PC:', audioUrl.substring(0, 50) + '...');
+      audio.src = audioUrl;
 
       setState(prev => ({ ...prev, isPlaying: true, error: null }));
 
@@ -187,7 +256,7 @@ export const useGoogleCloudTTS = (config: TTSHookConfig): [TTSState, TTSControls
       return new Promise((resolve, reject) => {
         let hasStarted = false;
 
-        // PC環境ではcanplaythroughイベントを使用
+        // PC環境での音声再生処理を改善
         const playHandler = async () => {
           if (hasStarted) return;
           hasStarted = true;
@@ -196,66 +265,137 @@ export const useGoogleCloudTTS = (config: TTSHookConfig): [TTSState, TTSControls
             // AudioContextの復帰処理（必要な場合のみ）
             if (audioContextRef.current && audioContextRef.current.state === 'suspended') {
               try {
+                console.log('🔊 AudioContext resuming for PC...');
                 await audioContextRef.current.resume();
+                console.log('✅ AudioContext resumed successfully');
               } catch (contextError) {
                 console.warn('AudioContext resume failed:', contextError);
-                // AudioContext の復帰に失敗してもHTML5 Audioで再生を試行
               }
             }
             
+            // PCブラウザでのユーザーインタラクション要件対応
+            console.log('🎵 Starting audio playback for PC...');
+            
+            // 音量設定を確認
+            audio.volume = 1.0;
+            audio.muted = false;
+            
             // 音声再生
-            await audio.play();
+            const playPromise = audio.play();
+            
+            if (playPromise !== undefined) {
+              await playPromise;
+              console.log('✅ Audio playback started successfully on PC');
+            }
+            
             resolve();
           } catch (playError) {
-            console.error('Audio play failed:', playError);
+            console.error('❌ Audio play failed on PC:', playError);
+            
+            // より詳細なエラー処理
+            let errorMessage = 'PCでの音声再生に失敗しました。';
+            
+            if (playError.name === 'NotAllowedError') {
+              errorMessage = 'ブラウザが音声再生をブロックしています。ページをクリックしてから再試行してください。';
+            } else if (playError.name === 'AbortError') {
+              errorMessage = '音声再生が中断されました。再度お試しください。';
+            } else if (playError.name === 'NotSupportedError') {
+              errorMessage = 'この音声形式はブラウザでサポートされていません。';
+            } else {
+              errorMessage += ` エラー詳細: ${playError.message}`;
+            }
+            
             setState(prev => ({
               ...prev,
               isPlaying: false,
-              error: 'PCでの音声再生に失敗しました。ブラウザの音声設定を確認してください。'
+              error: errorMessage
             }));
             reject(playError);
           }
         };
 
-        // 複数のイベントで再生を試行（PC/モバイル互換性向上）
-        audio.addEventListener('canplaythrough', playHandler);
-        audio.addEventListener('loadeddata', playHandler);
+        // PC用の改善されたイベント処理
+        const loadedHandler = () => {
+          console.log('🔄 Audio loaded, attempting to play...');
+          playHandler();
+        };
+
+        const canPlayHandler = () => {
+          console.log('🎶 Audio can play, starting playback...');
+          playHandler();
+        };
+
+        // 複数のイベントで再生を試行（PC互換性向上）
+        audio.addEventListener('loadeddata', loadedHandler, { once: true });
+        audio.addEventListener('canplay', canPlayHandler, { once: true });
+        audio.addEventListener('canplaythrough', playHandler, { once: true });
 
         audio.onended = () => {
+          console.log('🏁 Audio playback ended');
           setState(prev => ({ ...prev, isPlaying: false }));
           URL.revokeObjectURL(audioUrl);
+          // イベントリスナーのクリーンアップ
+          audio.removeEventListener('loadeddata', loadedHandler);
+          audio.removeEventListener('canplay', canPlayHandler);
           audio.removeEventListener('canplaythrough', playHandler);
-          audio.removeEventListener('loadeddata', playHandler);
           if (!hasStarted) resolve();
         };
 
         audio.onerror = (error) => {
-          console.error('Audio error:', error);
+          console.error('❌ Audio error on PC:', error, audio.error);
+          
+          let errorMessage = '音声再生エラー: ';
+          if (audio.error) {
+            switch (audio.error.code) {
+              case MediaError.MEDIA_ERR_ABORTED:
+                errorMessage += '音声の読み込みが中断されました';
+                break;
+              case MediaError.MEDIA_ERR_NETWORK:
+                errorMessage += 'ネットワークエラーが発生しました';
+                break;
+              case MediaError.MEDIA_ERR_DECODE:
+                errorMessage += '音声ファイルの形式に問題があります';
+                break;
+              case MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED:
+                errorMessage += 'サポートされていない音声形式です';
+                break;
+              default:
+                errorMessage += audio.error.message || '不明なエラー';
+            }
+          } else {
+            errorMessage += '不明なエラー';
+          }
+          
           setState(prev => ({
             ...prev,
             isPlaying: false,
-            error: `音声再生エラー: ${audio.error?.message || '不明なエラー'}`
+            error: errorMessage
           }));
           URL.revokeObjectURL(audioUrl);
+          // イベントリスナーのクリーンアップ
+          audio.removeEventListener('loadeddata', loadedHandler);
+          audio.removeEventListener('canplay', canPlayHandler);
           audio.removeEventListener('canplaythrough', playHandler);
-          audio.removeEventListener('loadeddata', playHandler);
           reject(error);
         };
 
-        // 5秒後にタイムアウト
+        // PC環境では長めのタイムアウトを設定（10秒）
         setTimeout(() => {
           if (!hasStarted) {
+            console.warn('⏰ Audio load timeout on PC');
             setState(prev => ({
               ...prev,
               isPlaying: false,
-              error: '音声読み込みがタイムアウトしました'
+              error: '音声読み込みがタイムアウトしました。ネットワーク接続を確認してください。'
             }));
             URL.revokeObjectURL(audioUrl);
+            // イベントリスナーのクリーンアップ
+            audio.removeEventListener('loadeddata', loadedHandler);
+            audio.removeEventListener('canplay', canPlayHandler);
             audio.removeEventListener('canplaythrough', playHandler);
-            audio.removeEventListener('loadeddata', playHandler);
             reject(new Error('Audio load timeout'));
           }
-        }, 5000);
+        }, 10000);
       });
 
     } catch (error) {
