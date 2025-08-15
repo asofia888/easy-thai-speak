@@ -21,9 +21,6 @@ export default defineConfig(({ mode }) => {
           '/api': 'http://localhost:3001'
         }
       },
-      css: {
-        postcss: './postcss.config.js'
-      },
       build: {
         outDir: 'dist',
         sourcemap: false,
