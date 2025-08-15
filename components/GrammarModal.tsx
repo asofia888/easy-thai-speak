@@ -55,7 +55,7 @@ const GrammarModal = ({ grammarPoint, onClose }: GrammarModalProps) => {
                 <div>
                     <h3 className="text-lg font-semibold text-slate-700 mb-2">例文</h3>
                     <div className="space-y-3">
-                        {grammarPoint.examples.map((example, index) => (
+                        {(grammarPoint.examples || []).map((example, index) => (
                             <div key={index} className="bg-slate-50 p-4 rounded-lg flex items-center gap-4">
                                 <div className="flex-grow">
                                     <p className="font-thai text-lg text-slate-800" lang="th">{example.thai}</p>

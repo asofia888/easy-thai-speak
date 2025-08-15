@@ -99,7 +99,7 @@ const ConversationCard = ({ line, isListeningMode }: ConversationCardProps) => {
                 <div className="mt-4 pt-4 border-t border-slate-200">
                     <h4 className="text-sm font-semibold text-slate-500 mb-2">単語</h4>
                     <div className="flex flex-wrap gap-2">
-                        {line.words.map((word, index) => (
+                        {(line.words || []).map((word, index) => (
                             <WordChip key={index} word={word} />
                         ))}
                     </div>

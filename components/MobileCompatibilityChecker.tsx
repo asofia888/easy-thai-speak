@@ -114,7 +114,7 @@ export const MobileCompatibilityChecker: React.FC<MobileCompatibilityCheckerProp
             <h4 className="font-medium mb-2">🎤 タイ語音声 ({deviceInfo.thaiVoices.length}件)</h4>
             {deviceInfo.thaiVoices.length > 0 ? (
               <div className="space-y-1">
-                {deviceInfo.thaiVoices.map((voice, index) => (
+                {(deviceInfo.thaiVoices || []).map((voice, index) => (
                   <div key={index} className="text-xs p-2 bg-gray-50 rounded flex justify-between">
                     <span>{voice.name}</span>
                     <span className={`px-1 rounded ${
@@ -137,7 +137,7 @@ export const MobileCompatibilityChecker: React.FC<MobileCompatibilityCheckerProp
             <div>
               <h4 className="font-medium mb-2">⚠️ 既知の問題</h4>
               <div className="space-y-1">
-                {ttsSupport.issues.map((issue, index) => (
+                {(ttsSupport.issues || []).map((issue, index) => (
                   <div key={index} className="text-xs text-orange-800 bg-orange-50 p-2 rounded">
                     {issue}
                   </div>
