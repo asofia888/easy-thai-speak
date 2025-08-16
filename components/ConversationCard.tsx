@@ -16,16 +16,18 @@ interface ConversationCardProps {
 }
 
 const ConversationCard = ({ line, isListeningMode }: ConversationCardProps) => {
-    const { speak, isSpeaking, cancel } = useAudio();
+    const { speakThai, isCloudTTSPlaying, isCloudTTSLoading, stopCloudTTS } = useAudio();
     const [isCurrentCardSpeaking, setIsCurrentCardSpeaking] = useState(false);
     const [isGrammarModalOpen, setIsGrammarModalOpen] = useState(false);
     const [isTranslationVisible, setIsTranslationVisible] = useState(false);
 
     useEffect(() => {
-        if (!isSpeaking) {
+        // Cloud TTSの状態を監視
+        const isAnyTTSActive = isCloudTTSLoading || isCloudTTSPlaying;
+        if (!isAnyTTSActive) {
             setIsCurrentCardSpeaking(false);
         }
-    }, [isSpeaking]);
+    }, [isCloudTTSLoading, isCloudTTSPlaying]);
 
     useEffect(() => {
         // When the global mode is turned on or off, reset the local visibility state.
@@ -34,13 +36,18 @@ const ConversationCard = ({ line, isListeningMode }: ConversationCardProps) => {
         setIsTranslationVisible(false);
     }, [isListeningMode]);
 
-    const handlePlay = (text: string) => {
-        if (isSpeaking) {
-            cancel();
+    const handlePlay = async (text: string) => {
+        if (isCloudTTSLoading || isCloudTTSPlaying) {
+            stopCloudTTS();
             setIsCurrentCardSpeaking(false);
         } else {
             setIsCurrentCardSpeaking(true);
-            speak(text, 'th-TH', () => setIsCurrentCardSpeaking(false));
+            try {
+                await speakThai(text, () => setIsCurrentCardSpeaking(false));
+            } catch (error) {
+                console.error('❌ Error playing Thai audio:', error);
+                setIsCurrentCardSpeaking(false);
+            }
         }
     };
 

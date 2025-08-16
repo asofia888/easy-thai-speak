@@ -28,7 +28,7 @@ const RoleplayView = () => {
     } = useRoleplay();
 
     const { isSupported, isListening, transcript, startListening, stopListening, resetTranscript } = useSpeechRecognition();
-    const { speak, isSpeaking, cancel } = useAudio();
+    const { speakThai, isCloudTTSPlaying, isCloudTTSLoading, stopCloudTTS } = useAudio();
     const chatEndRef = useRef<HTMLDivElement>(null);
 
     // Effect to redirect if conversation data is missing
@@ -45,7 +45,8 @@ const RoleplayView = () => {
 
     // Main conversation flow logic
     useEffect(() => {
-        if (status !== 'playing' || isSpeaking || !conversation) {
+        const isAnyTTSActive = isCloudTTSLoading || isCloudTTSPlaying;
+        if (status !== 'playing' || isAnyTTSActive || !conversation) {
             return;
         }
 
@@ -57,12 +58,15 @@ const RoleplayView = () => {
 
         // AI's turn
         if (currentLine.speaker !== userRole) {
-            speak(currentLine.thai, 'th-TH', () => {
+            speakThai(currentLine.thai, () => {
                 addAiMessage(currentLine);
+            }).catch(error => {
+                console.error('❌ Error in roleplay speech:', error);
+                addAiMessage(currentLine); // Continue even if speech fails
             });
         }
         // User's turn is handled by user interaction via RoleplayControls
-    }, [status, currentLineIndex, userRole, conversation, speak, isSpeaking, addAiMessage, endRoleplay]);
+    }, [status, currentLineIndex, userRole, conversation, speakThai, isCloudTTSLoading, isCloudTTSPlaying, addAiMessage, endRoleplay]);
 
     // Handle submission of user's speech
     const handleUserSpeechSubmit = useCallback(() => {
@@ -84,12 +88,12 @@ const RoleplayView = () => {
     // Cleanup on unmount
     useEffect(() => {
         return () => {
-            cancel();
+            stopCloudTTS();
             if (isListening) {
                 stopListening();
             }
         };
-    }, [cancel, stopListening, isListening]);
+    }, [stopCloudTTS, stopListening, isListening]);
 
 
     if (!conversation || !Array.isArray(conversation)) return null;
@@ -100,6 +104,7 @@ const RoleplayView = () => {
 
     const currentLine = status === 'playing' ? conversation[currentLineIndex] : null;
     const isUserTurn = status === 'playing' && !!currentLine && currentLine.speaker === userRole;
+    const isAnyTTSActive = isCloudTTSLoading || isCloudTTSPlaying;
 
     const lastMessage = messages.length > 0 ? messages[messages.length - 1] : null;
     // Check if the last message corresponds to the current turn for the user
@@ -133,7 +138,7 @@ const RoleplayView = () => {
                 status={status}
                 isUserTurn={isUserTurn}
                 userHasCompletedTurn={userHasCompletedTurn}
-                isSpeaking={isSpeaking}
+                isSpeaking={isAnyTTSActive}
                 currentLine={currentLine}
                 isMicSupported={isSupported}
                 isListening={isListening}
