@@ -281,6 +281,64 @@ export class GoogleCloudTTSService {
     };
 
     try {
+      // 開発環境では直接Google Cloud TTS APIを呼び出し（テスト用）
+      const isDev = process.env.NODE_ENV === 'development';
+      
+      if (isDev) {
+        console.log('🧪 Development mode: Using direct Google Cloud TTS API call');
+        
+        // Google Cloud TTSの直接呼び出し（テスト用）
+        // 利用可能なタイ語音声を順番に試す
+        const availableVoices = [
+          'th-TH-Standard-A',
+          'th-TH-Standard-B',
+          'th-TH-Wavenet-A',
+          'th-TH-Wavenet-B'
+        ];
+        
+        const voiceName = availableVoices[0]; // まずStandard-Aを試す
+        console.log('🎤 Trying voice:', voiceName);
+        
+        const directPayload = {
+          input: { text },
+          voice: {
+            languageCode: 'th-TH',
+            name: voiceName
+          },
+          audioConfig: {
+            audioEncoding: 'MP3',
+            speakingRate: 1.0,
+            pitch: 0.0,
+            volumeGainDb: 0.0,
+            sampleRateHertz: 24000
+          }
+        };
+        
+        const apiKey = 'AIzaSyBFnFBKyZgpnRvF4HFkI2kfBW0MWkN3-2I';
+        const directEndpoint = `https://texttospeech.googleapis.com/v1/text:synthesize?key=${apiKey}`;
+        
+        const directRes = await fetch(directEndpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(directPayload)
+        });
+        
+        if (!directRes.ok) {
+          const errorText = await directRes.text();
+          console.error('❌ Direct Google Cloud TTS error:', directRes.status, errorText);
+          throw new Error(`Direct TTS API error: ${directRes.status}`);
+        }
+        
+        const directData = await directRes.json();
+        console.log('✅ Direct Google Cloud TTS success');
+        
+        // Base64 audio contentをArrayBufferに変換
+        const audioBase64 = directData.audioContent;
+        const audioBuffer = Uint8Array.from(atob(audioBase64), c => c.charCodeAt(0)).buffer;
+        return audioBuffer;
+      }
+      
+      // 本番環境では通常のAPIエンドポイントを使用
       const res = await fetch('/api/tts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
