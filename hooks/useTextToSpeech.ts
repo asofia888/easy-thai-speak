@@ -17,15 +17,42 @@ export const useTextToSpeech = () => {
                 try {
                     const availableVoices = window.speechSynthesis.getVoices();
                     console.log(`🎤 Found ${availableVoices.length} available voices`);
+                    
+                    // PC環境でのデバッグ情報を追加
+                    if (availableVoices.length > 0) {
+                        console.log('🔍 Available voices:', availableVoices.map(v => ({
+                            name: v.name,
+                            lang: v.lang,
+                            isLocal: v.localService
+                        })));
+                    }
+                    
                     setVoices(availableVoices);
                     
-                    // Set default Thai voice
-                    const thaiVoice = availableVoices.find(voice => voice.lang.startsWith('th'));
+                    // PC環境でのタイ語音声検索を強化
+                    let thaiVoice = availableVoices.find(voice => voice.lang.startsWith('th'));
+                    
+                    // タイ語音声が見つからない場合、代替音声を探す
+                    if (!thaiVoice) {
+                        // 英語音声を代替として使用（PC環境では一般的）
+                        thaiVoice = availableVoices.find(voice => 
+                            voice.lang.startsWith('en') && voice.localService
+                        ) || availableVoices.find(voice => voice.lang.startsWith('en'));
+                        
+                        if (thaiVoice) {
+                            console.log('🔄 Using English voice as fallback for Thai:', thaiVoice.name);
+                        }
+                    }
+                    
                     if (thaiVoice) {
-                        console.log('✅ Thai voice found:', thaiVoice.name);
+                        console.log('✅ Voice selected:', {
+                            name: thaiVoice.name,
+                            lang: thaiVoice.lang,
+                            isLocal: thaiVoice.localService
+                        });
                         setSelectedVoice(thaiVoice);
                     } else {
-                        console.log('⚠️ No Thai voice found, using default');
+                        console.log('⚠️ No suitable voice found, using first available');
                         setSelectedVoice(availableVoices[0] || null);
                     }
                 } catch (error) {
@@ -84,8 +111,19 @@ export const useTextToSpeech = () => {
             try {
                 const utterance = new SpeechSynthesisUtterance(text);
                 utterance.voice = selectedVoice;
-                utterance.lang = lang;
-                utterance.rate = rate;
+                
+                // PC環境での言語設定を最適化
+                if (selectedVoice && selectedVoice.lang.startsWith('en')) {
+                    // 英語音声でタイ語を読む場合の設定調整
+                    utterance.lang = selectedVoice.lang;
+                    utterance.rate = 0.8; // 少し遅めに設定
+                    console.log('🔧 Using English voice for Thai text with adjusted settings');
+                } else {
+                    utterance.lang = lang;
+                    utterance.rate = rate;
+                }
+                
+                // PC環境での音量とピッチ設定を最適化
                 utterance.volume = 1.0;
                 utterance.pitch = 1.0;
 
@@ -140,12 +178,41 @@ export const useTextToSpeech = () => {
                     clearTimeout(timeoutId);
                     if (!hasEnded) {
                         console.log('✅ SpeechSynthesis started successfully');
+                        
+                        // PC環境での音声状態をログ出力
+                        console.log('🔊 PC Audio Status:', {
+                            volume: utterance.volume,
+                            rate: utterance.rate,
+                            pitch: utterance.pitch,
+                            voice: utterance.voice?.name,
+                            lang: utterance.lang
+                        });
+                        
                         hasStarted = true;
                         setIsSpeaking(true);
                     }
                 };
                 
                 console.log('🎤 Starting SpeechSynthesis for:', text.substring(0, 20) + '...');
+                
+                // PC環境での音声再生前チェック
+                if (selectedVoice) {
+                    console.log('🔍 Voice details:', {
+                        name: selectedVoice.name,
+                        lang: selectedVoice.lang,
+                        localService: selectedVoice.localService,
+                        voiceURI: selectedVoice.voiceURI,
+                        default: selectedVoice.default
+                    });
+                }
+                
+                // PC環境でのSpeechSynthesis状態確認
+                console.log('🎛️ SpeechSynthesis status:', {
+                    speaking: window.speechSynthesis.speaking,
+                    pending: window.speechSynthesis.pending,
+                    paused: window.speechSynthesis.paused
+                });
+                
                 window.speechSynthesis.speak(utterance);
                 
             } catch (speechError) {
@@ -169,5 +236,41 @@ export const useTextToSpeech = () => {
         }
     }, [isSupported]);
 
-    return { isSupported, isSpeaking, voices, selectedVoice, setSelectedVoice, rate, setRate, speak, cancel };
+    // PC環境での音声テスト機能
+    const testAudio = useCallback(() => {
+        if (!isSupported) {
+            console.warn('⚠️ SpeechSynthesis not supported for testing');
+            return;
+        }
+
+        console.log('🧪 Testing PC audio output...');
+        
+        // 簡単な英語テストフレーズ
+        const testText = 'Audio test. Can you hear this?';
+        const testUtterance = new SpeechSynthesisUtterance(testText);
+        
+        if (selectedVoice) {
+            testUtterance.voice = selectedVoice;
+        }
+        
+        testUtterance.volume = 1.0;
+        testUtterance.rate = 1.0;
+        testUtterance.pitch = 1.0;
+        
+        testUtterance.onstart = () => {
+            console.log('✅ Audio test started successfully');
+        };
+        
+        testUtterance.onend = () => {
+            console.log('🏁 Audio test completed');
+        };
+        
+        testUtterance.onerror = (e) => {
+            console.error('❌ Audio test failed:', e.error);
+        };
+        
+        window.speechSynthesis.speak(testUtterance);
+    }, [isSupported, selectedVoice]);
+
+    return { isSupported, isSpeaking, voices, selectedVoice, setSelectedVoice, rate, setRate, speak, cancel, testAudio };
 };
