@@ -12,7 +12,6 @@ import { ErrorBoundary, AsyncErrorBoundary } from './components/ErrorBoundary';
 import { FavoritesProvider } from './contexts/FavoritesContext';
 import { AudioProvider } from './contexts/AudioContext';
 import SettingsModal from './components/SettingsModal';
-import TTSDemoPage from './components/TTSDemoPage';
 
 function App() {
     const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
@@ -60,9 +59,6 @@ function App() {
                                             <Route path="/conversation/:topicId" element={<ConversationView />} />
                                             <Route path="/favorites" element={<FavoritesView />} />
                                             <Route path="/roleplay" element={<RoleplayView />} />
-                                            <Route path="/tts-demo" element={
-                                                <TTSDemoPage />
-                                            } />
                                             <Route path="/legal" element={<LegalView />} />
                                             <Route path="*" element={<NotFoundView />} />
                                         </Routes>
