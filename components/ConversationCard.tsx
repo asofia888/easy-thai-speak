@@ -16,18 +16,17 @@ interface ConversationCardProps {
 }
 
 const ConversationCard = ({ line, isListeningMode }: ConversationCardProps) => {
-    const { speakThai, isCloudTTSPlaying, isCloudTTSLoading, stopCloudTTS } = useAudio();
+    const { speakThai, isSpeaking, cancel } = useAudio();
     const [isCurrentCardSpeaking, setIsCurrentCardSpeaking] = useState(false);
     const [isGrammarModalOpen, setIsGrammarModalOpen] = useState(false);
     const [isTranslationVisible, setIsTranslationVisible] = useState(false);
 
     useEffect(() => {
-        // Cloud TTSの状態を監視
-        const isAnyTTSActive = isCloudTTSLoading || isCloudTTSPlaying;
-        if (!isAnyTTSActive) {
+        // SpeechSynthesisの状態を監視
+        if (!isSpeaking) {
             setIsCurrentCardSpeaking(false);
         }
-    }, [isCloudTTSLoading, isCloudTTSPlaying]);
+    }, [isSpeaking]);
 
     useEffect(() => {
         // When the global mode is turned on or off, reset the local visibility state.
@@ -36,18 +35,13 @@ const ConversationCard = ({ line, isListeningMode }: ConversationCardProps) => {
         setIsTranslationVisible(false);
     }, [isListeningMode]);
 
-    const handlePlay = async (text: string) => {
-        if (isCloudTTSLoading || isCloudTTSPlaying) {
-            stopCloudTTS();
+    const handlePlay = (text: string) => {
+        if (isSpeaking) {
+            cancel();
             setIsCurrentCardSpeaking(false);
         } else {
             setIsCurrentCardSpeaking(true);
-            try {
-                await speakThai(text, () => setIsCurrentCardSpeaking(false));
-            } catch (error) {
-                console.error('❌ Error playing Thai audio:', error);
-                setIsCurrentCardSpeaking(false);
-            }
+            speakThai(text, () => setIsCurrentCardSpeaking(false));
         }
     };
 
@@ -90,7 +84,7 @@ const ConversationCard = ({ line, isListeningMode }: ConversationCardProps) => {
                             className="flex-shrink-0 h-12 w-12 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center hover:bg-blue-200 transition-colors"
                             aria-label={`「${line.thai}」を再生`}
                         >
-                            {(isCloudTTSLoading || isCloudTTSPlaying) && isCurrentCardSpeaking ? <LoadingSpinner className="h-6 w-6" /> : <PlayIcon className="h-8 w-8" />}
+                            {isSpeaking && isCurrentCardSpeaking ? <LoadingSpinner className="h-6 w-6" /> : <PlayIcon className="h-8 w-8" />}
                         </button>
                         {line.grammarPoint && (
                              <button
