@@ -18,35 +18,16 @@ export const useTextToSpeech = () => {
                     const availableVoices = window.speechSynthesis.getVoices();
                     console.log(`🎤 Found ${availableVoices.length} available voices`);
                     
-                    // PC環境でのデバッグ情報を追加
-                    if (availableVoices.length > 0) {
-                        console.log('🔍 Available voices:', availableVoices.map(v => ({
-                            name: v.name,
-                            lang: v.lang,
-                            isLocal: v.localService
-                        })));
-                    }
-                    
                     setVoices(availableVoices);
                     
-                    // PC環境でのタイ語音声検索を強化
-                    let thaiVoice = availableVoices.find(voice => voice.lang.startsWith('th'));
-                    
-                    // タイ語音声が見つからない場合の処理
-                    if (!thaiVoice) {
-                        console.log('⚠️ No Thai voice found. Browser TTS will be used only for settings/testing.');
-                    }
+                    // タイ語音声を検索
+                    const thaiVoice = availableVoices.find(voice => voice.lang.startsWith('th'));
                     
                     if (thaiVoice) {
-                        console.log('✅ Thai voice selected:', {
-                            name: thaiVoice.name,
-                            lang: thaiVoice.lang,
-                            isLocal: thaiVoice.localService
-                        });
+                        console.log('✅ Thai voice found:', thaiVoice.name);
                         setSelectedVoice(thaiVoice);
                     } else {
-                        console.log('⚠️ No Thai voice found - browser TTS unavailable for Thai');
-                        // タイ語音声がない場合はnullを設定（Google Cloud TTSを優先使用）
+                        console.log('⚠️ No Thai voice available in browser');
                         setSelectedVoice(null);
                     }
                 } catch (error) {
@@ -85,14 +66,11 @@ export const useTextToSpeech = () => {
             return;
         }
         
-        // 既存の音声を安全に停止
+        // 既存の音声を停止
         try {
             if (window.speechSynthesis.speaking || window.speechSynthesis.pending) {
                 window.speechSynthesis.cancel();
-                // 短い遅延でキャンセル処理を確実に
-                setTimeout(() => {
-                    proceedWithSpeech();
-                }, 100);
+                setTimeout(() => proceedWithSpeech(), 100);
             } else {
                 proceedWithSpeech();
             }
@@ -106,11 +84,8 @@ export const useTextToSpeech = () => {
                 const utterance = new SpeechSynthesisUtterance(text);
                 utterance.voice = selectedVoice;
                 
-                // 言語設定
                 utterance.lang = lang;
                 utterance.rate = rate;
-                
-                // PC環境での音量とピッチ設定を最適化
                 utterance.volume = 1.0;
                 utterance.pitch = 1.0;
 
