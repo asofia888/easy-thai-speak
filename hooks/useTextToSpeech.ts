@@ -32,28 +32,22 @@ export const useTextToSpeech = () => {
                     // PC環境でのタイ語音声検索を強化
                     let thaiVoice = availableVoices.find(voice => voice.lang.startsWith('th'));
                     
-                    // タイ語音声が見つからない場合、代替音声を探す
+                    // タイ語音声が見つからない場合の処理
                     if (!thaiVoice) {
-                        // 英語音声を代替として使用（PC環境では一般的）
-                        thaiVoice = availableVoices.find(voice => 
-                            voice.lang.startsWith('en') && voice.localService
-                        ) || availableVoices.find(voice => voice.lang.startsWith('en'));
-                        
-                        if (thaiVoice) {
-                            console.log('🔄 Using English voice as fallback for Thai:', thaiVoice.name);
-                        }
+                        console.log('⚠️ No Thai voice found. Browser TTS will be used only for settings/testing.');
                     }
                     
                     if (thaiVoice) {
-                        console.log('✅ Voice selected:', {
+                        console.log('✅ Thai voice selected:', {
                             name: thaiVoice.name,
                             lang: thaiVoice.lang,
                             isLocal: thaiVoice.localService
                         });
                         setSelectedVoice(thaiVoice);
                     } else {
-                        console.log('⚠️ No suitable voice found, using first available');
-                        setSelectedVoice(availableVoices[0] || null);
+                        console.log('⚠️ No Thai voice found - browser TTS unavailable for Thai');
+                        // タイ語音声がない場合はnullを設定（Google Cloud TTSを優先使用）
+                        setSelectedVoice(null);
                     }
                 } catch (error) {
                     console.error('Error loading voices:', error);
@@ -112,16 +106,9 @@ export const useTextToSpeech = () => {
                 const utterance = new SpeechSynthesisUtterance(text);
                 utterance.voice = selectedVoice;
                 
-                // PC環境での言語設定を最適化
-                if (selectedVoice && selectedVoice.lang.startsWith('en')) {
-                    // 英語音声でタイ語を読む場合の設定調整
-                    utterance.lang = selectedVoice.lang;
-                    utterance.rate = 0.8; // 少し遅めに設定
-                    console.log('🔧 Using English voice for Thai text with adjusted settings');
-                } else {
-                    utterance.lang = lang;
-                    utterance.rate = rate;
-                }
+                // 言語設定
+                utterance.lang = lang;
+                utterance.rate = rate;
                 
                 // PC環境での音量とピッチ設定を最適化
                 utterance.volume = 1.0;

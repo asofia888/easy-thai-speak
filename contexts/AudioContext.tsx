@@ -54,14 +54,12 @@ export const AudioProvider = ({ children }: { children: ReactNode }) => {
                 await cloudTTSControls.play(audioResult);
                 onEnd?.();
             } else {
-                console.warn('⚠️ Cloud TTS failed, falling back to browser TTS');
-                // フォールバック: ブラウザのTTSを使用
-                tts.speak(thaiText, 'th-TH', onEnd);
+                console.error('❌ Cloud TTS synthesis failed - no audio result');
+                throw new Error('Google Cloud TTS synthesis failed');
             }
         } catch (error) {
             console.error('❌ Cloud TTS error:', error);
-            // エラー時もフォールバック
-            tts.speak(thaiText, 'th-TH', onEnd);
+            throw error; // エラーを再スローして呼び出し元で処理
         }
     };
     
