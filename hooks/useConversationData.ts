@@ -53,13 +53,12 @@ export const useConversationData = (topicId: string | undefined, topicTitle: str
                 }
             ];
             
-            // APIエラーを避けるため、まずサンプルデータを表示
-            if (!isComponentMounted) return;
-            setConversation(sampleConversation);
-            setIsLoading(false);
-            
-            console.log('📝 Using sample conversation data for Google Cloud TTS testing');
-            return;
+            // デバッグ用サンプルデータ（開発時のみ）
+            // if (!isComponentMounted) return;
+            // setConversation(sampleConversation);
+            // setIsLoading(false);
+            // console.log('📝 Using sample conversation data');
+            // return;
 
             // 1. Try to load from cache first for instant UI (skip for custom topics)
             let hasCache = false;
