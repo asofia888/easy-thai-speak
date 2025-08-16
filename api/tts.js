@@ -2,6 +2,7 @@
  * Google Cloud TTS API エンドポイント
  * タイ語テキストを高品質な音声に変換
  */
+import { TextToSpeechClient } from '@google-cloud/text-to-speech';
 
 export default async function handler(req, res) {
   // CORSヘッダーの設定
@@ -31,28 +32,20 @@ export default async function handler(req, res) {
       });
     }
 
-    // Google Cloud TTS API の設定
-    const apiKey = process.env.GOOGLE_CLOUD_API_KEY;
-    
-    console.log('🔍 Environment check:', {
-      hasApiKey: !!apiKey,
-      nodeEnv: process.env.NODE_ENV,
-      apiKeyPrefix: apiKey ? apiKey.substring(0, 10) + '...' : 'undefined'
-    });
-    
-    if (!apiKey) {
-      console.error('❌ Google Cloud API key not found');
-      console.error('Available env vars:', Object.keys(process.env).filter(key => key.includes('GOOGLE')));
-      return res.status(500).json({ 
-        error: 'TTS service configuration error',
-        details: 'Google Cloud API key not configured'
-      });
-    }
+    // Google Cloud TTSクライアントの初期化
+    const ttsClient = new TextToSpeechClient();
 
     // Google Cloud TTS API リクエストペイロード
-    // タイ語のサポートされている音声名を使用
-    const voiceName = voice === 'chirp3hd-a' ? 'th-TH-Standard-A' : 'th-TH-Standard-B';
-    
+    const voiceMapping = {
+      'chirp3hd-a': 'th-TH-Chirp3-HD-Achernar',
+      'chirp3hd-c': 'th-TH-Chirp3-HD-Bellatrix',
+      'neural2-a': 'th-TH-Standard-A',
+      'neural2-c': 'th-TH-Standard-B',
+      'standard-a': 'th-TH-Standard-A', // fallback
+      'standard-b': 'th-TH-Standard-B'  // fallback
+    };
+    const voiceName = voiceMapping[voice] || 'th-TH-Chirp3-HD-Achernar'; // デフォルトはChirp3HD
+
     const ttsPayload = {
       input: { text },
       voice: {
@@ -64,7 +57,7 @@ export default async function handler(req, res) {
         speakingRate: options.rate || 1.0,
         pitch: options.pitch || 0.0,
         volumeGainDb: options.volumeGain || 0.0,
-        sampleRateHertz: quality === 'premium' ? 24000 : 16000
+        sampleRateHertz: quality === 'premium' ? 48000 : 24000 // Chirp3HDは48kHz, Standardは24kHz
       }
     };
     
@@ -75,51 +68,10 @@ export default async function handler(req, res) {
       audioEncoding: 'MP3'
     });
 
-    console.log('🔊 Calling Google Cloud TTS API for:', text.substring(0, 30) + '...');
-
-    // Google Cloud TTS API 呼び出し（APIキー認証）
-    const endpoint = `https://texttospeech.googleapis.com/v1/text:synthesize?key=${apiKey}`;
+    // Google Cloud TTS API 呼び出し
+    const [response] = await ttsClient.synthesizeSpeech(ttsPayload);
     
-    console.log('🌐 API Endpoint:', endpoint.replace(apiKey, '***'));
-    
-    const response = await fetch(endpoint, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(ttsPayload)
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('❌ Google Cloud TTS API error:', {
-        status: response.status,
-        statusText: response.statusText,
-        errorText,
-        url: response.url
-      });
-      
-      let errorMessage = 'Google Cloud TTS API error';
-      if (response.status === 400) {
-        errorMessage = 'Invalid request to TTS API';
-      } else if (response.status === 401) {
-        errorMessage = 'Unauthorized - Check API key';
-      } else if (response.status === 403) {
-        errorMessage = 'Forbidden - API key may not have TTS permissions';
-      } else if (response.status === 429) {
-        errorMessage = 'Too many requests - Rate limit exceeded';
-      }
-      
-      return res.status(response.status).json({ 
-        error: errorMessage,
-        details: errorText,
-        status: response.status
-      });
-    }
-
-    const data = await response.json();
-    
-    if (!data.audioContent) {
+    if (!response.audioContent) {
       console.error('❌ No audio content in TTS response');
       return res.status(500).json({ 
         error: 'Invalid TTS response: no audio content' 
@@ -130,7 +82,7 @@ export default async function handler(req, res) {
 
     // Base64エンコードされた音声データを返す
     return res.status(200).json({
-      audioContent: data.audioContent,
+      audioContent: response.audioContent.toString('base64'),
       metadata: {
         voice: ttsPayload.voice,
         audioConfig: ttsPayload.audioConfig,
@@ -140,8 +92,23 @@ export default async function handler(req, res) {
 
   } catch (error) {
     console.error('❌ TTS endpoint error:', error);
-    return res.status(500).json({ 
-      error: 'Internal server error',
+    
+    let errorMessage = 'Internal server error';
+    let statusCode = 500;
+
+    if (error.code === 7) {
+      errorMessage = 'Permission denied. Check API key and permissions.';
+      statusCode = 403;
+    } else if (error.code === 3) {
+      errorMessage = 'Invalid argument. Check request payload.';
+      statusCode = 400;
+    } else if (error.code === 5) {
+      errorMessage = 'Authentication failure. Check credentials.';
+      statusCode = 401;
+    }
+
+    return res.status(statusCode).json({ 
+      error: errorMessage,
       details: error.message 
     });
   }
