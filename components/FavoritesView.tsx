@@ -72,7 +72,7 @@ const FavoritesView = () => {
                                         <div className="col-span-2">次の復習</div>
                                         <div className="col-span-1 text-right"></div>
                                     </div>
-                                    {(allWords || []).map((word) => (
+                                    {Array.isArray(allWords) && allWords.map((word) => (
                                         <LearnedWordListItem key={word.thai} word={word} />
                                     ))}
                                 </div>
