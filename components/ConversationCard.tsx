@@ -90,7 +90,7 @@ const ConversationCard = ({ line, isListeningMode }: ConversationCardProps) => {
                             className="flex-shrink-0 h-12 w-12 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center hover:bg-blue-200 transition-colors"
                             aria-label={`「${line.thai}」を再生`}
                         >
-                            {isSpeaking && isCurrentCardSpeaking ? <LoadingSpinner className="h-6 w-6" /> : <PlayIcon className="h-8 w-8" />}
+                            {(isCloudTTSLoading || isCloudTTSPlaying) && isCurrentCardSpeaking ? <LoadingSpinner className="h-6 w-6" /> : <PlayIcon className="h-8 w-8" />}
                         </button>
                         {line.grammarPoint && (
                              <button
