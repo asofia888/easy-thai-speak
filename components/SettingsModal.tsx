@@ -28,11 +28,9 @@ const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
         setSelectedVoice(voice);
     };
 
-    // PC環境用に使用可能な音声を拡張（タイ語 + 英語フォールバック）
+    // タイ語音声のみを表示（Google Cloud TTSがメイン音声システム）
     const thaiVoices = voices.filter(v => v.lang.startsWith('th'));
-    const availableVoices = thaiVoices.length > 0 
-        ? thaiVoices 
-        : voices.filter(v => v.lang.startsWith('en')); // タイ語がない場合は英語音声を表示
+    const availableVoices = thaiVoices; // タイ語音声のみ
 
     if (!isOpen) return null;
 
@@ -122,14 +120,14 @@ const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
                                                 </option>
                                             ))
                                         ) : (
-                                            <option disabled>利用可能な音声がありません</option>
+                                            <option disabled>タイ語音声がありません（Google Cloud TTSを使用）</option>
                                         )}
                                     </select>
                                     <p className="text-xs text-slate-500 mt-1">
-                                        音声の種類は、お使いのブラウザやOSによって異なります。
-                                        {thaiVoices.length === 0 && availableVoices.length > 0 && (
-                                            <span className="text-orange-600">
-                                                <br />⚠️ タイ語音声が見つからないため、英語音声を代替として使用します。
+                                        ブラウザTTSは設定とテスト用です。メインの音声はGoogle Cloud TTSを使用します。
+                                        {thaiVoices.length === 0 && (
+                                            <span className="text-blue-600">
+                                                <br />ℹ️ ブラウザにタイ語音声がありませんが、Google Cloud TTSで高品質なタイ語音声を提供します。
                                             </span>
                                         )}
                                     </p>
