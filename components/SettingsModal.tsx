@@ -15,7 +15,8 @@ const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
         selectedVoice, 
         setSelectedVoice, 
         rate, 
-        setRate 
+        setRate,
+        testAudio
     } = useAudio();
 
     const handleTTSSettingsChange = (settings: GoogleCloudTTSConfig) => {
@@ -27,7 +28,11 @@ const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
         setSelectedVoice(voice);
     };
 
+    // PC環境用に使用可能な音声を拡張（タイ語 + 英語フォールバック）
     const thaiVoices = voices.filter(v => v.lang.startsWith('th'));
+    const availableVoices = thaiVoices.length > 0 
+        ? thaiVoices 
+        : voices.filter(v => v.lang.startsWith('en')); // タイ語がない場合は英語音声を表示
 
     if (!isOpen) return null;
 
@@ -110,18 +115,34 @@ const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
                                         onChange={handleVoiceChange}
                                         className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
                                     >
-                                        {thaiVoices.length > 0 ? (
-                                            (thaiVoices || []).map(voice => (
+                                        {availableVoices.length > 0 ? (
+                                            Array.isArray(availableVoices) && availableVoices.map(voice => (
                                                 <option key={voice.name} value={voice.name}>
                                                     {voice.name} ({voice.lang})
                                                 </option>
                                             ))
                                         ) : (
-                                            <option disabled>利用可能なタイ語の音声がありません</option>
+                                            <option disabled>利用可能な音声がありません</option>
                                         )}
                                     </select>
                                     <p className="text-xs text-slate-500 mt-1">
                                         音声の種類は、お使いのブラウザやOSによって異なります。
+                                        {thaiVoices.length === 0 && availableVoices.length > 0 && (
+                                            <span className="text-orange-600">
+                                                <br />⚠️ タイ語音声が見つからないため、英語音声を代替として使用します。
+                                            </span>
+                                        )}
+                                    </p>
+                                    
+                                    {/* PC環境での音声テストボタン */}
+                                    <button
+                                        onClick={() => testAudio?.()}
+                                        className="mt-2 w-full px-3 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                                    >
+                                        🧪 音声テスト (PC用)
+                                    </button>
+                                    <p className="text-xs text-slate-500 mt-1">
+                                        PC環境で音声が聞こえない場合は、このボタンでテストしてください。コンソールログも確認してください。
                                     </p>
                                 </div>
                                 

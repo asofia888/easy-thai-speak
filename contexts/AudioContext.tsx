@@ -12,6 +12,7 @@ interface AudioContextType {
     setRate: (rate: number) => void;
     speak: (text: string, lang: string, onEnd?: () => void) => void;
     cancel: () => void;
+    testAudio: () => void;
 }
 
 const AudioContext = createContext<AudioContextType | undefined>(undefined);
