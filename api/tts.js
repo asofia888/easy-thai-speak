@@ -51,7 +51,7 @@ export default async function handler(req, res) {
 
     // Google Cloud TTS API リクエストペイロード
     // タイ語のサポートされている音声名を使用
-    const voiceName = voice === 'chirp3hd-a' ? 'th-TH-Neural2-A' : 'th-TH-Neural2-C';
+    const voiceName = voice === 'chirp3hd-a' ? 'th-TH-Standard-A' : 'th-TH-Standard-B';
     
     const ttsPayload = {
       input: { text },

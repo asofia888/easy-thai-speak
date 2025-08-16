@@ -22,6 +22,44 @@ export const useConversationData = (topicId: string | undefined, topicTitle: str
         const loadConversation = async () => {
             // Reset state for new topic
             setError(null);
+            
+            // サンプル会話データ（Google Cloud TTSテスト用）
+            const sampleConversation: ConversationLine[] = [
+                {
+                    speaker: "田中",
+                    thai: "สวัสดีครับ คุณชื่ออะไรครับ",
+                    pronunciation: "サワッディー クラップ クン チュー アライ クラップ",
+                    japanese: "こんにちは、お名前は何ですか？",
+                    words: [
+                        { thai: "สวัสดี", pronunciation: "サワッディー", japanese: "こんにちは" },
+                        { thai: "ครับ", pronunciation: "クラップ", japanese: "（男性の丁寧語）" },
+                        { thai: "คุณ", pronunciation: "クン", japanese: "あなた" },
+                        { thai: "ชื่อ", pronunciation: "チュー", japanese: "名前" },
+                        { thai: "อะไร", pronunciation: "アライ", japanese: "何" }
+                    ]
+                },
+                {
+                    speaker: "ソムチャイ",
+                    thai: "ผมชื่อ สมชาย ครับ แล้วคุณล่ะครับ",
+                    pronunciation: "ポム チュー ソムチャイ クラップ レーオ クン ラ クラップ",
+                    japanese: "私の名前はソムチャイです。あなたはどうですか？",
+                    words: [
+                        { thai: "ผม", pronunciation: "ポム", japanese: "私（男性）" },
+                        { thai: "ชื่อ", pronunciation: "チュー", japanese: "名前" },
+                        { thai: "สมชาย", pronunciation: "ソムチャイ", japanese: "ソムチャイ（男性名）" },
+                        { thai: "แล้ว", pronunciation: "レーオ", japanese: "そして、～したら" },
+                        { thai: "ล่ะ", pronunciation: "ラ", japanese: "～はどう？" }
+                    ]
+                }
+            ];
+            
+            // APIエラーを避けるため、まずサンプルデータを表示
+            if (!isComponentMounted) return;
+            setConversation(sampleConversation);
+            setIsLoading(false);
+            
+            console.log('📝 Using sample conversation data for Google Cloud TTS testing');
+            return;
 
             // 1. Try to load from cache first for instant UI (skip for custom topics)
             let hasCache = false;
