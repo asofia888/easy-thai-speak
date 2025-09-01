@@ -70,7 +70,7 @@ function App() {
                                         <Link to="/legal" className="hover:underline hover:text-slate-700 transition-colors">プライバシーポリシー</Link>
                                         <Link to="/legal" className="hover:underline hover:text-slate-700 transition-colors">免責事項</Link>
                                     </div>
-                                    <p>© 2024 Thai Talk Tutor. All rights reserved.</p>
+                                    <p>© 2024 Easy Thai Speak. All rights reserved.</p>
                                 </footer>
                             </div>
                             

@@ -1,6 +1,6 @@
 {
-  "name": "Thai Talk Tutor",
-  "short_name": "Thai Tutor",
+  "name": "Easy Thai Speak",
+  "short_name": "Easy Thai",
   "description": "AIと一緒に学ぶ、リアルなタイ語会話。ロールプレイや発音練習を通じて、実践的な会話力を身につけよう。",
   "start_url": "/",
   "display": "standalone",
