@@ -1,15 +1,22 @@
 
+import { LearningLevel, ThaiTone, BaseComponentProps, InteractiveProps } from './types/common';
+
 export interface Word {
     thai: string;
     pronunciation: string;
     japanese: string;
+    tone?: ThaiTone;
+    partOfSpeech?: 'noun' | 'verb' | 'adjective' | 'adverb' | 'preposition' | 'conjunction' | 'particle';
 }
 
 export interface FavoriteWord extends Word {
+    id: string; // Added for better tracking
     repetition: number;
     interval: number;
     easeFactor: number;
     nextReviewDate: string; // ISO string for the date
+    addedAt: string; // ISO string for when it was favorited
+    lastReviewed?: string; // ISO string for last review
 }
 
 export interface ExampleSentence {
@@ -37,7 +44,10 @@ export interface ConversationTopic {
     id: string;
     title: string;
     description: string;
-    level: 'Beginner' | 'Intermediate' | 'Advanced';
+    level: LearningLevel;
+    tags?: string[];
+    estimatedDuration?: number; // in minutes
+    difficulty?: number; // 1-5 scale
 }
 
 export interface TopicCategory {
@@ -57,18 +67,46 @@ export interface Feedback {
     is_correct: boolean;
 }
 
-// Added for RoleplayView refactoring
+// Enhanced Message interface for roleplay functionality
 export interface Message {
-    id: string; // Added for unique identification
+    id: string;
     speaker: string;
-    text: string; // For user, this is the transcript. For AI, it's the thai phrase.
+    text: string; // For user: transcript; For AI: thai phrase
     isUser: boolean;
-    pronunciation?: string; // For AI
+    timestamp: Date;
+    pronunciation?: string; // For AI messages
     
-    // For user messages
+    // User message specific fields
     correctPhrase?: string;
     correctPronunciation?: string;
     feedback?: Feedback;
     isFeedbackLoading?: boolean;
     feedbackError?: string;
+    
+    // Audio related
+    audioUrl?: string;
+    audioDuration?: number;
 }
+
+// Component Props Types (utilizing common types)
+export interface ConversationCardProps extends BaseComponentProps {
+    line: ConversationLine;
+    isListeningMode: boolean;
+}
+
+export interface WordChipProps extends BaseComponentProps, InteractiveProps {
+    word: Word;
+    isSelected?: boolean;
+    showPronunciation?: boolean;
+}
+
+export interface FlashcardProps extends BaseComponentProps, InteractiveProps {
+    word: FavoriteWord;
+    showAnswer: boolean;
+    onAnswer: (difficulty: 'easy' | 'medium' | 'hard') => void;
+}
+
+// Export commonly used union types
+export type ComponentSize = 'small' | 'medium' | 'large';
+export type ComponentVariant = 'primary' | 'secondary' | 'success' | 'warning' | 'error';
+export type LoadingState = 'idle' | 'loading' | 'success' | 'error';
