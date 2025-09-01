@@ -14,7 +14,7 @@ const Header = ({ onOpenSettings }: { onOpenSettings: () => void }) => {
                 <Link to="/" className="flex items-center gap-3 group">
                     <LogoIcon className="h-10 w-10 transition-transform duration-300 group-hover:scale-110" />
                     <span className="text-2xl font-bold text-slate-800 hidden sm:block group-hover:text-blue-600 transition-colors">
-                        Thai Talk Tutor
+                        Easy Thai Speak
                     </span>
                 </Link>
                 <nav className="flex items-center gap-2">

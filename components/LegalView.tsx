@@ -12,7 +12,7 @@ const LegalView = () => {
             <section id="privacy-policy" className="mb-12">
                 <h2 className="text-2xl font-bold text-slate-700 mb-4">プライバシーポリシー</h2>
                 <div className="space-y-4 text-slate-600">
-                    <p>本プライバシーポリシーは、「Thai Talk Tutor」（以下、「本サービス」といいます）の利用において、利用者の個人情報もしくはそれに準ずる情報を取り扱う際に、本サービスが遵守する方針を示すものです。</p>
+                    <p>本プライバシーポリシーは、「Easy Thai Speak」（以下、「本サービス」といいます）の利用において、利用者の個人情報もしくはそれに準ずる情報を取り扱う際に、本サービスが遵守する方針を示すものです。</p>
                     
                     <h3 className="text-lg font-semibold text-slate-700 pt-2">1. 収集する情報と利用目的</h3>
                     <p>本サービスでは、以下の情報を収集し、それぞれの目的のために利用します。</p>
