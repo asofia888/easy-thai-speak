@@ -2,13 +2,9 @@
 import React, { useState, useEffect } from 'react';
 import { ConversationLine } from '../types';
 import WordChip from './WordChip';
-import PlayIcon from './icons/PlayIcon';
-import LoadingSpinner from './icons/LoadingSpinner';
-import LightbulbIcon from './icons/LightbulbIcon';
+import Icon from './common/Icon';
 import GrammarModal from './GrammarModal';
 import { useAudio } from '../contexts/AudioContext';
-import EyeIcon from './icons/EyeIcon';
-import EyeOffIcon from './icons/EyeOffIcon';
 
 interface ConversationCardProps {
     line: ConversationLine;
@@ -63,13 +59,13 @@ const ConversationCard = ({ line, isListeningMode }: ConversationCardProps) => {
                                     <>
                                         <p className="text-md text-slate-600">{line.japanese}</p>
                                         <button onClick={() => setIsTranslationVisible(false)} className="text-xs font-semibold text-slate-500 hover:text-slate-700 mt-1 flex items-center gap-1">
-                                            <EyeOffIcon className="w-3 h-3" />
+                                            <Icon name="eye-off" className="w-3 h-3" />
                                             訳を隠す
                                         </button>
                                     </>
                                 ) : (
                                     <button onClick={() => setIsTranslationVisible(true)} className="text-sm font-semibold text-blue-600 hover:text-blue-800 flex items-center gap-1">
-                                        <EyeIcon className="w-4 h-4" />
+                                        <Icon name="eye" className="w-4 h-4" />
                                         訳を表示
                                     </button>
                                 )}
@@ -84,7 +80,7 @@ const ConversationCard = ({ line, isListeningMode }: ConversationCardProps) => {
                             className="flex-shrink-0 h-12 w-12 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center hover:bg-blue-200 transition-colors"
                             aria-label={`「${line.thai}」を再生`}
                         >
-                            {isSpeaking && isCurrentCardSpeaking ? <LoadingSpinner className="h-6 w-6" /> : <PlayIcon className="h-8 w-8" />}
+                            {isSpeaking && isCurrentCardSpeaking ? <Icon name="loading" className="h-6 w-6 animate-spin" /> : <Icon name="play" className="h-8 w-8" />}
                         </button>
                         {line.grammarPoint && (
                              <button
@@ -92,7 +88,7 @@ const ConversationCard = ({ line, isListeningMode }: ConversationCardProps) => {
                                 className="flex-shrink-0 h-12 w-12 rounded-full bg-yellow-100 text-yellow-700 flex items-center justify-center hover:bg-yellow-200 transition-colors"
                                 aria-label="文法解説を見る"
                             >
-                                <LightbulbIcon className="h-6 w-6" />
+                                <Icon name="lightbulb" className="h-6 w-6" />
                             </button>
                         )}
                     </div>
@@ -116,4 +112,12 @@ const ConversationCard = ({ line, isListeningMode }: ConversationCardProps) => {
     );
 };
 
-export default ConversationCard;
+// Memoize component to prevent unnecessary re-renders
+export default React.memo(ConversationCard, (prevProps, nextProps) => {
+    // Only re-render if the line content or listening mode changes
+    return (
+        prevProps.line.thai === nextProps.line.thai &&
+        prevProps.line.japanese === nextProps.line.japanese &&
+        prevProps.isListeningMode === nextProps.isListeningMode
+    );
+});

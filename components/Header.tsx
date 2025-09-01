@@ -1,8 +1,7 @@
 import React from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { useFavorites } from '../contexts/FavoritesContext';
-import BookOpenIcon from './icons/BookOpenIcon';
-import SettingsIcon from './icons/SettingsIcon';
+import Icon from './common/Icon';
 import LogoIcon from './icons/LogoIcon';
 
 const Header = ({ onOpenSettings }: { onOpenSettings: () => void }) => {
@@ -28,7 +27,7 @@ const Header = ({ onOpenSettings }: { onOpenSettings: () => void }) => {
                             }`
                         }
                     >
-                        <BookOpenIcon className="h-5 w-5" />
+                        <Icon name="book-open" className="h-5 w-5" />
                         <span>単語帳</span>
                         {reviewQueueCount > 0 && (
                              <span className="absolute -top-2 -right-2 flex h-6 w-6 items-center justify-center rounded-full bg-yellow-400 text-xs font-bold text-slate-800 animate-pulse">
@@ -41,7 +40,7 @@ const Header = ({ onOpenSettings }: { onOpenSettings: () => void }) => {
                         className="p-2 rounded-full text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors"
                         aria-label="音声設定を開く"
                     >
-                        <SettingsIcon className="h-6 w-6" />
+                        <Icon name="settings" className="h-6 w-6" />
                     </button>
                 </nav>
             </div>
