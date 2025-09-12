@@ -110,8 +110,8 @@ describe('TopicSelection', () => {
     expect(screen.getByText('上級者向け')).toBeInTheDocument();
 
     // Check for some topic cards
-    expect(screen.getByText('レストランでの注文')).toBeInTheDocument();
-    expect(screen.getByText('道案内')).toBeInTheDocument();
+    expect(screen.getByText('レストランでの基本会話')).toBeInTheDocument();
+    expect(screen.getByText('場所と移動')).toBeInTheDocument();
   });
 
   it('navigates to conversation when topic card is clicked', () => {
@@ -121,18 +121,18 @@ describe('TopicSelection', () => {
       </TestWrapper>
     );
 
-    const topicCard = screen.getByText('レストランでの注文');
+    const topicCard = screen.getByText('レストランでの基本会話');
     fireEvent.click(topicCard.closest('button')!);
 
     expect(mockNavigate).toHaveBeenCalledWith(
-      '/conversation/restaurant-ordering',
-      { state: { topicTitle: 'レストランでの注文' } }
+      '/conversation/b-restaurant-basics',
+      { state: { topicTitle: 'レストランでの基本会話' } }
     );
   });
 
   it('shows cached indicator for cached conversations', () => {
     mockLocalStorage.getItem.mockImplementation((key) => {
-      if (key === 'conversation-restaurant-ordering') {
+      if (key === 'conversation-b-restaurant-basics') {
         return JSON.stringify({ some: 'data' });
       }
       return null;
@@ -267,7 +267,7 @@ describe('TopicSelection', () => {
       </TestWrapper>
     );
 
-    expect(screen.getAllByText('Beginner')).toHaveLength(8); // 8 beginner topics
+    expect(screen.getAllByText('Beginner')).toHaveLength(14); // 14 beginner topics
     expect(screen.getAllByText('Intermediate')).toHaveLength(10); // 10 intermediate topics
     expect(screen.getAllByText('Advanced')).toHaveLength(8); // 8 advanced topics
   });
