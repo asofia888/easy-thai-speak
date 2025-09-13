@@ -102,7 +102,14 @@ export default async function handler(req, res) {
                         parts: [{
                             text: `トピック: 「${topic}」
 
-タイ語初心者の日本人学習者向けの自然で実用的な会話文（6-8ターン）をJSON形式で生成してください。
+タイ語初心者の日本人学習者向けの自然でリアルな日常会話文（6-8ターン）をJSON形式で生成してください。
+
+会話スタイル要件:
+- 親しみやすく自然な口調を使用
+- 実際にタイで使われる生きた表現を含める
+- 相づち、感情表現、つなぎ言葉を適度に含める
+- フォーマルすぎず、カジュアルな日常会話レベル
+- 話者の感情や反応が伝わる表現を使用
 
 必須項目:
 1. 二人の話者間（AとB）の会話
@@ -131,7 +138,7 @@ export default async function handler(req, res) {
                         }]
                     }],
                     generationConfig: {
-                        temperature: 0.7,
+                        temperature: 0.8,
                         topP: 0.9,
                         topK: 40,
                         maxOutputTokens: 2048
