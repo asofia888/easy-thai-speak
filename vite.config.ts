@@ -24,6 +24,22 @@ export default defineConfig(({ mode }) => {
         outDir: 'dist',
         sourcemap: false,
         minify: 'esbuild'
-      }
+      },
+      test: {
+        globals: true,
+        environment: 'jsdom',
+        setupFiles: './tests/setup.ts',
+        css: true,
+        coverage: {
+          provider: 'v8',
+          reporter: ['text', 'json', 'html'],
+          exclude: [
+            'node_modules/',
+            'tests/',
+            '*.config.ts',
+            'dist/',
+          ],
+        },
+      },
     };
 });
