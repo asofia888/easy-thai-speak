@@ -23,7 +23,35 @@ export default defineConfig(({ mode }) => {
       build: {
         outDir: 'dist',
         sourcemap: false,
-        minify: 'esbuild'
+        minify: 'esbuild',
+        rollupOptions: {
+          output: {
+            manualChunks: {
+              // Vendor chunks
+              'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+              'vendor-google': ['@google/generative-ai'],
+
+              // Route chunks (lazy loaded)
+              // These are automatically split by dynamic imports
+
+              // Shared components
+              'ui-components': [
+                './components/common/Icon.tsx',
+                './components/WordChip.tsx',
+                './components/LoadingFallback.tsx',
+              ],
+            },
+            // Better chunk naming for debugging
+            chunkFileNames: (chunkInfo) => {
+              const facadeModuleId = chunkInfo.facadeModuleId ? chunkInfo.facadeModuleId.split('/').pop() : 'chunk';
+              return `assets/[name]-[hash].js`;
+            },
+            entryFileNames: 'assets/[name]-[hash].js',
+            assetFileNames: 'assets/[name]-[hash].[ext]',
+          },
+        },
+        // Chunk size warnings
+        chunkSizeWarningLimit: 500,
       },
       test: {
         globals: true,

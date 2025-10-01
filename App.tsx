@@ -1,17 +1,21 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { HashRouter, Routes, Route, Link } from 'react-router-dom';
 import Header from './components/Header';
-import TopicSelection from './components/TopicSelection';
-import ConversationView from './components/ConversationView';
-import FavoritesView from './components/FavoritesView';
-import RoleplayView from './components/RoleplayView';
-import LegalView from './components/LegalView';
-import NotFoundView from './components/NotFoundView';
+import LoadingFallback from './components/LoadingFallback';
 import { ErrorBoundary, AsyncErrorBoundary } from './components/ErrorBoundary';
 import { FavoritesProvider } from './contexts/FavoritesContext';
 import { AudioProvider } from './contexts/AudioContext';
-import SettingsModal from './components/SettingsModal';
+import { preloadCommonRoutes } from './utils/preloadRoutes';
+
+// Code splitting: Lazy load route components
+const TopicSelection = lazy(() => import('./components/TopicSelection'));
+const ConversationView = lazy(() => import('./components/ConversationView'));
+const FavoritesView = lazy(() => import('./components/FavoritesView'));
+const RoleplayView = lazy(() => import('./components/RoleplayView'));
+const LegalView = lazy(() => import('./components/LegalView'));
+const NotFoundView = lazy(() => import('./components/NotFoundView'));
+const SettingsModal = lazy(() => import('./components/SettingsModal'));
 
 function App() {
     const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
@@ -23,6 +27,9 @@ function App() {
 
         window.addEventListener('online', handleOnline);
         window.addEventListener('offline', handleOffline);
+
+        // Preload common routes after initial render
+        preloadCommonRoutes();
 
         return () => {
             window.removeEventListener('online', handleOnline);
@@ -54,14 +61,16 @@ function App() {
                                 
                                 <main className="flex-grow container mx-auto p-4 md:p-6">
                                     <ErrorBoundary>
-                                        <Routes>
-                                            <Route path="/" element={<TopicSelection />} />
-                                            <Route path="/conversation/:topicId" element={<ConversationView />} />
-                                            <Route path="/favorites" element={<FavoritesView />} />
-                                            <Route path="/roleplay" element={<RoleplayView />} />
-                                            <Route path="/legal" element={<LegalView />} />
-                                            <Route path="*" element={<NotFoundView />} />
-                                        </Routes>
+                                        <Suspense fallback={<LoadingFallback fullScreen />}>
+                                            <Routes>
+                                                <Route path="/" element={<TopicSelection />} />
+                                                <Route path="/conversation/:topicId" element={<ConversationView />} />
+                                                <Route path="/favorites" element={<FavoritesView />} />
+                                                <Route path="/roleplay" element={<RoleplayView />} />
+                                                <Route path="/legal" element={<LegalView />} />
+                                                <Route path="*" element={<NotFoundView />} />
+                                            </Routes>
+                                        </Suspense>
                                     </ErrorBoundary>
                                 </main>
                                 
@@ -81,10 +90,12 @@ function App() {
                                     </div>
                                 }
                             >
-                                <SettingsModal
-                                    isOpen={isSettingsModalOpen}
-                                    onClose={() => setIsSettingsModalOpen(false)}
-                                />
+                                <Suspense fallback={null}>
+                                    <SettingsModal
+                                        isOpen={isSettingsModalOpen}
+                                        onClose={() => setIsSettingsModalOpen(false)}
+                                    />
+                                </Suspense>
                             </ErrorBoundary>
                             
                             {!isOnline && (
