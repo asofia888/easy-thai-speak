@@ -1,14 +1,34 @@
 // Vercel Serverless Function for Gemini Pronunciation Feedback API
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { handleCORS, setSecurityHeaders, checkRateLimit, validateTranscript } from './_middleware.js';
 
 export default async function handler(req, res) {
-    // CORS headers
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    // Apply security headers
+    setSecurityHeaders(res);
+
+    // Handle CORS
+    const corsAllowed = handleCORS(req, res);
 
     if (req.method === 'OPTIONS') {
         return res.status(200).end();
+    }
+
+    // Reject requests from non-allowed origins
+    if (!corsAllowed) {
+        return res.status(403).json({ error: 'Origin not allowed' });
+    }
+
+    // Check rate limit
+    const rateLimit = checkRateLimit(req);
+    res.setHeader('X-RateLimit-Limit', '10');
+    res.setHeader('X-RateLimit-Remaining', rateLimit.remaining.toString());
+    res.setHeader('X-RateLimit-Reset', new Date(Date.now() + rateLimit.resetIn).toISOString());
+
+    if (!rateLimit.allowed) {
+        return res.status(429).json({
+            error: 'Too many requests. Please try again later.',
+            retryAfter: Math.ceil(rateLimit.resetIn / 1000)
+        });
     }
 
     if (req.method !== 'POST') {
@@ -17,19 +37,21 @@ export default async function handler(req, res) {
 
     try {
         const apiKey = process.env.GEMINI_API_KEY;
-        
+
         if (!apiKey || apiKey === 'your_gemini_api_key_here') {
             return res.status(500).json({ error: 'GEMINI_API_KEY environment variable is not set in Vercel.' });
         }
 
         const { transcript, correctPhrase } = req.body;
-        
-        if (!transcript || !correctPhrase) {
-            return res.status(400).json({ error: 'Missing transcript or correctPhrase' });
+
+        // Validate and sanitize input
+        const validation = validateTranscript(transcript, correctPhrase);
+        if (!validation.valid) {
+            return res.status(400).json({ error: validation.error });
         }
 
         const genAI = new GoogleGenerativeAI(apiKey);
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
         
         // Retry configuration for handling API overload
         const maxRetries = 3;
