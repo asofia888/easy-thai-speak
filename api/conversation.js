@@ -1,14 +1,34 @@
 // Vercel Serverless Function for Gemini Conversation API
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { handleCORS, setSecurityHeaders, checkRateLimit, validateTopicInput } from './_middleware.js';
 
 export default async function handler(req, res) {
-    // CORS headers
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-    
+    // Apply security headers
+    setSecurityHeaders(res);
+
+    // Handle CORS
+    const corsAllowed = handleCORS(req, res);
+
     if (req.method === 'OPTIONS') {
         return res.status(200).end();
+    }
+
+    // Reject requests from non-allowed origins
+    if (!corsAllowed) {
+        return res.status(403).json({ error: 'Origin not allowed' });
+    }
+
+    // Check rate limit
+    const rateLimit = checkRateLimit(req);
+    res.setHeader('X-RateLimit-Limit', '10');
+    res.setHeader('X-RateLimit-Remaining', rateLimit.remaining.toString());
+    res.setHeader('X-RateLimit-Reset', new Date(Date.now() + rateLimit.resetIn).toISOString());
+
+    if (!rateLimit.allowed) {
+        return res.status(429).json({
+            error: 'Too many requests. Please try again later.',
+            retryAfter: Math.ceil(rateLimit.resetIn / 1000)
+        });
     }
 
     if (req.method !== 'POST' && req.method !== 'GET') {
@@ -18,7 +38,7 @@ export default async function handler(req, res) {
     try {
         // Environment variable check
         const apiKey = process.env.GEMINI_API_KEY;
-        
+
         if (!apiKey || apiKey === 'your_gemini_api_key_here') {
             console.error('❌ GEMINI_API_KEY not configured');
             return res.status(500).json({ error: 'GEMINI_API_KEY environment variable is not set in Vercel.' });
@@ -26,11 +46,15 @@ export default async function handler(req, res) {
 
         const { topic: bodyTopic } = (req.body || {});
         const queryTopic = (req.query && req.query.topic) ? String(req.query.topic) : '';
-        const topic = req.method === 'GET' ? queryTopic : bodyTopic;
-        
-        if (!topic || typeof topic !== 'string') {
-            return res.status(400).json({ error: 'Invalid topic' });
+        const rawTopic = req.method === 'GET' ? queryTopic : bodyTopic;
+
+        // Validate and sanitize input
+        const validation = validateTopicInput(rawTopic);
+        if (!validation.valid) {
+            return res.status(400).json({ error: validation.error });
         }
+
+        const topic = validation.sanitized;
 
         console.log('🤖 Vercel Gemini Conversation Request:', { 
             method: req.method, 
