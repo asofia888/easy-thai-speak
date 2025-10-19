@@ -126,47 +126,30 @@ export default async function handler(req, res) {
                         parts: [{
                             text: `トピック: 「${topic}」
 
-タイ語初心者の日本人学習者向けの自然でリアルな日常会話文（6-8ターン）をJSON形式で生成してください。
+タイ語初心者の日本人学習者向けの、自然でリアルな日常会話文（6-8ターン）を生成してください。
 
 会話スタイル要件:
-- 親しみやすく自然な口調を使用（ただし初心者向けの基本表現を中心に）
-- 基礎的な語彙と文法パターンを重視し、複雑な口語表現は避ける
-- 相づちや基本的な感情表現は含めるが、教科書レベルの範囲内で
-- 砕けた表現や省略形を使用する場合は、grammarPointで詳しく解説する
-- 話者の感情や反応は基本的な表現で伝える
+- 親しみやすく自然な口調（ただし初心者向けの基本表現を中心に）
+- 基礎的な語彙と文法パターンを重視
+- 相づちや基本的な感情表現を含める
+- 砕けた表現や省略形を使用する場合は、grammarPointで解説
 
 必須項目:
 1. 二人の話者間（AとB）の会話
-2. Paiboon+方式のローマ字発音表記を使用
+2. Paiboon+方式のローマ字発音表記
 3. 各セリフを単語に分割
-4. 重要な文法ポイントがある場合は解説を含める
-5. カジュアル表現や省略形を使用した場合は、必ずgrammarPointで「なぜこの表現を使うのか」「正式な形は何か」「使用場面」を説明する
+4. 重要な文法ポイントの解説（該当する場合）
+5. カジュアル表現や省略形の説明（該当する場合）
 
-出力はこの形式の配列で:
-[
-  {
-    "speaker": "A",
-    "thai": "タイ語のセリフ",
-    "pronunciation": "Paiboon+方式の発音",
-    "japanese": "日本語訳",
-    "words": [
-      {
-        "thai": "単語",
-        "pronunciation": "発音",
-        "japanese": "意味"
-      }
-    ]
-  }
-]
-
-純粋なJSONのみを出力し、説明文やマークダウンは含めないでください。`
+指定されたJSONスキーマに従って、有効なJSON配列のみを返してください。説明文やマークダウンは不要です。`
                         }]
                     }],
                     generationConfig: {
+                        response_mime_type: "application/json", // JSONモードを有効化
                         temperature: 0.6,
                         topP: 0.9,
                         topK: 40,
-                        maxOutputTokens: 2048
+                        maxOutputTokens: 4096 // スキーマ定義を含めるため出力を少し増やす
                     },
                 });
                 return response;
@@ -190,36 +173,19 @@ export default async function handler(req, res) {
 
         const response = await generateWithRetry();
 
-        let text = response.response.text();
+        // JSONモードでは、レスポンスは直接パース可能なJSON文字列になる
+        const text = response.response.text();
 
-        if (!text || text === 'undefined') {
+        if (!text) {
             throw new Error('Empty response from Gemini API');
         }
 
-        console.log('🤖 Raw response text (first 500 chars):', text.substring(0, 500));
-
-        // マークダウンのコードブロックを取り除く
-        text = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
-
-        // 余分なテキストを除去（JSONの前後にある説明文など）
-        const jsonMatch = text.match(/\[[\s\S]*\]/);
-        if (jsonMatch) {
-            text = jsonMatch[0];
-        }
-
-        // 不正な制御文字やゼロ幅文字を除去
-        text = text.replace(/[\u0000-\u001F\u007F-\u009F\u200B-\u200D\uFEFF]/g, '');
-
-        // タイ語の特殊文字が原因で壊れたJSONを修復
-        // 行末のカンマの後に改行がある場合の処理
-        text = text.replace(/,\s*\n\s*}/g, '}');
-        text = text.replace(/,\s*\n\s*\]/g, ']');
-
-        console.log('🤖 Cleaned response text (first 1000 chars):', text.substring(0, 1000));
-        console.log('🤖 Response length:', text.length);
+        console.log('🤖 Raw JSON response length:', text.length);
+        console.log('🤖 Raw JSON response (first 500 chars):', text.substring(0, 500));
 
         let conversation;
         try {
+            // JSONモードからの応答は直接パースできる
             conversation = JSON.parse(text);
         } catch (parseError) {
             console.error('❌ JSON Parse Error:', {
