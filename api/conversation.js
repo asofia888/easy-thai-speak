@@ -191,24 +191,49 @@ export default async function handler(req, res) {
         const response = await generateWithRetry();
 
         let text = response.response.text();
-        
+
         if (!text || text === 'undefined') {
             throw new Error('Empty response from Gemini API');
         }
 
+        console.log('🤖 Raw response text (first 500 chars):', text.substring(0, 500));
+
         // マークダウンのコードブロックを取り除く
         text = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
-        
+
         // 余分なテキストを除去（JSONの前後にある説明文など）
         const jsonMatch = text.match(/\[[\s\S]*\]/);
         if (jsonMatch) {
             text = jsonMatch[0];
         }
-        
-        console.log('🤖 Cleaned response text:', text.substring(0, 500) + '...');
-        
-        const conversation = JSON.parse(text);
-        
+
+        // 不正な制御文字やゼロ幅文字を除去
+        text = text.replace(/[\u0000-\u001F\u007F-\u009F\u200B-\u200D\uFEFF]/g, '');
+
+        // タイ語の特殊文字が原因で壊れたJSONを修復
+        // 行末のカンマの後に改行がある場合の処理
+        text = text.replace(/,\s*\n\s*}/g, '}');
+        text = text.replace(/,\s*\n\s*\]/g, ']');
+
+        console.log('🤖 Cleaned response text (first 1000 chars):', text.substring(0, 1000));
+        console.log('🤖 Response length:', text.length);
+
+        let conversation;
+        try {
+            conversation = JSON.parse(text);
+        } catch (parseError) {
+            console.error('❌ JSON Parse Error:', {
+                error: parseError.message,
+                position: parseError.message.match(/position (\d+)/)?.[1],
+                contextAround: text.substring(
+                    Math.max(0, parseInt(parseError.message.match(/position (\d+)/)?.[1] || 0) - 100),
+                    Math.min(text.length, parseInt(parseError.message.match(/position (\d+)/)?.[1] || 0) + 100)
+                ),
+                fullText: text
+            });
+            throw parseError;
+        }
+
         res.status(200).json({ conversation });
     } catch (error) {
         console.error('❌ Vercel Gemini conversation error:', {
