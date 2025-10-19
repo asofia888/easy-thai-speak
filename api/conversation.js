@@ -62,7 +62,7 @@ export default async function handler(req, res) {
         });
 
         const genAI = new GoogleGenerativeAI(apiKey);
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
         
         // Retry configuration for handling API overload
         const maxRetries = 3;
@@ -214,28 +214,32 @@ export default async function handler(req, res) {
         console.error('❌ Vercel Gemini conversation error:', {
             message: error?.message,
             type: typeof error,
-            stack: error?.stack
+            stack: error?.stack,
+            errorObject: JSON.stringify(error, null, 2)
         });
-        
+
         // Determine appropriate error response based on error type
         let statusCode = 500;
         let errorMessage = 'Failed to generate conversation';
-        
+
         if (error?.message?.includes('503') || error?.message?.includes('overloaded')) {
             statusCode = 503;
             errorMessage = 'AI service is currently overloaded. Please try again in a few moments.';
-        } else if (error?.message?.includes('API key')) {
+        } else if (error?.message?.includes('API key') || error?.message?.includes('API_KEY')) {
             statusCode = 401;
             errorMessage = 'API authentication failed';
         } else if (error?.message?.includes('quota')) {
             statusCode = 429;
             errorMessage = 'API usage limit exceeded. Please try again later.';
-        } else if (error?.message?.includes('JSON')) {
+        } else if (error?.message?.includes('JSON') || error?.message?.includes('parse')) {
             statusCode = 502;
             errorMessage = 'Failed to parse AI response. Please try again.';
+        } else if (error?.message?.includes('model') || error?.message?.includes('not found')) {
+            statusCode = 400;
+            errorMessage = 'Invalid model configuration. Please contact support.';
         }
-        
-        res.status(statusCode).json({ 
+
+        res.status(statusCode).json({
             error: errorMessage,
             details: error?.message || 'Unknown error',
             type: error?.name || 'Unknown error',
