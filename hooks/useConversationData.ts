@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { ConversationLine } from '../types';
+import { getConversationByTopicId } from '../data/conversations';
 import { generateConversation } from '../services/geminiService';
 
 export const useConversationData = (topicId: string | undefined, topicTitle: string) => {
@@ -16,104 +17,67 @@ export const useConversationData = (topicId: string | undefined, topicTitle: str
         };
 
         const isCustomTopic = topicId?.startsWith('custom');
-        const cacheKey = `conversation-${topicId}`;
         let isComponentMounted = true;
 
         const loadConversation = async () => {
             // Reset state for new topic
             setError(null);
-            
-            // サンプル会話データ（Google Cloud TTSテスト用）
-            const sampleConversation: ConversationLine[] = [
-                {
-                    speaker: "田中",
-                    thai: "สวัสดีครับ คุณชื่ออะไรครับ",
-                    pronunciation: "サワッディー クラップ クン チュー アライ クラップ",
-                    japanese: "こんにちは、お名前は何ですか？",
-                    words: [
-                        { thai: "สวัสดี", pronunciation: "サワッディー", japanese: "こんにちは" },
-                        { thai: "ครับ", pronunciation: "クラップ", japanese: "（男性の丁寧語）" },
-                        { thai: "คุณ", pronunciation: "クン", japanese: "あなた" },
-                        { thai: "ชื่อ", pronunciation: "チュー", japanese: "名前" },
-                        { thai: "อะไร", pronunciation: "アライ", japanese: "何" }
-                    ]
-                },
-                {
-                    speaker: "ソムチャイ",
-                    thai: "ผมชื่อ สมชาย ครับ แล้วคุณล่ะครับ",
-                    pronunciation: "ポム チュー ソムチャイ クラップ レーオ クン ラ クラップ",
-                    japanese: "私の名前はソムチャイです。あなたはどうですか？",
-                    words: [
-                        { thai: "ผม", pronunciation: "ポム", japanese: "私（男性）" },
-                        { thai: "ชื่อ", pronunciation: "チュー", japanese: "名前" },
-                        { thai: "สมชาย", pronunciation: "ソムチャイ", japanese: "ソムチャイ（男性名）" },
-                        { thai: "แล้ว", pronunciation: "レーオ", japanese: "そして、～したら" },
-                        { thai: "ล่ะ", pronunciation: "ラ", japanese: "～はどう？" }
-                    ]
-                }
-            ];
-            
-            // デバッグ用サンプルデータ（開発時のみ）
-            // if (!isComponentMounted) return;
-            // setConversation(sampleConversation);
-            // setIsLoading(false);
-            // console.log('📝 Using sample conversation data');
-            // return;
+            setIsLoading(true);
 
-            // 1. Try to load from cache first for instant UI (skip for custom topics)
-            let hasCache = false;
-            if (!isCustomTopic) {
+            // カスタムトピックの場合はAIで生成
+            if (isCustomTopic) {
                 try {
-                    const cachedData = localStorage.getItem(cacheKey);
-                    if (cachedData) {
-                        if (isComponentMounted) {
-                            setConversation(JSON.parse(cachedData));
-                            setIsLoading(false); // We have data, don't show full-page skeleton
-                            hasCache = true;
-                        }
-                    } else {
-                        // No cache, so we are definitely in a full loading state
-                        if (isComponentMounted) setIsLoading(true);
+                    const freshData = await generateConversation(topicTitle);
+                    if (isComponentMounted) {
+                        setConversation(freshData);
                     }
-                } catch (cacheError) {
-                    console.error("Failed to read from cache:", cacheError);
-                    if (isComponentMounted) setIsLoading(true); // Treat corrupted cache as no cache
-                }
-            } else {
-                // For custom topics, always show the full loading spinner
-                if(isComponentMounted) setIsLoading(true);
-            }
-
-
-            // 2. Fetch from network to get the latest data or initial data
-            try {
-                const freshData = await generateConversation(topicTitle);
-                if (isComponentMounted) {
-                    setConversation(freshData);
-                    // Update cache with fresh data (skip for custom topics)
-                    if (!isCustomTopic) {
-                        try {
-                            localStorage.setItem(cacheKey, JSON.stringify(freshData));
-                        } catch (e) {
-                            console.error("Failed to write to cache", e);
-                        }
-                    }
-                }
-            } catch (fetchError) {
-                console.error("Failed to fetch conversation:", fetchError);
-                // If fetching fails, we only set a critical error if we don't have cached data.
-                if (!hasCache) {
+                } catch (fetchError) {
+                    console.error("Failed to generate conversation:", fetchError);
                     if (isComponentMounted) {
                         setError('会話の生成に失敗しました。ネットワーク接続を確認するか、後でもう一度お試しください。');
                     }
-                } else {
-                    // We have cache, so it's a non-critical error
-                    if(isComponentMounted){
-                        setError('コンテンツの更新に失敗しました。オフライン版のデータを表示しています。');
+                } finally {
+                    if (isComponentMounted) {
+                        setIsLoading(false);
                     }
                 }
-            } finally {
+                return;
+            }
+
+            // 定型トピックの場合はローカルデータを使用
+            try {
+                // ローカルデータから会話を取得
+                const localData = getConversationByTopicId(topicId);
+
+                if (localData) {
+                    // データが存在する場合は即座に表示
+                    if (isComponentMounted) {
+                        setConversation(localData);
+                        setIsLoading(false);
+                    }
+                } else {
+                    // データが存在しない場合はAIで生成してフォールバック
+                    console.warn(`No local data for topic ${topicId}, falling back to AI generation`);
+                    try {
+                        const generatedData = await generateConversation(topicTitle);
+                        if (isComponentMounted) {
+                            setConversation(generatedData);
+                        }
+                    } catch (genError) {
+                        console.error("Failed to generate fallback conversation:", genError);
+                        if (isComponentMounted) {
+                            setError('会話データが見つかりませんでした。このトピックはまだ準備中です。');
+                        }
+                    } finally {
+                        if (isComponentMounted) {
+                            setIsLoading(false);
+                        }
+                    }
+                }
+            } catch (err) {
+                console.error("Error loading conversation:", err);
                 if (isComponentMounted) {
+                    setError('会話の読み込みに失敗しました。');
                     setIsLoading(false);
                 }
             }
