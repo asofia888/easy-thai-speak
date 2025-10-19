@@ -146,6 +146,7 @@ export default async function handler(req, res) {
                     }],
                     generationConfig: {
                         response_mime_type: "application/json", // JSONモードを有効化
+                        response_schema: conversationSchema, // スキーマを明示的に指定
                         temperature: 0.6,
                         topP: 0.9,
                         topK: 40,
