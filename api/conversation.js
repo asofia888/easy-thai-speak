@@ -126,7 +126,7 @@ export default async function handler(req, res) {
                         parts: [{
                             text: `トピック: 「${topic}」
 
-タイ語初心者の日本人学習者向けの、自然でリアルな日常会話文（6-8ターン）を生成してください。
+タイ語初心者の日本人学習者向けの、自然でリアルな日常会話文（4-6ターン）を生成してください。
 
 会話スタイル要件:
 - 親しみやすく自然な口調（ただし初心者向けの基本表現を中心に）
@@ -150,7 +150,7 @@ export default async function handler(req, res) {
                         temperature: 0.6,
                         topP: 0.9,
                         topK: 40,
-                        maxOutputTokens: 6144 // 6-8ターンの会話に最適化
+                        maxOutputTokens: 8192 // より余裕を持った設定
                     },
                 });
                 return response;
