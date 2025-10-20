@@ -6,6 +6,7 @@ import LoadingFallback from './components/LoadingFallback';
 import { ErrorBoundary, AsyncErrorBoundary } from './components/ErrorBoundary';
 import { FavoritesProvider } from './contexts/FavoritesContext';
 import { AudioProvider } from './contexts/AudioContext';
+import { SavedConversationsProvider } from './contexts/SavedConversationsContext';
 import { preloadCommonRoutes } from './utils/preloadRoutes';
 
 // Code splitting: Lazy load route components
@@ -13,6 +14,7 @@ const TopicSelection = lazy(() => import('./components/TopicSelection'));
 const ConversationView = lazy(() => import('./components/ConversationView'));
 const FavoritesView = lazy(() => import('./components/FavoritesView'));
 const RoleplayView = lazy(() => import('./components/RoleplayView'));
+const SavedConversationsView = lazy(() => import('./components/SavedConversationsView'));
 const LegalView = lazy(() => import('./components/LegalView'));
 const NotFoundView = lazy(() => import('./components/NotFoundView'));
 const SettingsModal = lazy(() => import('./components/SettingsModal'));
@@ -45,9 +47,10 @@ function App() {
             // Here you could send to error reporting service
         }}>
             <AsyncErrorBoundary>
-                <FavoritesProvider>
-                    <AudioProvider>
-                        <HashRouter>
+                <SavedConversationsProvider>
+                    <FavoritesProvider>
+                        <AudioProvider>
+                            <HashRouter>
                             <div className="min-h-screen flex flex-col">
                                 <ErrorBoundary
                                     fallback={
@@ -66,6 +69,7 @@ function App() {
                                                 <Route path="/" element={<TopicSelection />} />
                                                 <Route path="/conversation/:topicId" element={<ConversationView />} />
                                                 <Route path="/favorites" element={<FavoritesView />} />
+                                                <Route path="/saved-conversations" element={<SavedConversationsView />} />
                                                 <Route path="/roleplay" element={<RoleplayView />} />
                                                 <Route path="/legal" element={<LegalView />} />
                                                 <Route path="*" element={<NotFoundView />} />
@@ -103,9 +107,10 @@ function App() {
                                     オフラインモード
                                 </div>
                             )}
-                        </HashRouter>
-                    </AudioProvider>
-                </FavoritesProvider>
+                            </HashRouter>
+                        </AudioProvider>
+                    </FavoritesProvider>
+                </SavedConversationsProvider>
             </AsyncErrorBoundary>
         </ErrorBoundary>
     );

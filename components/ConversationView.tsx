@@ -1,10 +1,12 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { useConversationData } from '../hooks/useConversationData';
 import ConversationCard from './ConversationCard';
 import ConversationSkeleton from './ConversationSkeleton';
 import { useLocalStorage } from '../hooks/useLocalStorage';
+import { useSavedConversations } from '../contexts/SavedConversationsContext';
+import { ConversationLine } from '../types';
 import EyeIcon from './icons/EyeIcon';
 
 const ConversationView = () => {
@@ -13,11 +15,57 @@ const ConversationView = () => {
     const navigate = useNavigate();
     const topicTitle = location.state?.topicTitle || '会話';
 
-    const { conversation, isLoading, error } = useConversationData(topicId, topicTitle);
+    const { saveConversation, getConversation, updateLastAccessed } = useSavedConversations();
     const [isListeningMode, setIsListeningMode] = useLocalStorage('listeningMode', false);
+    const [isSaved, setIsSaved] = useState(false);
+
+    const isCustomTopic = topicId?.startsWith('custom');
+    const isSavedConversation = topicId?.startsWith('saved-');
+
+    // Load conversation based on source (saved vs. regular vs. custom)
+    const [conversation, setConversation] = useState<ConversationLine[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (isSavedConversation && topicId) {
+            // Load from saved conversations
+            const saved = getConversation(topicId);
+            if (saved) {
+                setConversation(saved.conversation);
+                updateLastAccessed(topicId);
+                setIsLoading(false);
+            } else {
+                setError('保存済み会話が見つかりません');
+                setIsLoading(false);
+            }
+        }
+    }, [topicId, isSavedConversation, getConversation, updateLastAccessed]);
+
+    // Use the original hook for non-saved conversations
+    const regularData = useConversationData(
+        isSavedConversation ? undefined : topicId,
+        topicTitle
+    );
+
+    useEffect(() => {
+        if (!isSavedConversation) {
+            setConversation(regularData.conversation);
+            setIsLoading(regularData.isLoading);
+            setError(regularData.error);
+        }
+    }, [isSavedConversation, regularData]);
 
     const startRoleplay = () => {
         navigate('/roleplay', { state: { conversation, topicTitle } });
+    };
+
+    const handleSave = () => {
+        if (conversation.length > 0) {
+            saveConversation(topicTitle, conversation);
+            setIsSaved(true);
+            setTimeout(() => setIsSaved(false), 2000);
+        }
     };
 
     if (isLoading) {
@@ -69,13 +117,28 @@ const ConversationView = () => {
                             />
                         </button>
                     </div>
-                     {conversation.length > 0 && (
-                         <button
-                            onClick={startRoleplay}
-                            className="bg-green-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-green-600 transition-transform duration-300 hover:scale-105"
-                        >
-                            ロールプレイを開始
-                        </button>
+                    {conversation.length > 0 && (
+                        <div className="flex gap-2">
+                            {isCustomTopic && !isSavedConversation && (
+                                <button
+                                    onClick={handleSave}
+                                    className={`font-bold py-2 px-6 rounded-lg transition-all duration-300 ${
+                                        isSaved
+                                            ? 'bg-gray-400 text-white cursor-not-allowed'
+                                            : 'bg-blue-500 text-white hover:bg-blue-600 hover:scale-105'
+                                    }`}
+                                    disabled={isSaved}
+                                >
+                                    {isSaved ? '✓ 保存しました' : '💾 会話を保存'}
+                                </button>
+                            )}
+                            <button
+                                onClick={startRoleplay}
+                                className="bg-green-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-green-600 transition-transform duration-300 hover:scale-105"
+                            >
+                                ロールプレイを開始
+                            </button>
+                        </div>
                     )}
                 </div>
             </div>
