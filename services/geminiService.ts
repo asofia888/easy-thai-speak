@@ -121,7 +121,7 @@ async function generateConversationDirect(topic: string): Promise<ConversationLi
             parts: [{
                 text: `トピック: 「${topic}」
 
-タイ語初心者の日本人学習者向けの、自然でリアルな日常会話文（6-8ターン）を生成してください。
+タイ語初心者の日本人学習者向けの、自然でリアルな日常会話文（10-12ターン）を生成してください。
 
 会話スタイル要件:
 - 親しみやすく自然な口調（ただし初心者向けの基本表現を中心に）
@@ -145,7 +145,7 @@ async function generateConversationDirect(topic: string): Promise<ConversationLi
             temperature: 0.6,
             topP: 0.9,
             topK: 40,
-            maxOutputTokens: 4096
+            maxOutputTokens: 8192
         },
     });
 
