@@ -1,5 +1,5 @@
 // Vercel Serverless Function for Gemini Pronunciation Feedback API
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenerativeAI, SchemaType } from "@google/generative-ai";
 import { handleCORS, setSecurityHeaders, checkRateLimit, validateTranscript } from './_middleware.js';
 
 export default async function handler(req, res) {
@@ -51,25 +51,25 @@ export default async function handler(req, res) {
         }
 
         const genAI = new GoogleGenerativeAI(apiKey);
-        const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
         
         // Retry configuration for handling API overload
         const maxRetries = 3;
         const baseDelay = 1000; // 1 second
         
         const feedbackSchema = {
-            type: "object",
+            type: SchemaType.OBJECT,
             properties: {
                 score: {
-                    type: "number",
+                    type: SchemaType.NUMBER,
                     description: "A score from 0 to 100 representing the accuracy of the pronunciation. 100 is perfect."
                 },
                 feedback: {
-                    type: "string",
+                    type: SchemaType.STRING,
                     description: "Encouraging and constructive feedback in Japanese. Point out one good thing and one thing to improve. Keep it concise."
                 },
                 is_correct: {
-                    type: "boolean",
+                    type: SchemaType.BOOLEAN,
                     description: "A simple boolean indicating if the user's pronunciation was generally correct and understandable."
                 }
             },
@@ -100,7 +100,8 @@ ${JSON.stringify(feedbackSchema, null, 2)}
                         topP: 0.9,
                         topK: 40,
                         maxOutputTokens: 512,
-                        responseMimeType: "application/json"
+                        responseMimeType: "application/json",
+                        responseSchema: feedbackSchema
                     },
                 });
                 return response;
