@@ -4,37 +4,71 @@
 
 ## 目次
 1. [API キー管理](#api-キー管理)
-2. [CORS制限](#cors制限)
-3. [レート制限](#レート制限)
-4. [入力検証とサニタイゼーション](#入力検証とサニタイゼーション)
-5. [セキュリティヘッダー](#セキュリティヘッダー)
-6. [セキュリティチェックリスト](#セキュリティチェックリスト)
+2. [環境別のセキュリティ](#環境別のセキュリティ)
+3. [CORS制限](#cors制限)
+4. [レート制限](#レート制限)
+5. [入力検証とサニタイゼーション](#入力検証とサニタイゼーション)
+6. [セキュリティヘッダー](#セキュリティヘッダー)
+7. [セキュリティチェックリスト](#セキュリティチェックリスト)
 
 ---
 
 ## API キー管理
 
-### ⚠️ 重要なセキュリティ対策
+### ⚠️ **最重要**: 実際のAPIキーは絶対にGitにコミットしない
 
-1. **実際のAPIキーをコードにコミットしない**
-   - `.env.server` ファイルは実際のAPIキーを含めないでください
-   - 本番環境では環境変数として設定してください
+1. **環境変数ファイルの管理**
+   - `.env.local` - ローカル開発用（Gitで追跡されない）
+   - `.env.example` - サンプルファイル（実際のキーは含めない）
+   - `.env`, `.env.server` - これらもGitにコミットしない
 
 2. **環境変数の設定**
 
-   **Vercel環境での設定:**
+   **ローカル開発環境:**
+   ```bash
+   # .env.local に実際のAPIキーを設定（Gitには絶対にコミットしない）
+   VITE_GEMINI_API_KEY=your_actual_gemini_api_key
+   GEMINI_API_KEY=your_actual_gemini_api_key
+   ```
+
+   **Vercel本番環境:**
    ```bash
    # Vercelの環境変数として以下を設定
    GEMINI_API_KEY=your_actual_gemini_api_key
-   GOOGLE_CLOUD_API_KEY=your_actual_google_cloud_api_key
+   # 注意: VITE_GEMINI_API_KEYは本番環境では設定しない
    ```
 
-3. **ローカル開発環境**
-   ```bash
-   # .env.server に実際のAPIキーを設定（Gitにはコミットしない）
-   GEMINI_API_KEY=your_actual_gemini_api_key
-   GOOGLE_CLOUD_API_KEY=your_actual_google_cloud_api_key
-   ```
+---
+
+## 環境別のセキュリティ
+
+### ローカル開発環境
+
+**アーキテクチャ:**
+```
+ブラウザ → Gemini API（直接呼び出し）
+           ↑
+           VITE_GEMINI_API_KEY
+```
+
+**セキュリティ上の注意:**
+- `VITE_`プレフィックス付きの環境変数はブラウザに公開される
+- ローカル開発でのみ使用し、本番環境では使用しない
+- APIキーの使用量を定期的に監視する
+
+### 本番環境（Vercel）
+
+**アーキテクチャ:**
+```
+ブラウザ → Vercel Serverless Function → Gemini API
+                    ↑
+                    GEMINI_API_KEY（サーバーサイドのみ）
+```
+
+**セキュリティ対策:**
+- APIキーはサーバーサイド（Vercel Serverless Function）でのみ使用
+- フロントエンドからは直接APIキーにアクセス不可
+- `VITE_`プレフィックス付き変数は設定しない
 
 ### 🔒 実装されているセキュリティ機能
 

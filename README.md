@@ -16,6 +16,68 @@
 
 ---
 
+## 開発環境のセットアップ
+
+### 必要な環境
+
+- Node.js（v18以上推奨）
+- npm または yarn
+- Google Gemini API キー
+
+### 初回セットアップ手順
+
+1. **リポジトリのクローン**
+   ```bash
+   git clone <repository-url>
+   cd easy-thai-speak
+   ```
+
+2. **依存関係のインストール**
+   ```bash
+   npm install
+   ```
+
+3. **環境変数の設定**
+
+   ⚠️ **重要**: APIキーは絶対にGitにコミットしないでください
+
+   a. `.env.example` をコピーして `.env.local` を作成
+   ```bash
+   cp .env.example .env.local
+   ```
+
+   b. Google AI Studioで APIキーを取得
+   - [Google AI Studio](https://makersuite.google.com/app/apikey) にアクセス
+   - 「Create API Key」をクリック
+   - 生成されたAPIキーをコピー
+
+   c. `.env.local` ファイルを編集してAPIキーを設定
+   ```bash
+   # ローカル開発用（フロントエンドから直接APIを呼び出す）
+   VITE_GEMINI_API_KEY=ここに取得したAPIキーを貼り付け
+
+   # 本番環境用（Vercel Serverless Functionで使用）
+   GEMINI_API_KEY=ここに取得したAPIキーを貼り付け
+   ```
+
+4. **開発サーバーの起動**
+   ```bash
+   npm run dev
+   ```
+
+   ブラウザで `http://localhost:5173` を開いてアプリケーションにアクセスできます。
+
+### セキュリティに関する注意事項
+
+- ✅ `.env.local` ファイルは `.gitignore` に含まれており、Gitで追跡されません
+- ✅ 実際のAPIキーは **絶対に** `.env.example` や他のGit管理ファイルに記載しないでください
+- ✅ `VITE_` プレフィックス付きの環境変数はブラウザに公開されます（ローカル開発のみで使用）
+- ✅ 本番環境では `VITE_GEMINI_API_KEY` は設定せず、サーバーサイドの `GEMINI_API_KEY` のみを使用します
+
+詳細は [SECURITY.md](./SECURITY.md) をご確認ください。
+
+---
+
 ## 使い方
 
 ### 1. トピックの選択
