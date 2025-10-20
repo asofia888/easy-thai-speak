@@ -1,3 +1,5 @@
+import { handleApiError } from '../utils/errorHandling';
+
 export interface PitchAnalysis {
   frequency: number[];
   timestamps: number[];
@@ -36,20 +38,21 @@ export class SpeechAnalysisService {
       this.analyser.fftSize = 2048;
     } catch (error) {
       console.error('Failed to initialize audio context:', error);
-      throw new Error('Audio context initialization failed');
+      const apiError = handleApiError(error, 'オーディオコンテキストの初期化');
+      throw new Error(apiError.message);
     }
   }
 
   async startRecording(): Promise<MediaStream> {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ 
+      const stream = await navigator.mediaDevices.getUserMedia({
         audio: {
           sampleRate: 44100,
           channelCount: 1,
           echoCancellation: true,
           noiseSuppression: true,
           autoGainControl: true
-        } 
+        }
       });
 
       if (this.audioContext && this.analyser) {
@@ -72,14 +75,16 @@ export class SpeechAnalysisService {
       return stream;
     } catch (error) {
       console.error('Failed to start recording:', error);
-      throw new Error('Recording initialization failed');
+      const apiError = handleApiError(error, '録音の開始');
+      throw new Error(apiError.message);
     }
   }
 
   stopRecording(): Promise<Blob> {
     return new Promise((resolve, reject) => {
       if (!this.mediaRecorder) {
-        reject(new Error('No active recording'));
+        const apiError = handleApiError(new Error('No active recording'), '録音の停止');
+        reject(new Error(apiError.message));
         return;
       }
 
@@ -114,14 +119,14 @@ export class SpeechAnalysisService {
     try {
       const arrayBuffer = await audioBlob.arrayBuffer();
       const audioBuffer = await this.audioContext!.decodeAudioData(arrayBuffer);
-      
+
       const channelData = audioBuffer.getChannelData(0);
       const sampleRate = audioBuffer.sampleRate;
-      
+
       // Pitch detection using autocorrelation
       const pitchData = this.extractPitchFromAudio(channelData, sampleRate);
       const tonePattern = this.classifyThaiTone(pitchData.frequency);
-      
+
       return {
         frequency: pitchData.frequency,
         timestamps: pitchData.timestamps,
@@ -135,7 +140,8 @@ export class SpeechAnalysisService {
       };
     } catch (error) {
       console.error('Pitch analysis failed:', error);
-      throw new Error('Pitch analysis failed');
+      const apiError = handleApiError(error, 'ピッチ分析');
+      throw new Error(apiError.message);
     }
   }
 
@@ -261,29 +267,29 @@ export class SpeechAnalysisService {
   }
 
   async evaluatePronunciation(
-    userAudioBlob: Blob, 
-    targetText: string, 
+    userAudioBlob: Blob,
+    targetText: string,
     expectedTone?: ThaiTone
   ): Promise<PronunciationScore> {
     try {
       const pitchAnalysis = await this.analyzePitch(userAudioBlob);
-      
+
       let toneAccuracy = 0;
       if (expectedTone) {
-        toneAccuracy = pitchAnalysis.tonePattern === expectedTone ? 
-          pitchAnalysis.confidence : 
+        toneAccuracy = pitchAnalysis.tonePattern === expectedTone ?
+          pitchAnalysis.confidence :
           Math.max(0, pitchAnalysis.confidence - 0.3);
       } else {
         toneAccuracy = pitchAnalysis.confidence;
       }
-      
+
       const clarityScore = this.evaluateClarity(pitchAnalysis);
       const timingScore = this.evaluateTiming(pitchAnalysis);
-      
+
       const overall = (toneAccuracy * 0.5 + clarityScore * 0.3 + timingScore * 0.2);
-      
+
       const feedback = this.generateFeedback(pitchAnalysis, toneAccuracy, clarityScore, timingScore, expectedTone);
-      
+
       return {
         overall: Math.round(overall * 100),
         toneAccuracy: Math.round(toneAccuracy * 100),
@@ -293,12 +299,13 @@ export class SpeechAnalysisService {
       };
     } catch (error) {
       console.error('Pronunciation evaluation failed:', error);
+      const apiError = handleApiError(error, '発音評価');
       return {
         overall: 0,
         toneAccuracy: 0,
         clarityScore: 0,
         timingScore: 0,
-        feedback: ['音声分析に失敗しました。もう一度お試しください。']
+        feedback: [apiError.message]
       };
     }
   }

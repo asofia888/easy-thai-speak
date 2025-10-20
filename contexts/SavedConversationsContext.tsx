@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 import { ConversationLine } from '../types';
+import { handleApiError } from '../utils/errorHandling';
 
 export interface SavedConversation {
     id: string;
@@ -34,6 +35,8 @@ export const SavedConversationsProvider: React.FC<{ children: ReactNode }> = ({ 
             }
         } catch (error) {
             console.error('Failed to load saved conversations:', error);
+            const apiError = handleApiError(error, '保存された会話の読み込み');
+            console.error(apiError.message);
         }
     }, []);
 
@@ -43,6 +46,8 @@ export const SavedConversationsProvider: React.FC<{ children: ReactNode }> = ({ 
             localStorage.setItem(STORAGE_KEY, JSON.stringify(savedConversations));
         } catch (error) {
             console.error('Failed to save conversations:', error);
+            const apiError = handleApiError(error, '会話の保存');
+            console.error(apiError.message);
         }
     }, [savedConversations]);
 

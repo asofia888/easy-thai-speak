@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { ConversationLine } from '../types';
 import { getConversationByTopicId } from '../data/conversations';
 import { generateConversation } from '../services/geminiService';
+import { handleApiError } from '../utils/errorHandling';
 
 export const useConversationData = (topicId: string | undefined, topicTitle: string) => {
     const [conversation, setConversation] = useState<ConversationLine[]>([]);
@@ -34,7 +35,8 @@ export const useConversationData = (topicId: string | undefined, topicTitle: str
                 } catch (fetchError) {
                     console.error("Failed to generate conversation:", fetchError);
                     if (isComponentMounted) {
-                        setError('会話の生成に失敗しました。ネットワーク接続を確認するか、後でもう一度お試しください。');
+                        const apiError = handleApiError(fetchError, '会話の生成');
+                        setError(apiError.message);
                     }
                 } finally {
                     if (isComponentMounted) {
@@ -66,7 +68,8 @@ export const useConversationData = (topicId: string | undefined, topicTitle: str
                     } catch (genError) {
                         console.error("Failed to generate fallback conversation:", genError);
                         if (isComponentMounted) {
-                            setError('会話データが見つかりませんでした。このトピックはまだ準備中です。');
+                            const apiError = handleApiError(genError, 'フォールバック会話の生成');
+                            setError(apiError.message);
                         }
                     } finally {
                         if (isComponentMounted) {
@@ -77,7 +80,8 @@ export const useConversationData = (topicId: string | undefined, topicTitle: str
             } catch (err) {
                 console.error("Error loading conversation:", err);
                 if (isComponentMounted) {
-                    setError('会話の読み込みに失敗しました。');
+                    const apiError = handleApiError(err, '会話の読み込み');
+                    setError(apiError.message);
                     setIsLoading(false);
                 }
             }
