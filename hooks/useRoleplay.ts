@@ -2,6 +2,7 @@
 import { useReducer, useCallback } from 'react';
 import { ConversationLine, Message, Feedback } from '../types';
 import { getPronunciationFeedback } from '../services/geminiService';
+import { handleApiError } from '../utils/errorHandling';
 
 // --- State and Reducer ---
 
@@ -121,7 +122,7 @@ export const useRoleplay = () => {
 
     const addUserMessage = useCallback(async (transcript: string, line: ConversationLine) => {
         if (!transcript) return;
-        
+
         const messageId = createId();
         dispatch({ type: 'ADD_USER_MESSAGE_PENDING', payload: { id: messageId, transcript, line } });
 
@@ -129,8 +130,8 @@ export const useRoleplay = () => {
             const feedback = await getPronunciationFeedback(transcript, line.thai);
             dispatch({ type: 'UPDATE_USER_MESSAGE_FEEDBACK', payload: { id: messageId, feedback } });
         } catch (error) {
-            const errorMessage = error instanceof Error ? error.message : '不明なエラーが発生しました。';
-            dispatch({ type: 'UPDATE_USER_MESSAGE_ERROR', payload: { id: messageId, error: errorMessage } });
+            const apiError = handleApiError(error, 'フィードバック取得');
+            dispatch({ type: 'UPDATE_USER_MESSAGE_ERROR', payload: { id: messageId, error: apiError.message } });
         }
 
     }, []);

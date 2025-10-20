@@ -1,6 +1,7 @@
 
 import { ConversationLine, Feedback } from '../types';
 import { GoogleGenerativeAI, SchemaType } from "@google/generative-ai";
+import { handleApiError, withRetry, ApiError } from '../utils/errorHandling';
 
 // フロントエンドではサーバーサイドAPIを使用するため、直接的なAPIキーは不要
 // ただし、ローカル開発環境ではVITE_GEMINI_API_KEYを使用
@@ -9,11 +10,8 @@ const isProduction = import.meta.env.PROD;
 const isDevelopment = import.meta.env.DEV;
 
 export const generateConversation = async (topic: string): Promise<ConversationLine[]> => {
-    const maxRetries = 2;
-    const baseDelay = 2000; // 2 seconds
-
-    for (let attempt = 0; attempt <= maxRetries; attempt++) {
-        try {
+    return withRetry(
+        async () => {
             // ローカル開発環境では直接Gemini APIを呼び出す
             if (isDevelopment && import.meta.env.VITE_GEMINI_API_KEY) {
                 return await generateConversationDirect(topic);
@@ -27,57 +25,34 @@ export const generateConversation = async (topic: string): Promise<ConversationL
                 },
                 body: JSON.stringify({ topic }),
             });
-            
+
             if (!response.ok) {
-                const errorData = await response.json();
-                
-                // Handle different error types
-                if (response.status === 503 && attempt < maxRetries) {
-                    const retryAfter = errorData.retryAfter || (baseDelay * Math.pow(2, attempt)) / 1000;
-                    console.warn(`API overloaded, retrying in ${retryAfter} seconds (attempt ${attempt + 1}/${maxRetries + 1})`);
-                    await new Promise(resolve => setTimeout(resolve, retryAfter * 1000));
-                    continue; // Retry the request
-                }
-                
-                // Provide user-friendly error messages
-                let userMessage = errorData.error || 'APIリクエストが失敗しました';
-                if (response.status === 503) {
-                    userMessage = 'AIサービスが混雑しています。しばらく待ってから再度お試しください。';
-                } else if (response.status === 429) {
-                    userMessage = 'API使用制限に達しました。しばらく待ってから再度お試しください。';
-                } else if (response.status === 401) {
-                    userMessage = 'API認証エラーが発生しました。';
-                } else if (response.status === 502) {
-                    userMessage = 'AI応答の解析に失敗しました。もう一度お試しください。';
-                }
-                
-                throw new Error(userMessage);
+                const errorData = await response.json().catch(() => ({}));
+                const error = handleApiError({ status: response.status, ...errorData }, '会話生成');
+                throw new Error(error.message);
             }
-            
+
             const data = await response.json();
-            return data.conversation as ConversationLine[];
-            
-        } catch (error) {
-            console.error(`Error generating conversation (attempt ${attempt + 1}):`, error);
-            
-            // Don't retry on network errors or non-503 errors on last attempt
-            if (attempt === maxRetries || 
-                (error instanceof TypeError && error.message.includes('fetch'))) {
-                
-                // ネットワークエラーの場合
-                if (error instanceof TypeError && error.message.includes('fetch')) {
-                    throw new Error("ネットワーク接続エラー。インターネット接続を確認してください。");
-                }
-                
-                throw new Error(`AIとの会話生成に失敗しました: ${error?.message || '不明なエラー'}`);
+
+            if (!data.conversation) {
+                throw new Error('Empty response from Gemini API');
             }
-            
-            // Wait before retrying for other errors
-            await new Promise(resolve => setTimeout(resolve, baseDelay * Math.pow(2, attempt)));
+
+            return data.conversation as ConversationLine[];
+        },
+        {
+            maxRetries: 2,
+            delay: 2000,
+            backoffMultiplier: 2,
+            shouldRetry: (error) => {
+                const apiError = handleApiError(error, '会話生成');
+                return apiError.retryable;
+            }
         }
-    }
-    
-    throw new Error('会話生成に失敗しました。しばらく待ってから再度お試しください。');
+    ).catch((error) => {
+        const apiError = handleApiError(error, '会話生成');
+        throw new Error(apiError.message);
+    });
 };
 
 // ローカル開発環境用：直接Gemini APIを呼び出す
@@ -177,7 +152,8 @@ async function generateConversationDirect(topic: string): Promise<ConversationLi
     const text = response.response.text();
 
     if (!text) {
-        throw new Error('Empty response from Gemini API');
+        const error = handleApiError(new Error('Empty response from Gemini API'), 'Gemini API');
+        throw new Error(error.message);
     }
 
     console.log('🤖 Direct API - Raw JSON response length:', text.length);
@@ -187,35 +163,43 @@ async function generateConversationDirect(topic: string): Promise<ConversationLi
         return conversation as ConversationLine[];
     } catch (parseError) {
         console.error('❌ JSON Parse Error:', parseError);
-        throw new Error('AI応答の解析に失敗しました。もう一度お試しください。');
+        const error = handleApiError(parseError, 'JSON解析');
+        throw new Error(error.message);
     }
 }
 
 export const getPronunciationFeedback = async (transcript: string, correctPhrase: string): Promise<Feedback> => {
-    try {
-        const response = await fetch('/api/feedback', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ transcript, correctPhrase }),
-        });
-        
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || 'フィードバックAPIリクエストが失敗しました');
+    return withRetry(
+        async () => {
+            const response = await fetch('/api/feedback', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ transcript, correctPhrase }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                const error = handleApiError({ status: response.status, ...errorData }, 'フィードバック取得');
+                throw new Error(error.message);
+            }
+
+            const data = await response.json();
+
+            if (!data.feedback) {
+                throw new Error('Empty feedback response');
+            }
+
+            return data.feedback as Feedback;
+        },
+        {
+            maxRetries: 2,
+            delay: 1000,
+            backoffMultiplier: 2
         }
-        
-        const data = await response.json();
-        return data.feedback as Feedback;
-    } catch (error) {
-        console.error("Error generating pronunciation feedback:", error);
-        
-        // ネットワークエラーの場合
-        if (error instanceof TypeError && error.message.includes('fetch')) {
-            throw new Error("ネットワーク接続エラー。インターネット接続を確認してください。");
-        }
-        
-        throw new Error(`フィードバックの取得に失敗しました: ${error?.message || '不明なエラー'}`);
-    }
+    ).catch((error) => {
+        const apiError = handleApiError(error, 'フィードバック取得');
+        throw new Error(apiError.message);
+    });
 };
