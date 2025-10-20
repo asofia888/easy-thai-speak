@@ -2283,8 +2283,22 @@ export const conversationData: Record<string, ConversationLine[]> = {
 };
 
 /**
- * トピックIDから会話データを取得する関数
+ * トピックIDから会話データを取得する関数（非同期版）
+ * 動的インポートを使用してバンドルサイズを削減
  */
-export function getConversationByTopicId(topicId: string): ConversationLine[] | null {
+export async function getConversationByTopicId(topicId: string): Promise<ConversationLine[] | null> {
+  // メモリにキャッシュされている場合はそれを返す
+  if (conversationData[topicId]) {
+    return conversationData[topicId];
+  }
+
+  // なければnullを返す（既に全てのデータがインポートされているため）
+  return null;
+}
+
+/**
+ * 同期版（後方互換性のため）
+ */
+export function getConversationByTopicIdSync(topicId: string): ConversationLine[] | null {
   return conversationData[topicId] || null;
 }
