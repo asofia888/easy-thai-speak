@@ -1,5 +1,5 @@
 // Vercel Serverless Function for Gemini Conversation API
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenerativeAI, SchemaType } from "@google/generative-ai";
 import { handleCORS, setSecurityHeaders, checkRateLimit, validateTopicInput } from './_middleware.js';
 
 export default async function handler(req, res) {
@@ -62,49 +62,49 @@ export default async function handler(req, res) {
         });
 
         const genAI = new GoogleGenerativeAI(apiKey);
-        const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
         
         // Retry configuration for handling API overload
         const maxRetries = 3;
         const baseDelay = 1000; // 1 second
         
         const conversationSchema = {
-            type: "array",
+            type: SchemaType.ARRAY,
             items: {
-                type: "object",
+                type: SchemaType.OBJECT,
                 properties: {
-                    speaker: { type: "string", description: "話者名 (例: A, B, 店員)" },
-                    thai: { type: "string", description: "タイ語のセリフ" },
-                    pronunciation: { type: "string", description: "Paiboon+方式のローマ字発音表記" },
-                    japanese: { type: "string", description: "日本語訳" },
+                    speaker: { type: SchemaType.STRING, description: "話者名 (例: A, B, 店員)" },
+                    thai: { type: SchemaType.STRING, description: "タイ語のセリフ" },
+                    pronunciation: { type: SchemaType.STRING, description: "Paiboon+方式のローマ字発音表記" },
+                    japanese: { type: SchemaType.STRING, description: "日本語訳" },
                     words: {
-                        type: "array",
+                        type: SchemaType.ARRAY,
                         description: "セリフを構成する単語のリスト",
                         items: {
-                            type: "object",
+                            type: SchemaType.OBJECT,
                             properties: {
-                                thai: { type: "string", description: "単語のタイ語表記" },
-                                pronunciation: { type: "string", description: "単語のPaiboon+方式ローマ字発音表記" },
-                                japanese: { type: "string", description: "単語の日本語訳" },
+                                thai: { type: SchemaType.STRING, description: "単語のタイ語表記" },
+                                pronunciation: { type: SchemaType.STRING, description: "単語のPaiboon+方式ローマ字発音表記" },
+                                japanese: { type: SchemaType.STRING, description: "単語の日本語訳" },
                             },
                             required: ["thai", "pronunciation", "japanese"],
                         },
                     },
                     grammarPoint: {
-                        type: "object",
+                        type: SchemaType.OBJECT,
                         description: "このセリフに含まれる重要な文法ポイントの解説。該当する場合のみ生成する。",
                         properties: {
-                            title: { type: "string", description: "文法ポイントのタイトル（例：文末詞「〜です/ます」）" },
-                            explanation: { type: "string", description: "文法ルールの分かりやすい解説" },
+                            title: { type: SchemaType.STRING, description: "文法ポイントのタイトル（例：文末詞「〜です/ます」）" },
+                            explanation: { type: SchemaType.STRING, description: "文法ルールの分かりやすい解説" },
                             examples: {
-                                type: "array",
+                                type: SchemaType.ARRAY,
                                 description: "文法を使った例文のリスト",
                                 items: {
-                                    type: "object",
+                                    type: SchemaType.OBJECT,
                                     properties: {
-                                        thai: { type: "string", description: "例文のタイ語表記" },
-                                        pronunciation: { type: "string", description: "例文のPaiboon+方式ローマ字発音表記" },
-                                        japanese: { type: "string", description: "例文の日本語訳" },
+                                        thai: { type: SchemaType.STRING, description: "例文のタイ語表記" },
+                                        pronunciation: { type: SchemaType.STRING, description: "例文のPaiboon+方式ローマ字発音表記" },
+                                        japanese: { type: SchemaType.STRING, description: "例文の日本語訳" },
                                     },
                                     required: ["thai", "pronunciation", "japanese"],
                                 }
@@ -145,8 +145,8 @@ export default async function handler(req, res) {
                         }]
                     }],
                     generationConfig: {
-                        response_mime_type: "application/json", // JSONモードを有効化
-                        response_schema: conversationSchema, // スキーマを明示的に指定
+                        responseMimeType: "application/json", // JSONモードを有効化
+                        responseSchema: conversationSchema, // スキーマを明示的に指定
                         temperature: 0.6,
                         topP: 0.9,
                         topK: 40,
