@@ -51,7 +51,7 @@ export default async function handler(req, res) {
         }
 
         const genAI = new GoogleGenerativeAI(apiKey);
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
         
         // Retry configuration for handling API overload
         const maxRetries = 3;
