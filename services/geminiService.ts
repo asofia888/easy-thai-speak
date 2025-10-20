@@ -18,27 +18,38 @@ export const generateConversation = async (topic: string): Promise<ConversationL
             }
 
             // 本番環境またはAPIキーがない場合はサーバーレス関数を使用
-            const response = await fetch('/api/conversation', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ topic }),
-            });
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 60000); // 60秒タイムアウト
 
-            if (!response.ok) {
-                const errorData = await response.json().catch(() => ({}));
-                const error = handleApiError({ status: response.status, ...errorData }, '会話生成');
-                throw new Error(error.message);
+            try {
+                const response = await fetch('/api/conversation', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ topic }),
+                    signal: controller.signal,
+                });
+
+                clearTimeout(timeoutId);
+
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    const error = handleApiError({ status: response.status, ...errorData }, '会話生成');
+                    throw new Error(error.message);
+                }
+
+                const data = await response.json();
+
+                if (!data.conversation) {
+                    throw new Error('Empty response from Gemini API');
+                }
+
+                return data.conversation as ConversationLine[];
+            } catch (error) {
+                clearTimeout(timeoutId);
+                throw error;
             }
-
-            const data = await response.json();
-
-            if (!data.conversation) {
-                throw new Error('Empty response from Gemini API');
-            }
-
-            return data.conversation as ConversationLine[];
         },
         {
             maxRetries: 2,
@@ -171,27 +182,38 @@ async function generateConversationDirect(topic: string): Promise<ConversationLi
 export const getPronunciationFeedback = async (transcript: string, correctPhrase: string): Promise<Feedback> => {
     return withRetry(
         async () => {
-            const response = await fetch('/api/feedback', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ transcript, correctPhrase }),
-            });
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 30000); // 30秒タイムアウト
 
-            if (!response.ok) {
-                const errorData = await response.json().catch(() => ({}));
-                const error = handleApiError({ status: response.status, ...errorData }, 'フィードバック取得');
-                throw new Error(error.message);
+            try {
+                const response = await fetch('/api/feedback', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ transcript, correctPhrase }),
+                    signal: controller.signal,
+                });
+
+                clearTimeout(timeoutId);
+
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    const error = handleApiError({ status: response.status, ...errorData }, 'フィードバック取得');
+                    throw new Error(error.message);
+                }
+
+                const data = await response.json();
+
+                if (!data.feedback) {
+                    throw new Error('Empty feedback response');
+                }
+
+                return data.feedback as Feedback;
+            } catch (error) {
+                clearTimeout(timeoutId);
+                throw error;
             }
-
-            const data = await response.json();
-
-            if (!data.feedback) {
-                throw new Error('Empty feedback response');
-            }
-
-            return data.feedback as Feedback;
         },
         {
             maxRetries: 2,
