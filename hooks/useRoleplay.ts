@@ -47,6 +47,7 @@ const roleplayReducer = (state: RoleplayState, action: RoleplayAction): Roleplay
                 text: action.payload.line.thai,
                 pronunciation: action.payload.line.pronunciation,
                 isUser: false,
+                timestamp: new Date(),
             };
             return {
                 ...state,
@@ -64,6 +65,7 @@ const roleplayReducer = (state: RoleplayState, action: RoleplayAction): Roleplay
                 correctPhrase: line.thai,
                 correctPronunciation: line.pronunciation,
                 isFeedbackLoading: true,
+                timestamp: new Date(),
             };
             return {
                 ...state,

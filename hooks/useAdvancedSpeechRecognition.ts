@@ -27,7 +27,7 @@ export const useAdvancedSpeechRecognition = (): AdvancedSpeechRecognitionHook =>
   const mediaStreamRef = useRef<MediaStream | null>(null);
   const isAnalysisMode = useRef(false);
   const analysisTargetText = useRef<string>('');
-  const analysisExpectedTone = useRef<ThaiTone | undefined>();
+  const analysisExpectedTone = useRef<ThaiTone | undefined>(undefined);
 
   useEffect(() => {
     if (!isSupported) return;

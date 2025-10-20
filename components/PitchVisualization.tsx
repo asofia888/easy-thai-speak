@@ -25,15 +25,15 @@ export const PitchVisualization: React.FC<PitchVisualizationProps> = ({
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    drawPitchContour(ctx, pitchData, expectedTone, width, height);
+    drawPitchContour(ctx, pitchData, width, height, expectedTone);
   }, [pitchData, expectedTone, width, height]);
 
   const drawPitchContour = (
     ctx: CanvasRenderingContext2D,
     data: PitchAnalysis,
-    expected?: ThaiTone,
     w: number,
-    h: number
+    h: number,
+    expected?: ThaiTone
   ) => {
     // Clear canvas
     ctx.fillStyle = '#0f172a';
