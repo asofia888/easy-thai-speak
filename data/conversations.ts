@@ -871,6 +871,1373 @@ export const advancedJobInterview: ConversationLine[] = [
   },
 ];
 
+// a-opening-bank-account: 銀行口座の開設
+export const advancedOpeningBankAccount: ConversationLine[] = [
+  {
+    speaker: '客',
+    thai: 'ผมต้องการเปิดบัญชีเงินฝากครับ',
+    pronunciation: 'phǒm tɔ̂ng-gaan pə̀ət ban-chii ngəən-fàak khráp',
+    japanese: '預金口座を開設したいのですが',
+    words: [
+      { thai: 'ผม', pronunciation: 'phǒm', japanese: '私(男性)' },
+      { thai: 'ต้องการ', pronunciation: 'tɔ̂ng-gaan', japanese: '必要とする、欲しい' },
+      { thai: 'เปิด', pronunciation: 'pə̀ət', japanese: '開く' },
+      { thai: 'บัญชี', pronunciation: 'ban-chii', japanese: '口座' },
+      { thai: 'เงินฝาก', pronunciation: 'ngəən-fàak', japanese: '預金' },
+    ]
+  },
+  {
+    speaker: '行員',
+    thai: 'ได้ครับ มีเอกสารอะไรบ้างครับ',
+    pronunciation: 'dâi khráp mii èek-gà-sǎan à-rai bâang khráp',
+    japanese: 'はい、どんな書類をお持ちですか',
+    words: [
+      { thai: 'ได้', pronunciation: 'dâi', japanese: 'できる' },
+      { thai: 'มี', pronunciation: 'mii', japanese: 'ある、持っている' },
+      { thai: 'เอกสาร', pronunciation: 'èek-gà-sǎan', japanese: '書類' },
+      { thai: 'อะไรบ้าง', pronunciation: 'à-rai bâang', japanese: '何か(複数)' },
+    ]
+  },
+  {
+    speaker: '客',
+    thai: 'มีพาสปอร์ตกับวีซ่าครับ',
+    pronunciation: 'mii phaas-pɔ̀ɔt gàp wii-sâa khráp',
+    japanese: 'パスポートとビザがあります',
+    words: [
+      { thai: 'มี', pronunciation: 'mii', japanese: 'ある' },
+      { thai: 'พาสปอร์ต', pronunciation: 'phaas-pɔ̀ɔt', japanese: 'パスポート' },
+      { thai: 'กับ', pronunciation: 'gàp', japanese: 'と' },
+      { thai: 'วีซ่า', pronunciation: 'wii-sâa', japanese: 'ビザ' },
+    ]
+  },
+  {
+    speaker: '行員',
+    thai: 'ต้องฝากเงินขั้นต่ำห้าพันบาทครับ',
+    pronunciation: 'tɔ̂ng fàak-ngəən khân-tàm hâa-phan bàat khráp',
+    japanese: '最低5000バーツの預金が必要です',
+    words: [
+      { thai: 'ต้อง', pronunciation: 'tɔ̂ng', japanese: '〜しなければならない' },
+      { thai: 'ฝากเงิน', pronunciation: 'fàak-ngəən', japanese: '預金する' },
+      { thai: 'ขั้นต่ำ', pronunciation: 'khân-tàm', japanese: '最低' },
+      { thai: 'ห้าพันบาท', pronunciation: 'hâa-phan bàat', japanese: '5000バーツ' },
+    ]
+  },
+];
+
+// a-business-meeting: ビジネス会議
+export const advancedBusinessMeeting: ConversationLine[] = [
+  {
+    speaker: '議長',
+    thai: 'วันนี้เราจะหารือเรื่องโครงการใหม่ครับ',
+    pronunciation: 'wan-níi rao jà hǎa-rʉʉ rʉ̂ang khroo ng-gaan mài khráp',
+    japanese: '今日は新プロジェクトについて議論します',
+    words: [
+      { thai: 'วันนี้', pronunciation: 'wan-níi', japanese: '今日' },
+      { thai: 'เรา', pronunciation: 'rao', japanese: '私たち' },
+      { thai: 'จะ', pronunciation: 'jà', japanese: '〜する(未来)' },
+      { thai: 'หารือ', pronunciation: 'hǎa-rʉʉ', japanese: '議論する' },
+      { thai: 'เรื่อง', pronunciation: 'rʉ̂ang', japanese: '〜の件' },
+      { thai: 'โครงการใหม่', pronunciation: 'khroo ng-gaan mài', japanese: '新プロジェクト' },
+    ]
+  },
+  {
+    speaker: '参加者A',
+    thai: 'ผมขอเสนอแนวคิดหนึ่งครับ',
+    pronunciation: 'phǒm khɔ̌ɔ-sà-nə̌ə nɛɛo-khít nʉ̀ng khráp',
+    japanese: '一つ提案があります',
+    words: [
+      { thai: 'ผม', pronunciation: 'phǒm', japanese: '私(男性)' },
+      { thai: 'ขอเสนอ', pronunciation: 'khɔ̌ɔ-sà-nə̌ə', japanese: '提案する' },
+      { thai: 'แนวคิด', pronunciation: 'nɛɛo-khít', japanese: 'アイデア、考え' },
+      { thai: 'หนึ่ง', pronunciation: 'nʉ̀ng', japanese: '一つ' },
+    ]
+  },
+  {
+    speaker: '議長',
+    thai: 'เชิญพูดได้เลยครับ',
+    pronunciation: 'chəən phûut dâi ləəi khráp',
+    japanese: 'どうぞお話しください',
+    words: [
+      { thai: 'เชิญ', pronunciation: 'chəən', japanese: 'どうぞ' },
+      { thai: 'พูด', pronunciation: 'phûut', japanese: '話す' },
+      { thai: 'ได้เลย', pronunciation: 'dâi ləəi', japanese: 'どうぞ' },
+    ]
+  },
+  {
+    speaker: '参加者A',
+    thai: 'ผมคิดว่าเราควรเน้นการตลาดออนไลน์มากขึ้นครับ',
+    pronunciation: 'phǒm khít wâa rao khuuan nén gaan-tà-làat ɔɔn-lai mâak-khʉ̂n khráp',
+    japanese: 'オンラインマーケティングにもっと力を入れるべきだと思います',
+    words: [
+      { thai: 'ผม', pronunciation: 'phǒm', japanese: '私(男性)' },
+      { thai: 'คิดว่า', pronunciation: 'khít wâa', japanese: '〜と思う' },
+      { thai: 'เรา', pronunciation: 'rao', japanese: '私たち' },
+      { thai: 'ควร', pronunciation: 'khuuan', japanese: '〜すべきだ' },
+      { thai: 'เน้น', pronunciation: 'nén', japanese: '強調する、力を入れる' },
+      { thai: 'การตลาดออนไลน์', pronunciation: 'gaan-tà-làat ɔɔn-lai', japanese: 'オンラインマーケティング' },
+      { thai: 'มากขึ้น', pronunciation: 'mâak-khʉ̂n', japanese: 'もっと多く' },
+    ]
+  },
+];
+
+// a-discussing-news: ニュースについて議論する
+export const advancedDiscussingNews: ConversationLine[] = [
+  {
+    speaker: 'A',
+    thai: 'คุณเห็นข่าวเมื่อเช้าไหมครับ',
+    pronunciation: 'khun hěn khàao mʉ̂a-cháao mǎi khráp',
+    japanese: '今朝のニュースを見ましたか',
+    words: [
+      { thai: 'คุณ', pronunciation: 'khun', japanese: 'あなた' },
+      { thai: 'เห็น', pronunciation: 'hěn', japanese: '見る' },
+      { thai: 'ข่าว', pronunciation: 'khàao', japanese: 'ニュース' },
+      { thai: 'เมื่อเช้า', pronunciation: 'mʉ̂a-cháao', japanese: '今朝' },
+      { thai: 'ไหม', pronunciation: 'mǎi', japanese: '〜ですか' },
+    ]
+  },
+  {
+    speaker: 'B',
+    thai: 'เห็นค่ะ เรื่องอะไรคะ',
+    pronunciation: 'hěn khâ rʉ̂ang à-rai khá',
+    japanese: '見ました、何の件ですか',
+    words: [
+      { thai: 'เห็น', pronunciation: 'hěn', japanese: '見る' },
+      { thai: 'เรื่อง', pronunciation: 'rʉ̂ang', japanese: '〜の件' },
+      { thai: 'อะไร', pronunciation: 'à-rai', japanese: '何' },
+    ]
+  },
+  {
+    speaker: 'A',
+    thai: 'เรื่องเศรษฐกิจครับ ผมคิดว่าน่าสนใจมาก',
+    pronunciation: 'rʉ̂ang sèet-thà-gìt khráp phǒm khít wâa nâa-sǒn-jai mâak',
+    japanese: '経済の件です、とても興味深いと思いました',
+    words: [
+      { thai: 'เรื่อง', pronunciation: 'rʉ̂ang', japanese: '〜の件' },
+      { thai: 'เศรษฐกิจ', pronunciation: 'sèet-thà-gìt', japanese: '経済' },
+      { thai: 'ผม', pronunciation: 'phǒm', japanese: '私(男性)' },
+      { thai: 'คิดว่า', pronunciation: 'khít wâa', japanese: '〜と思う' },
+      { thai: 'น่าสนใจ', pronunciation: 'nâa-sǒn-jai', japanese: '興味深い' },
+      { thai: 'มาก', pronunciation: 'mâak', japanese: 'とても' },
+    ]
+  },
+  {
+    speaker: 'B',
+    thai: 'ฉันเห็นด้วยค่ะ มันจะส่งผลกระทบต่อหลายคนเลย',
+    pronunciation: 'chǎn hěn-dûai khâ man jà sòng-phǒn-grà-thóp tɔ̀ɔ lǎai khon ləəi',
+    japanese: '賛成です、多くの人に影響を与えるでしょう',
+    words: [
+      { thai: 'ฉัน', pronunciation: 'chǎn', japanese: '私' },
+      { thai: 'เห็นด้วย', pronunciation: 'hěn-dûai', japanese: '賛成する' },
+      { thai: 'มัน', pronunciation: 'man', japanese: 'それ' },
+      { thai: 'จะ', pronunciation: 'jà', japanese: '〜でしょう' },
+      { thai: 'ส่งผลกระทบ', pronunciation: 'sòng-phǒn-grà-thóp', japanese: '影響を与える' },
+      { thai: 'ต่อ', pronunciation: 'tɔ̀ɔ', japanese: '〜に対して' },
+      { thai: 'หลายคน', pronunciation: 'lǎai khon', japanese: '多くの人' },
+    ]
+  },
+];
+
+// a-thai-culture: タイの文化について話す
+export const advancedThaiCulture: ConversationLine[] = [
+  {
+    speaker: 'A',
+    thai: 'คุณรู้จักประเพณีสงกรานต์ไหมครับ',
+    pronunciation: 'khun rúu-jàk prà-phee-nii Sǒng-graan mǎi khráp',
+    japanese: 'ソンクラーンの伝統をご存知ですか',
+    words: [
+      { thai: 'คุณ', pronunciation: 'khun', japanese: 'あなた' },
+      { thai: 'รู้จัก', pronunciation: 'rúu-jàk', japanese: '知っている' },
+      { thai: 'ประเพณี', pronunciation: 'prà-phee-nii', japanese: '伝統、習慣' },
+      { thai: 'สงกรานต์', pronunciation: 'Sǒng-graan', japanese: 'ソンクラーン' },
+      { thai: 'ไหม', pronunciation: 'mǎi', japanese: '〜ですか' },
+    ]
+  },
+  {
+    speaker: 'B',
+    thai: 'รู้ค่ะ เป็นเทศกาลปีใหม่ไทยใช่ไหมคะ',
+    pronunciation: 'rúu khâ pen thêet-sà-gaan pii-mài thai châi mǎi khá',
+    japanese: '知っています、タイの正月ですよね',
+    words: [
+      { thai: 'รู้', pronunciation: 'rúu', japanese: '知っている' },
+      { thai: 'เป็น', pronunciation: 'pen', japanese: '〜である' },
+      { thai: 'เทศกาล', pronunciation: 'thêet-sà-gaan', japanese: '祭り、フェスティバル' },
+      { thai: 'ปีใหม่ไทย', pronunciation: 'pii-mài thai', japanese: 'タイの正月' },
+      { thai: 'ใช่ไหม', pronunciation: 'châi mǎi', japanese: '〜ですよね' },
+    ]
+  },
+  {
+    speaker: 'A',
+    thai: 'ถูกต้องครับ เป็นวันที่สำคัญมากสำหรับคนไทย',
+    pronunciation: 'thùuk-tɔ̂ng khráp pen wan thîi sǎm-khan mâak sǎm-ràp khon-thai',
+    japanese: '正解です、タイ人にとってとても重要な日です',
+    words: [
+      { thai: 'ถูกต้อง', pronunciation: 'thùuk-tɔ̂ng', japanese: '正しい' },
+      { thai: 'เป็น', pronunciation: 'pen', japanese: '〜である' },
+      { thai: 'วันที่สำคัญ', pronunciation: 'wan thîi sǎm-khan', japanese: '重要な日' },
+      { thai: 'มาก', pronunciation: 'mâak', japanese: 'とても' },
+      { thai: 'สำหรับ', pronunciation: 'sǎm-ràp', japanese: '〜のために' },
+      { thai: 'คนไทย', pronunciation: 'khon-thai', japanese: 'タイ人' },
+    ]
+  },
+  {
+    speaker: 'B',
+    thai: 'ช่วงนั้นคนไทยทำอะไรกันบ้างคะ',
+    pronunciation: 'chûang nán khon-thai tham à-rai gan bâang khá',
+    japanese: 'その時期、タイ人は何をしますか',
+    words: [
+      { thai: 'ช่วงนั้น', pronunciation: 'chûang nán', japanese: 'その時期' },
+      { thai: 'คนไทย', pronunciation: 'khon-thai', japanese: 'タイ人' },
+      { thai: 'ทำ', pronunciation: 'tham', japanese: 'する' },
+      { thai: 'อะไร', pronunciation: 'à-rai', japanese: '何' },
+      { thai: 'กันบ้าง', pronunciation: 'gan bâang', japanese: '一緒に(複数)' },
+    ]
+  },
+];
+
+// a-expressing-emotions: 感情や意見を詳しく表現する
+export const advancedExpressingEmotions: ConversationLine[] = [
+  {
+    speaker: 'A',
+    thai: 'ผมรู้สึกเสียใจมากเลยครับ',
+    pronunciation: 'phǒm rúu-sʉ̀k sǐa-jai mâak ləəi khráp',
+    japanese: 'とても悲しいです',
+    words: [
+      { thai: 'ผม', pronunciation: 'phǒm', japanese: '私(男性)' },
+      { thai: 'รู้สึก', pronunciation: 'rúu-sʉ̀k', japanese: '感じる' },
+      { thai: 'เสียใจ', pronunciation: 'sǐa-jai', japanese: '悲しい' },
+      { thai: 'มากเลย', pronunciation: 'mâak ləəi', japanese: 'とても' },
+    ]
+  },
+  {
+    speaker: 'B',
+    thai: 'เกิดอะไรขึ้นหรอคะ',
+    pronunciation: 'gə̀ət à-rai khʉ̂n rɔ̌ɔ khá',
+    japanese: '何があったのですか',
+    words: [
+      { thai: 'เกิด', pronunciation: 'gə̀ət', japanese: '起こる' },
+      { thai: 'อะไร', pronunciation: 'à-rai', japanese: '何' },
+      { thai: 'ขึ้น', pronunciation: 'khʉ̂n', japanese: '上がる、起こる' },
+      { thai: 'หรอ', pronunciation: 'rɔ̌ɔ', japanese: '〜ですか(口語)' },
+    ]
+  },
+  {
+    speaker: 'A',
+    thai: 'โครงการที่ผมทำหนักมานานล้มเหลวครับ',
+    pronunciation: 'khroo ng-gaan thîi phǒm tham nàk maa naan lóm-lěw khráp',
+    japanese: '長い間頑張ってきたプロジェクトが失敗しました',
+    words: [
+      { thai: 'โครงการ', pronunciation: 'khroo ng-gaan', japanese: 'プロジェクト' },
+      { thai: 'ที่', pronunciation: 'thîi', japanese: '〜という' },
+      { thai: 'ผม', pronunciation: 'phǒm', japanese: '私(男性)' },
+      { thai: 'ทำหนัก', pronunciation: 'tham nàk', japanese: '頑張る' },
+      { thai: 'มานาน', pronunciation: 'maa naan', japanese: '長い間' },
+      { thai: 'ล้มเหลว', pronunciation: 'lóm-lěw', japanese: '失敗する' },
+    ]
+  },
+  {
+    speaker: 'B',
+    thai: 'เข้าใจความรู้สึกค่ะ แต่อย่าท้อนะคะ',
+    pronunciation: 'khâo-jai khwaam-rúu-sʉ̀k khâ tɛ̀ɛ yàa thɔ́ɔ ná khá',
+    japanese: 'お気持ちわかります、でも諦めないでくださいね',
+    words: [
+      { thai: 'เข้าใจ', pronunciation: 'khâo-jai', japanese: '理解する' },
+      { thai: 'ความรู้สึก', pronunciation: 'khwaam-rúu-sʉ̀k', japanese: '気持ち' },
+      { thai: 'แต่', pronunciation: 'tɛ̀ɛ', japanese: 'しかし' },
+      { thai: 'อย่าท้อ', pronunciation: 'yàa thɔ́ɔ', japanese: '諦めないで' },
+      { thai: 'นะคะ', pronunciation: 'ná khá', japanese: '〜ね(女性)' },
+    ]
+  },
+];
+
+// a-making-complaint: クレームを入れる
+export const advancedMakingComplaint: ConversationLine[] = [
+  {
+    speaker: '客',
+    thai: 'ขอโทษครับ ผมมีปัญหากับสินค้าที่ซื้อไปครับ',
+    pronunciation: 'khɔ̌ɔ-thôot khráp phǒm mii pan-hǎa gàp sǐn-kháa thîi sʉ́ʉ pai khráp',
+    japanese: 'すみません、購入した商品に問題があります',
+    words: [
+      { thai: 'ขอโทษ', pronunciation: 'khɔ̌ɔ-thôot', japanese: 'すみません' },
+      { thai: 'ผม', pronunciation: 'phǒm', japanese: '私(男性)' },
+      { thai: 'มี', pronunciation: 'mii', japanese: 'ある' },
+      { thai: 'ปัญหา', pronunciation: 'pan-hǎa', japanese: '問題' },
+      { thai: 'กับ', pronunciation: 'gàp', japanese: '〜に関して' },
+      { thai: 'สินค้า', pronunciation: 'sǐn-kháa', japanese: '商品' },
+      { thai: 'ที่ซื้อไป', pronunciation: 'thîi sʉ́ʉ pai', japanese: '購入した' },
+    ]
+  },
+  {
+    speaker: '店員',
+    thai: 'เสียใจด้วยค่ะ เกิดปัญหาอะไรคะ',
+    pronunciation: 'sǐa-jai dûai khâ gə̀ət pan-hǎa à-rai khá',
+    japanese: '申し訳ございません、どのような問題ですか',
+    words: [
+      { thai: 'เสียใจด้วย', pronunciation: 'sǐa-jai dûai', japanese: '残念です' },
+      { thai: 'เกิด', pronunciation: 'gə̀ət', japanese: '起こる' },
+      { thai: 'ปัญหา', pronunciation: 'pan-hǎa', japanese: '問題' },
+      { thai: 'อะไร', pronunciation: 'à-rai', japanese: '何' },
+    ]
+  },
+  {
+    speaker: '客',
+    thai: 'สินค้าชำรุดครับ ผมต้องการเปลี่ยนหรือคืนเงิน',
+    pronunciation: 'sǐn-kháa cham-rút khráp phǒm tɔ̂ng-gaan plìian rʉ̌ʉ khəən-ngəən',
+    japanese: '商品が壊れています、交換か返金をお願いしたいのですが',
+    words: [
+      { thai: 'สินค้า', pronunciation: 'sǐn-kháa', japanese: '商品' },
+      { thai: 'ชำรุด', pronunciation: 'cham-rút', japanese: '壊れている' },
+      { thai: 'ผม', pronunciation: 'phǒm', japanese: '私(男性)' },
+      { thai: 'ต้องการ', pronunciation: 'tɔ̂ng-gaan', japanese: '欲しい' },
+      { thai: 'เปลี่ยน', pronunciation: 'plìian', japanese: '交換する' },
+      { thai: 'หรือ', pronunciation: 'rʉ̌ʉ', japanese: 'または' },
+      { thai: 'คืนเงิน', pronunciation: 'khəən-ngəən', japanese: '返金' },
+    ]
+  },
+  {
+    speaker: '店員',
+    thai: 'ได้ค่ะ ขอดูใบเสร็จหน่อยได้ไหมคะ',
+    pronunciation: 'dâi khâ khɔ̌ɔ duu bai-sèt nɔ̀i dâi mǎi khá',
+    japanese: 'はい、レシートを見せていただけますか',
+    words: [
+      { thai: 'ได้', pronunciation: 'dâi', japanese: 'できる' },
+      { thai: 'ขอ', pronunciation: 'khɔ̌ɔ', japanese: '〜をお願いします' },
+      { thai: 'ดู', pronunciation: 'duu', japanese: '見る' },
+      { thai: 'ใบเสร็จ', pronunciation: 'bai-sèt', japanese: 'レシート' },
+      { thai: 'หน่อย', pronunciation: 'nɔ̀i', japanese: 'ちょっと' },
+      { thai: 'ได้ไหมคะ', pronunciation: 'dâi mǎi khá', japanese: '〜できますか(女性)' },
+    ]
+  },
+];
+
+// i-asking-directions: 道を尋ねる
+export const intermediateAskingDirections: ConversationLine[] = [
+  {
+    speaker: '旅行者',
+    thai: 'ขอโทษครับ สถานีรถไฟฟ้าอยู่ที่ไหนครับ',
+    pronunciation: 'khɔ̌ɔ-thôot khráp sà-thǎa-nii rót-fai-fáa yùu thîi-nǎi khráp',
+    japanese: 'すみません、BTS駅はどこですか',
+    words: [
+      { thai: 'ขอโทษ', pronunciation: 'khɔ̌ɔ-thôot', japanese: 'すみません' },
+      { thai: 'ครับ', pronunciation: 'khráp', japanese: '(男性の丁寧語)' },
+      { thai: 'สถานีรถไฟฟ้า', pronunciation: 'sà-thǎa-nii rót-fai-fáa', japanese: 'BTS駅' },
+      { thai: 'อยู่', pronunciation: 'yùu', japanese: 'ある' },
+      { thai: 'ที่ไหน', pronunciation: 'thîi-nǎi', japanese: 'どこ' },
+    ]
+  },
+  {
+    speaker: '地元の人',
+    thai: 'เดินตรงไปประมาณห้านาทีครับ จะเห็นอยู่ทางซ้ายมือ',
+    pronunciation: 'dəən trong pai prà-maan hâa naa-thii khráp jà hěn yùu thaang sáai-mʉʉ',
+    japanese: 'まっすぐ5分ほど歩くと、左手に見えます',
+    words: [
+      { thai: 'เดิน', pronunciation: 'dəən', japanese: '歩く' },
+      { thai: 'ตรงไป', pronunciation: 'trong pai', japanese: 'まっすぐ行く' },
+      { thai: 'ประมาณ', pronunciation: 'prà-maan', japanese: 'およそ' },
+      { thai: 'ห้านาที', pronunciation: 'hâa naa-thii', japanese: '5分' },
+      { thai: 'จะ', pronunciation: 'jà', japanese: '〜でしょう' },
+      { thai: 'เห็น', pronunciation: 'hěn', japanese: '見える' },
+      { thai: 'อยู่', pronunciation: 'yùu', japanese: 'ある' },
+      { thai: 'ทางซ้ายมือ', pronunciation: 'thaang sáai-mʉʉ', japanese: '左手に' },
+    ]
+  },
+  {
+    speaker: '旅行者',
+    thai: 'ต้องข้ามถนนไหมครับ',
+    pronunciation: 'tɔ̂ng khâam thà-nǒn mǎi khráp',
+    japanese: '道を渡る必要がありますか',
+    words: [
+      { thai: 'ต้อง', pronunciation: 'tɔ̂ng', japanese: '〜しなければならない' },
+      { thai: 'ข้าม', pronunciation: 'khâam', japanese: '渡る' },
+      { thai: 'ถนน', pronunciation: 'thà-nǒn', japanese: '道路' },
+      { thai: 'ไหม', pronunciation: 'mǎi', japanese: '〜ですか' },
+    ]
+  },
+  {
+    speaker: '地元の人',
+    thai: 'ไม่ต้องครับ เดินไปฝั่งเดียวกันเลย',
+    pronunciation: 'mâi-tɔ̂ng khráp dəən pai fàng-diiao-gan ləəi',
+    japanese: 'いいえ、同じ側をそのまま歩いてください',
+    words: [
+      { thai: 'ไม่ต้อง', pronunciation: 'mâi-tɔ̂ng', japanese: '〜する必要がない' },
+      { thai: 'เดินไป', pronunciation: 'dəən pai', japanese: '歩いて行く' },
+      { thai: 'ฝั่งเดียวกัน', pronunciation: 'fàng-diiao-gan', japanese: '同じ側' },
+      { thai: 'เลย', pronunciation: 'ləəi', japanese: 'そのまま' },
+    ]
+  },
+];
+
+// i-shopping-advanced: 買い物での交渉
+export const intermediateShoppingAdvanced: ConversationLine[] = [
+  {
+    speaker: '客',
+    thai: 'ลดได้ไหมครับ',
+    pronunciation: 'lót dâi mǎi khráp',
+    japanese: '値引きできますか',
+    words: [
+      { thai: 'ลด', pronunciation: 'lót', japanese: '値引きする' },
+      { thai: 'ได้ไหม', pronunciation: 'dâi mǎi', japanese: '〜できますか' },
+      { thai: 'ครับ', pronunciation: 'khráp', japanese: '(男性の丁寧語)' },
+    ]
+  },
+  {
+    speaker: '店員',
+    thai: 'ซื้อหลายชิ้นลดให้นะคะ',
+    pronunciation: 'sʉ́ʉ lǎai chín lót hâi ná khá',
+    japanese: 'たくさん買ってくれたら値引きしますよ',
+    words: [
+      { thai: 'ซื้อ', pronunciation: 'sʉ́ʉ', japanese: '買う' },
+      { thai: 'หลายชิ้น', pronunciation: 'lǎai chín', japanese: 'たくさん' },
+      { thai: 'ลดให้', pronunciation: 'lót hâi', japanese: '値引きしてあげる' },
+      { thai: 'นะคะ', pronunciation: 'ná khá', japanese: '〜ね(女性)' },
+    ],
+    grammarPoint: {
+      title: '条件を表す構文',
+      explanation: '「〜したら〜する」という条件表現は、2つの文を並べることで表現できます。',
+      examples: [
+        { thai: 'ซื้อมากลดให้', pronunciation: 'sʉ́ʉ mâak lót hâi', japanese: 'たくさん買ったら値引きする' },
+        { thai: 'มาเช้ามีของสด', pronunciation: 'maa cháao mii khɔ̌ɔng-sòt', japanese: '朝来たら新鮮なものがある' },
+      ]
+    }
+  },
+  {
+    speaker: '客',
+    thai: 'ซื้อสามชิ้นลดเท่าไหร่ครับ',
+    pronunciation: 'sʉ́ʉ sǎam chín lót thâo-rài khráp',
+    japanese: '3つ買ったらいくら値引きしてくれますか',
+    words: [
+      { thai: 'ซื้อ', pronunciation: 'sʉ́ʉ', japanese: '買う' },
+      { thai: 'สามชิ้น', pronunciation: 'sǎam chín', japanese: '3つ' },
+      { thai: 'ลด', pronunciation: 'lót', japanese: '値引きする' },
+      { thai: 'เท่าไหร่', pronunciation: 'thâo-rài', japanese: 'いくら' },
+    ]
+  },
+  {
+    speaker: '店員',
+    thai: 'ลดให้สิบเปอร์เซ็นต์ค่ะ',
+    pronunciation: 'lót hâi sìp pəə-sen khâ',
+    japanese: '10%値引きします',
+    words: [
+      { thai: 'ลดให้', pronunciation: 'lót hâi', japanese: '値引きしてあげる' },
+      { thai: 'สิบเปอร์เซ็นต์', pronunciation: 'sìp pəə-sen', japanese: '10パーセント' },
+    ]
+  },
+];
+
+// i-hotel-checkin: ホテルでチェックイン
+export const intermediateHotelCheckin: ConversationLine[] = [
+  {
+    speaker: '客',
+    thai: 'ผมจองห้องไว้ครับ',
+    pronunciation: 'phǒm jɔɔng hɔ̂ng wái khráp',
+    japanese: '部屋を予約しています',
+    words: [
+      { thai: 'ผม', pronunciation: 'phǒm', japanese: '私(男性)' },
+      { thai: 'จอง', pronunciation: 'jɔɔng', japanese: '予約する' },
+      { thai: 'ห้อง', pronunciation: 'hɔ̂ng', japanese: '部屋' },
+      { thai: 'ไว้', pronunciation: 'wái', japanese: '〜しておく' },
+      { thai: 'ครับ', pronunciation: 'khráp', japanese: '(男性の丁寧語)' },
+    ]
+  },
+  {
+    speaker: 'スタッフ',
+    thai: 'ขอดูพาสปอร์ตหน่อยได้ไหมคะ',
+    pronunciation: 'khɔ̌ɔ duu phaas-pɔ̀ɔt nɔ̀i dâi mǎi khá',
+    japanese: 'パスポートを見せていただけますか',
+    words: [
+      { thai: 'ขอ', pronunciation: 'khɔ̌ɔ', japanese: '〜をお願いします' },
+      { thai: 'ดู', pronunciation: 'duu', japanese: '見る' },
+      { thai: 'พาสปอร์ต', pronunciation: 'phaas-pɔ̀ɔt', japanese: 'パスポート' },
+      { thai: 'หน่อย', pronunciation: 'nɔ̀i', japanese: 'ちょっと' },
+      { thai: 'ได้ไหมคะ', pronunciation: 'dâi mǎi khá', japanese: '〜できますか(女性)' },
+    ]
+  },
+  {
+    speaker: '客',
+    thai: 'ห้องมีวิวทะเลไหมครับ',
+    pronunciation: 'hɔ̂ng mii wiw thá-lee mǎi khráp',
+    japanese: '部屋は海の景色が見えますか',
+    words: [
+      { thai: 'ห้อง', pronunciation: 'hɔ̂ng', japanese: '部屋' },
+      { thai: 'มี', pronunciation: 'mii', japanese: 'ある' },
+      { thai: 'วิว', pronunciation: 'wiw', japanese: '景色' },
+      { thai: 'ทะเล', pronunciation: 'thá-lee', japanese: '海' },
+      { thai: 'ไหม', pronunciation: 'mǎi', japanese: '〜ですか' },
+    ]
+  },
+  {
+    speaker: 'スタッフ',
+    thai: 'มีค่ะ ห้องของคุณอยู่ชั้นสิบสองค่ะ',
+    pronunciation: 'mii khâ hɔ̂ng khɔ̌ɔng khun yùu chán sìp-sɔ̌ɔng khâ',
+    japanese: 'はい、お部屋は12階です',
+    words: [
+      { thai: 'มี', pronunciation: 'mii', japanese: 'ある' },
+      { thai: 'ห้องของคุณ', pronunciation: 'hɔ̂ng khɔ̌ɔng khun', japanese: 'あなたの部屋' },
+      { thai: 'อยู่', pronunciation: 'yùu', japanese: 'ある' },
+      { thai: 'ชั้น', pronunciation: 'chán', japanese: '階' },
+      { thai: 'สิบสอง', pronunciation: 'sìp-sɔ̌ɔng', japanese: '12' },
+    ]
+  },
+];
+
+// i-health-symptoms: 体調を伝える
+export const intermediateHealthSymptoms: ConversationLine[] = [
+  {
+    speaker: '患者',
+    thai: 'ผมรู้สึกไม่สบายครับ',
+    pronunciation: 'phǒm rúu-sʉ̀k mâi-sà-baai khráp',
+    japanese: '具合が悪いです',
+    words: [
+      { thai: 'ผม', pronunciation: 'phǒm', japanese: '私(男性)' },
+      { thai: 'รู้สึก', pronunciation: 'rúu-sʉ̀k', japanese: '感じる' },
+      { thai: 'ไม่สบาย', pronunciation: 'mâi-sà-baai', japanese: '具合が悪い' },
+      { thai: 'ครับ', pronunciation: 'khráp', japanese: '(男性の丁寧語)' },
+    ]
+  },
+  {
+    speaker: '医師',
+    thai: 'มีอาการอะไรบ้างครับ',
+    pronunciation: 'mii aa-gaan à-rai bâang khráp',
+    japanese: 'どんな症状がありますか',
+    words: [
+      { thai: 'มี', pronunciation: 'mii', japanese: 'ある' },
+      { thai: 'อาการ', pronunciation: 'aa-gaan', japanese: '症状' },
+      { thai: 'อะไรบ้าง', pronunciation: 'à-rai bâang', japanese: '何か(複数)' },
+      { thai: 'ครับ', pronunciation: 'khráp', japanese: '(男性の丁寧語)' },
+    ]
+  },
+  {
+    speaker: '患者',
+    thai: 'ปวดหัวและมีไข้ครับ',
+    pronunciation: 'pùat-hǔa lɛ́ mii khâi khráp',
+    japanese: '頭痛と熱があります',
+    words: [
+      { thai: 'ปวดหัว', pronunciation: 'pùat-hǔa', japanese: '頭痛' },
+      { thai: 'และ', pronunciation: 'lɛ́', japanese: 'そして' },
+      { thai: 'มีไข้', pronunciation: 'mii khâi', japanese: '熱がある' },
+    ]
+  },
+  {
+    speaker: '医師',
+    thai: 'ตั้งแต่เมื่อไหร่ครับ',
+    pronunciation: 'tâng-tɛ̀ɛ mʉ̂a-rài khráp',
+    japanese: 'いつからですか',
+    words: [
+      { thai: 'ตั้งแต่', pronunciation: 'tâng-tɛ̀ɛ', japanese: '〜から' },
+      { thai: 'เมื่อไหร่', pronunciation: 'mʉ̂a-rài', japanese: 'いつ' },
+    ]
+  },
+  {
+    speaker: '患者',
+    thai: 'เมื่อวานนี้ครับ',
+    pronunciation: 'mʉ̂a-waan-níi khráp',
+    japanese: '昨日からです',
+    words: [
+      { thai: 'เมื่อวาน', pronunciation: 'mʉ̂a-waan', japanese: '昨日' },
+      { thai: 'นี้', pronunciation: 'níi', japanese: 'この' },
+    ]
+  },
+];
+
+// i-hobbies: 趣味について話す
+export const intermediateHobbies: ConversationLine[] = [
+  {
+    speaker: 'A',
+    thai: 'วันหยุดคุณชอบทำอะไรครับ',
+    pronunciation: 'wan-yùt khun chɔ̂ɔp tham à-rai khráp',
+    japanese: '休日は何をするのが好きですか',
+    words: [
+      { thai: 'วันหยุด', pronunciation: 'wan-yùt', japanese: '休日' },
+      { thai: 'คุณ', pronunciation: 'khun', japanese: 'あなた' },
+      { thai: 'ชอบ', pronunciation: 'chɔ̂ɔp', japanese: '好き' },
+      { thai: 'ทำ', pronunciation: 'tham', japanese: 'する' },
+      { thai: 'อะไร', pronunciation: 'à-rai', japanese: '何' },
+    ]
+  },
+  {
+    speaker: 'B',
+    thai: 'ฉันชอบออกกำลังกายค่ะ โดยเฉพาะวิ่ง',
+    pronunciation: 'chǎn chɔ̂ɔp ɔ̀ɔk-gam-lang-gaai khâ doo-chà-phɔ́ wîng',
+    japanese: '運動が好きです、特にランニングが',
+    words: [
+      { thai: 'ฉัน', pronunciation: 'chǎn', japanese: '私' },
+      { thai: 'ชอบ', pronunciation: 'chɔ̂ɔp', japanese: '好き' },
+      { thai: 'ออกกำลังกาย', pronunciation: 'ɔ̀ɔk-gam-lang-gaai', japanese: '運動する' },
+      { thai: 'โดยเฉพาะ', pronunciation: 'doo-chà-phɔ́', japanese: '特に' },
+      { thai: 'วิ่ง', pronunciation: 'wîng', japanese: '走る' },
+    ]
+  },
+  {
+    speaker: 'A',
+    thai: 'วิ่งบ่อยแค่ไหนครับ',
+    pronunciation: 'wîng bɔ̀ɔi khɛ̂ɛ-nǎi khráp',
+    japanese: 'どのくらいの頻度で走りますか',
+    words: [
+      { thai: 'วิ่ง', pronunciation: 'wîng', japanese: '走る' },
+      { thai: 'บ่อย', pronunciation: 'bɔ̀ɔi', japanese: '頻繁に' },
+      { thai: 'แค่ไหน', pronunciation: 'khɛ̂ɛ-nǎi', japanese: 'どのくらい' },
+    ]
+  },
+  {
+    speaker: 'B',
+    thai: 'สัปดาห์ละสามสี่ครั้งค่ะ',
+    pronunciation: 'sàp-daa lá sǎam-sìi khráng khâ',
+    japanese: '週に3-4回です',
+    words: [
+      { thai: 'สัปดาห์ละ', pronunciation: 'sàp-daa lá', japanese: '週に' },
+      { thai: 'สามสี่ครั้ง', pronunciation: 'sǎam-sìi khráng', japanese: '3-4回' },
+    ]
+  },
+];
+
+// i-making-plans: 友人と計画を立てる
+export const intermediateMakingPlans: ConversationLine[] = [
+  {
+    speaker: 'A',
+    thai: 'เสาร์หน้าว่างไหมครับ',
+    pronunciation: 'sǎo nâa wâang mǎi khráp',
+    japanese: '来週の土曜日は空いていますか',
+    words: [
+      { thai: 'เสาร์หน้า', pronunciation: 'sǎo nâa', japanese: '来週の土曜日' },
+      { thai: 'ว่าง', pronunciation: 'wâang', japanese: '空いている' },
+      { thai: 'ไหม', pronunciation: 'mǎi', japanese: '〜ですか' },
+    ]
+  },
+  {
+    speaker: 'B',
+    thai: 'ว่างค่ะ มีอะไรหรอคะ',
+    pronunciation: 'wâang khâ mii à-rai rɔ̌ɔ khá',
+    japanese: '空いてます、何かありますか',
+    words: [
+      { thai: 'ว่าง', pronunciation: 'wâang', japanese: '空いている' },
+      { thai: 'มี', pronunciation: 'mii', japanese: 'ある' },
+      { thai: 'อะไร', pronunciation: 'à-rai', japanese: '何' },
+      { thai: 'หรอ', pronunciation: 'rɔ̌ɔ', japanese: '〜ですか(口語)' },
+    ]
+  },
+  {
+    speaker: 'A',
+    thai: 'ไปดูหนังกันไหมครับ',
+    pronunciation: 'pai duu nǎng gan mǎi khráp',
+    japanese: '映画を見に行きませんか',
+    words: [
+      { thai: 'ไป', pronunciation: 'pai', japanese: '行く' },
+      { thai: 'ดูหนัง', pronunciation: 'duu nǎng', japanese: '映画を見る' },
+      { thai: 'กัน', pronunciation: 'gan', japanese: '一緒に' },
+      { thai: 'ไหม', pronunciation: 'mǎi', japanese: '〜ですか' },
+    ],
+    grammarPoint: {
+      title: '誘いの表現「กัน」',
+      explanation: '「กัน(gan)」は「一緒に」という意味で、誘いの文でよく使われます。',
+      examples: [
+        { thai: 'ไปกินข้าวกัน', pronunciation: 'pai gin khâao gan', japanese: '一緒にご飯を食べに行こう' },
+        { thai: 'เล่นกัน', pronunciation: 'lên gan', japanese: '一緒に遊ぼう' },
+      ]
+    }
+  },
+  {
+    speaker: 'B',
+    thai: 'ดีค่ะ พบกันกี่โมงดีคะ',
+    pronunciation: 'dii khâ phóp gan gìi moong dii khá',
+    japanese: 'いいですね、何時に会いましょうか',
+    words: [
+      { thai: 'ดี', pronunciation: 'dii', japanese: '良い' },
+      { thai: 'พบกัน', pronunciation: 'phóp gan', japanese: '会う' },
+      { thai: 'กี่โมง', pronunciation: 'gìi moong', japanese: '何時' },
+      { thai: 'ดี', pronunciation: 'dii', japanese: '良い' },
+    ]
+  },
+  {
+    speaker: 'A',
+    thai: 'บ่ายสองโมงที่หน้าโรงหนังนะครับ',
+    pronunciation: 'bàai sɔ̌ɔng moong thîi nâa roong-nǎng ná khráp',
+    japanese: '午後2時に映画館の前でお願いします',
+    words: [
+      { thai: 'บ่ายสองโมง', pronunciation: 'bàai sɔ̌ɔng moong', japanese: '午後2時' },
+      { thai: 'ที่', pronunciation: 'thîi', japanese: '〜で' },
+      { thai: 'หน้า', pronunciation: 'nâa', japanese: '前' },
+      { thai: 'โรงหนัง', pronunciation: 'roong-nǎng', japanese: '映画館' },
+      { thai: 'นะ', pronunciation: 'ná', japanese: '〜ね' },
+    ]
+  },
+];
+
+// i-phone-call: 電話での会話
+export const intermediatePhoneCall: ConversationLine[] = [
+  {
+    speaker: 'A',
+    thai: 'สวัสดีครับ ขอพูดกับคุณสมชายได้ไหมครับ',
+    pronunciation: 'sà-wàt-dii khráp khɔ̌ɔ phûut gàp khun Sǒm-chaai dâi mǎi khráp',
+    japanese: 'もしもし、ソムチャイさんをお願いできますか',
+    words: [
+      { thai: 'สวัสดี', pronunciation: 'sà-wàt-dii', japanese: 'こんにちは' },
+      { thai: 'ขอ', pronunciation: 'khɔ̌ɔ', japanese: '〜をお願いします' },
+      { thai: 'พูดกับ', pronunciation: 'phûut gàp', japanese: '〜と話す' },
+      { thai: 'คุณสมชาย', pronunciation: 'khun Sǒm-chaai', japanese: 'ソムチャイさん' },
+      { thai: 'ได้ไหม', pronunciation: 'dâi mǎi', japanese: '〜できますか' },
+    ]
+  },
+  {
+    speaker: 'B',
+    thai: 'รอสักครู่นะคะ',
+    pronunciation: 'rɔɔ sàk-khrûu ná khá',
+    japanese: '少々お待ちください',
+    words: [
+      { thai: 'รอ', pronunciation: 'rɔɔ', japanese: '待つ' },
+      { thai: 'สักครู่', pronunciation: 'sàk-khrûu', japanese: '少しの間' },
+      { thai: 'นะคะ', pronunciation: 'ná khá', japanese: '〜ね(女性)' },
+    ]
+  },
+  {
+    speaker: 'C',
+    thai: 'ผมสมชายครับ มีอะไรให้ช่วยครับ',
+    pronunciation: 'phǒm Sǒm-chaai khráp mii à-rai hâi chûai khráp',
+    japanese: '私ソムチャイです、何かご用ですか',
+    words: [
+      { thai: 'ผม', pronunciation: 'phǒm', japanese: '私(男性)' },
+      { thai: 'สมชาย', pronunciation: 'Sǒm-chaai', japanese: 'ソムチャイ' },
+      { thai: 'มี', pronunciation: 'mii', japanese: 'ある' },
+      { thai: 'อะไร', pronunciation: 'à-rai', japanese: '何' },
+      { thai: 'ให้ช่วย', pronunciation: 'hâi chûai', japanese: '手伝うこと' },
+    ]
+  },
+  {
+    speaker: 'A',
+    thai: 'ผมโทรมาเรื่องการประชุมพรุ่งนี้ครับ',
+    pronunciation: 'phǒm thoo maa rʉ̂ang gaan-prà-chum phrûng-níi khráp',
+    japanese: '明日の会議の件でお電話しました',
+    words: [
+      { thai: 'ผม', pronunciation: 'phǒm', japanese: '私(男性)' },
+      { thai: 'โทรมา', pronunciation: 'thoo maa', japanese: '電話してきた' },
+      { thai: 'เรื่อง', pronunciation: 'rʉ̂ang', japanese: '〜の件' },
+      { thai: 'การประชุม', pronunciation: 'gaan-prà-chum', japanese: '会議' },
+      { thai: 'พรุ่งนี้', pronunciation: 'phrûng-níi', japanese: '明日' },
+    ]
+  },
+];
+
+// i-describing-people: 人の見た目を説明する
+export const intermediateDescribingPeople: ConversationLine[] = [
+  {
+    speaker: 'A',
+    thai: 'เพื่อนคุณหน้าตาเป็นยังไงครับ',
+    pronunciation: 'phʉ̂an khun nâa-taa pen yang-ngai khráp',
+    japanese: 'あなたの友達はどんな見た目ですか',
+    words: [
+      { thai: 'เพื่อน', pronunciation: 'phʉ̂an', japanese: '友達' },
+      { thai: 'คุณ', pronunciation: 'khun', japanese: 'あなた' },
+      { thai: 'หน้าตา', pronunciation: 'nâa-taa', japanese: '見た目' },
+      { thai: 'เป็น', pronunciation: 'pen', japanese: '〜である' },
+      { thai: 'ยังไง', pronunciation: 'yang-ngai', japanese: 'どのように' },
+    ]
+  },
+  {
+    speaker: 'B',
+    thai: 'เขาสูงผอม ผมยาวสีดำค่ะ',
+    pronunciation: 'khǎo sǔung phɔ̌ɔm phǒm yaao sǐi-dam khâ',
+    japanese: '彼は背が高くて痩せていて、黒い長髪です',
+    words: [
+      { thai: 'เขา', pronunciation: 'khǎo', japanese: '彼/彼女' },
+      { thai: 'สูง', pronunciation: 'sǔung', japanese: '高い' },
+      { thai: 'ผอม', pronunciation: 'phɔ̌ɔm', japanese: '痩せている' },
+      { thai: 'ผม', pronunciation: 'phǒm', japanese: '髪' },
+      { thai: 'ยาว', pronunciation: 'yaao', japanese: '長い' },
+      { thai: 'สีดำ', pronunciation: 'sǐi-dam', japanese: '黒色' },
+    ]
+  },
+  {
+    speaker: 'A',
+    thai: 'สวมแว่นตาไหมครับ',
+    pronunciation: 'sǔam wɛ̂n-taa mǎi khráp',
+    japanese: 'メガネをかけていますか',
+    words: [
+      { thai: 'สวม', pronunciation: 'sǔam', japanese: 'かける、身につける' },
+      { thai: 'แว่นตา', pronunciation: 'wɛ̂n-taa', japanese: 'メガネ' },
+      { thai: 'ไหม', pronunciation: 'mǎi', japanese: '〜ですか' },
+    ]
+  },
+  {
+    speaker: 'B',
+    thai: 'สวมค่ะ แว่นตาสีน้ำตาล',
+    pronunciation: 'sǔam khâ wɛ̂n-taa sǐi-nám-taan',
+    japanese: 'かけています、茶色のメガネです',
+    words: [
+      { thai: 'สวม', pronunciation: 'sǔam', japanese: 'かける' },
+      { thai: 'แว่นตา', pronunciation: 'wɛ̂n-taa', japanese: 'メガネ' },
+      { thai: 'สีน้ำตาล', pronunciation: 'sǐi-nám-taan', japanese: '茶色' },
+    ]
+  },
+];
+
+// b-numbers: 数字と数え方
+export const beginnerNumbers: ConversationLine[] = [
+  {
+    speaker: 'A',
+    thai: 'นี่ราคาเท่าไหร่ครับ',
+    pronunciation: 'nîi raa-khaa thâo-rài khráp',
+    japanese: 'これはいくらですか',
+    words: [
+      { thai: 'นี่', pronunciation: 'nîi', japanese: 'これ' },
+      { thai: 'ราคา', pronunciation: 'raa-khaa', japanese: '価格' },
+      { thai: 'เท่าไหร่', pronunciation: 'thâo-rài', japanese: 'いくら' },
+      { thai: 'ครับ', pronunciation: 'khráp', japanese: '(男性の丁寧語)' },
+    ]
+  },
+  {
+    speaker: 'B',
+    thai: 'สามสิบบาทค่ะ',
+    pronunciation: 'sǎam-sìp bàat khâ',
+    japanese: '30バーツです',
+    words: [
+      { thai: 'สาม', pronunciation: 'sǎam', japanese: '3' },
+      { thai: 'สิบ', pronunciation: 'sìp', japanese: '10' },
+      { thai: 'บาท', pronunciation: 'bàat', japanese: 'バーツ' },
+      { thai: 'ค่ะ', pronunciation: 'khâ', japanese: '(女性の丁寧語)' },
+    ],
+    grammarPoint: {
+      title: 'タイ語の数字',
+      explanation: 'タイ語の数字は、1=หนึ่ง(nʉ̀ng)、2=สอง(sɔ̌ɔng)、3=สาม(sǎam)、10=สิบ(sìp)、100=ร้อย(rɔ́ɔi)、1000=พัน(phan)です。',
+      examples: [
+        { thai: 'หนึ่งร้อย', pronunciation: 'nʉ̀ng-rɔ́ɔi', japanese: '100' },
+        { thai: 'หนึ่งพัน', pronunciation: 'nʉ̀ng-phan', japanese: '1000' },
+      ]
+    }
+  },
+  {
+    speaker: 'A',
+    thai: 'ขอสามอันครับ',
+    pronunciation: 'khɔ̌ɔ sǎam an khráp',
+    japanese: '3つください',
+    words: [
+      { thai: 'ขอ', pronunciation: 'khɔ̌ɔ', japanese: '〜をお願いします' },
+      { thai: 'สาม', pronunciation: 'sǎam', japanese: '3' },
+      { thai: 'อัน', pronunciation: 'an', japanese: '個(類別詞)' },
+      { thai: 'ครับ', pronunciation: 'khráp', japanese: '(男性の丁寧語)' },
+    ]
+  },
+  {
+    speaker: 'B',
+    thai: 'เก้าสิบบาทค่ะ',
+    pronunciation: 'gâao-sìp bàat khâ',
+    japanese: '90バーツです',
+    words: [
+      { thai: 'เก้า', pronunciation: 'gâao', japanese: '9' },
+      { thai: 'สิบ', pronunciation: 'sìp', japanese: '10' },
+      { thai: 'บาท', pronunciation: 'bàat', japanese: 'バーツ' },
+      { thai: 'ค่ะ', pronunciation: 'khâ', japanese: '(女性の丁寧語)' },
+    ]
+  },
+];
+
+// b-understanding-questions: 理解を深める質問
+export const beginnerUnderstandingQuestions: ConversationLine[] = [
+  {
+    speaker: 'A',
+    thai: 'นี่คืออะไรครับ',
+    pronunciation: 'nîi khʉʉ à-rai khráp',
+    japanese: 'これは何ですか',
+    words: [
+      { thai: 'นี่', pronunciation: 'nîi', japanese: 'これ' },
+      { thai: 'คือ', pronunciation: 'khʉʉ', japanese: '〜である' },
+      { thai: 'อะไร', pronunciation: 'à-rai', japanese: '何' },
+      { thai: 'ครับ', pronunciation: 'khráp', japanese: '(男性の丁寧語)' },
+    ]
+  },
+  {
+    speaker: 'B',
+    thai: 'นี่คือผลไม้ค่ะ',
+    pronunciation: 'nîi khʉʉ phǒn-lá-mái khâ',
+    japanese: 'これは果物です',
+    words: [
+      { thai: 'นี่', pronunciation: 'nîi', japanese: 'これ' },
+      { thai: 'คือ', pronunciation: 'khʉʉ', japanese: '〜である' },
+      { thai: 'ผลไม้', pronunciation: 'phǒn-lá-mái', japanese: '果物' },
+      { thai: 'ค่ะ', pronunciation: 'khâ', japanese: '(女性の丁寧語)' },
+    ]
+  },
+  {
+    speaker: 'A',
+    thai: 'ภาษาไทยว่าอะไรครับ',
+    pronunciation: 'phaa-sǎa-thai wâa à-rai khráp',
+    japanese: 'タイ語で何と言いますか',
+    words: [
+      { thai: 'ภาษาไทย', pronunciation: 'phaa-sǎa-thai', japanese: 'タイ語' },
+      { thai: 'ว่า', pronunciation: 'wâa', japanese: '言う' },
+      { thai: 'อะไร', pronunciation: 'à-rai', japanese: '何' },
+      { thai: 'ครับ', pronunciation: 'khráp', japanese: '(男性の丁寧語)' },
+    ]
+  },
+  {
+    speaker: 'B',
+    thai: 'พูดอีกทีได้ไหมคะ',
+    pronunciation: 'phûut ìik thii dâi mǎi khá',
+    japanese: 'もう一度言ってもらえますか',
+    words: [
+      { thai: 'พูด', pronunciation: 'phûut', japanese: '話す' },
+      { thai: 'อีกที', pronunciation: 'ìik thii', japanese: 'もう一度' },
+      { thai: 'ได้ไหม', pronunciation: 'dâi mǎi', japanese: '〜できますか' },
+      { thai: 'คะ', pronunciation: 'khá', japanese: '(女性の丁寧語・疑問)' },
+    ],
+    grammarPoint: {
+      title: '理解確認の表現',
+      explanation: 'わからない時は「พูดอีกที(もう一度言って)」「ช้าๆ(ゆっくり)」などを使いましょう。',
+      examples: [
+        { thai: 'พูดช้าๆ หน่อย', pronunciation: 'phûut cháa-cháa nɔ̀i', japanese: 'ゆっくり話してください' },
+        { thai: 'เข้าใจแล้ว', pronunciation: 'khâo-jai lɛ́ɛo', japanese: '分かりました' },
+      ]
+    }
+  },
+];
+
+// b-language-learning: 言語学習について
+export const beginnerLanguageLearning: ConversationLine[] = [
+  {
+    speaker: 'A',
+    thai: 'คุณพูดภาษาไทยได้ไหมครับ',
+    pronunciation: 'khun phûut phaa-sǎa-thai dâi mǎi khráp',
+    japanese: 'タイ語を話せますか',
+    words: [
+      { thai: 'คุณ', pronunciation: 'khun', japanese: 'あなた' },
+      { thai: 'พูด', pronunciation: 'phûut', japanese: '話す' },
+      { thai: 'ภาษาไทย', pronunciation: 'phaa-sǎa-thai', japanese: 'タイ語' },
+      { thai: 'ได้ไหม', pronunciation: 'dâi mǎi', japanese: '〜できますか' },
+      { thai: 'ครับ', pronunciation: 'khráp', japanese: '(男性の丁寧語)' },
+    ]
+  },
+  {
+    speaker: 'B',
+    thai: 'ได้นิดหน่อยค่ะ',
+    pronunciation: 'dâi nít-nɔ̀i khâ',
+    japanese: '少しできます',
+    words: [
+      { thai: 'ได้', pronunciation: 'dâi', japanese: 'できる' },
+      { thai: 'นิดหน่อย', pronunciation: 'nít-nɔ̀i', japanese: '少し' },
+      { thai: 'ค่ะ', pronunciation: 'khâ', japanese: '(女性の丁寧語)' },
+    ]
+  },
+  {
+    speaker: 'A',
+    thai: 'เรียนมานานแค่ไหนครับ',
+    pronunciation: 'riian maa naan khɛ̂ɛ-nǎi khráp',
+    japanese: 'どのくらい勉強していますか',
+    words: [
+      { thai: 'เรียน', pronunciation: 'riian', japanese: '勉強する' },
+      { thai: 'มา', pronunciation: 'maa', japanese: '〜してきた' },
+      { thai: 'นาน', pronunciation: 'naan', japanese: '長い' },
+      { thai: 'แค่ไหน', pronunciation: 'khɛ̂ɛ-nǎi', japanese: 'どのくらい' },
+      { thai: 'ครับ', pronunciation: 'khráp', japanese: '(男性の丁寧語)' },
+    ]
+  },
+  {
+    speaker: 'B',
+    thai: 'เรียนมาสามเดือนค่ะ',
+    pronunciation: 'riian maa sǎam dʉan khâ',
+    japanese: '3ヶ月勉強しています',
+    words: [
+      { thai: 'เรียน', pronunciation: 'riian', japanese: '勉強する' },
+      { thai: 'มา', pronunciation: 'maa', japanese: '〜してきた' },
+      { thai: 'สามเดือน', pronunciation: 'sǎam dʉan', japanese: '3ヶ月' },
+      { thai: 'ค่ะ', pronunciation: 'khâ', japanese: '(女性の丁寧語)' },
+    ]
+  },
+];
+
+// b-hobbies-preferences: 趣味と好みの表現
+export const beginnerHobbiesPreferences: ConversationLine[] = [
+  {
+    speaker: 'A',
+    thai: 'คุณชอบอะไรครับ',
+    pronunciation: 'khun chɔ̂ɔp à-rai khráp',
+    japanese: '何が好きですか',
+    words: [
+      { thai: 'คุณ', pronunciation: 'khun', japanese: 'あなた' },
+      { thai: 'ชอบ', pronunciation: 'chɔ̂ɔp', japanese: '好き' },
+      { thai: 'อะไร', pronunciation: 'à-rai', japanese: '何' },
+      { thai: 'ครับ', pronunciation: 'khráp', japanese: '(男性の丁寧語)' },
+    ]
+  },
+  {
+    speaker: 'B',
+    thai: 'ฉันชอบฟังเพลงค่ะ',
+    pronunciation: 'chǎn chɔ̂ɔp fang phleng khâ',
+    japanese: '私は音楽を聴くのが好きです',
+    words: [
+      { thai: 'ฉัน', pronunciation: 'chǎn', japanese: '私(女性カジュアル)' },
+      { thai: 'ชอบ', pronunciation: 'chɔ̂ɔp', japanese: '好き' },
+      { thai: 'ฟัง', pronunciation: 'fang', japanese: '聴く' },
+      { thai: 'เพลง', pronunciation: 'phleng', japanese: '音楽' },
+      { thai: 'ค่ะ', pronunciation: 'khâ', japanese: '(女性の丁寧語)' },
+    ]
+  },
+  {
+    speaker: 'A',
+    thai: 'เคยไปเที่ยวทะเลไหมครับ',
+    pronunciation: 'khəəi pai thîao thá-lee mǎi khráp',
+    japanese: '海に行ったことはありますか',
+    words: [
+      { thai: 'เคย', pronunciation: 'khəəi', japanese: '〜したことがある' },
+      { thai: 'ไป', pronunciation: 'pai', japanese: '行く' },
+      { thai: 'เที่ยว', pronunciation: 'thîao', japanese: '遊ぶ、観光する' },
+      { thai: 'ทะเล', pronunciation: 'thá-lee', japanese: '海' },
+      { thai: 'ไหม', pronunciation: 'mǎi', japanese: '〜ですか' },
+      { thai: 'ครับ', pronunciation: 'khráp', japanese: '(男性の丁寧語)' },
+    ],
+    grammarPoint: {
+      title: '経験を表す「เคย」',
+      explanation: '「เคย(khəəi)」は「〜したことがある」という経験を表します。否定は「ไม่เคย(mâi khəəi)」です。',
+      examples: [
+        { thai: 'เคยกินอาหารไทย', pronunciation: 'khəəi gin aa-hǎan-thai', japanese: 'タイ料理を食べたことがある' },
+        { thai: 'ไม่เคยไป', pronunciation: 'mâi khəəi pai', japanese: '行ったことがない' },
+      ]
+    }
+  },
+  {
+    speaker: 'B',
+    thai: 'เคยค่ะ ไปเดือนที่แล้ว',
+    pronunciation: 'khəəi khâ pai dʉan thîi lɛ́ɛo',
+    japanese: 'あります、先月行きました',
+    words: [
+      { thai: 'เคย', pronunciation: 'khəəi', japanese: '〜したことがある' },
+      { thai: 'ค่ะ', pronunciation: 'khâ', japanese: '(女性の丁寧語)' },
+      { thai: 'ไป', pronunciation: 'pai', japanese: '行く' },
+      { thai: 'เดือนที่แล้ว', pronunciation: 'dʉan thîi lɛ́ɛo', japanese: '先月' },
+    ]
+  },
+];
+
+// b-abilities-possessions: 能力と所有の表現
+export const beginnerAbilitiesPossessions: ConversationLine[] = [
+  {
+    speaker: 'A',
+    thai: 'คุณมีรถไหมครับ',
+    pronunciation: 'khun mii rót mǎi khráp',
+    japanese: '車を持っていますか',
+    words: [
+      { thai: 'คุณ', pronunciation: 'khun', japanese: 'あなた' },
+      { thai: 'มี', pronunciation: 'mii', japanese: 'ある、持っている' },
+      { thai: 'รถ', pronunciation: 'rót', japanese: '車' },
+      { thai: 'ไหม', pronunciation: 'mǎi', japanese: '〜ですか' },
+      { thai: 'ครับ', pronunciation: 'khráp', japanese: '(男性の丁寧語)' },
+    ]
+  },
+  {
+    speaker: 'B',
+    thai: 'ไม่มีค่ะ แต่มีจักรยาน',
+    pronunciation: 'mâi mii khâ tɛ̀ɛ mii jàk-grà-yaan',
+    japanese: '持っていません、でも自転車はあります',
+    words: [
+      { thai: 'ไม่มี', pronunciation: 'mâi mii', japanese: 'ない、持っていない' },
+      { thai: 'ค่ะ', pronunciation: 'khâ', japanese: '(女性の丁寧語)' },
+      { thai: 'แต่', pronunciation: 'tɛ̀ɛ', japanese: 'しかし' },
+      { thai: 'มี', pronunciation: 'mii', japanese: 'ある' },
+      { thai: 'จักรยาน', pronunciation: 'jàk-grà-yaan', japanese: '自転車' },
+    ]
+  },
+  {
+    speaker: 'A',
+    thai: 'ขี่จักรยานเป็นไหมครับ',
+    pronunciation: 'khìi jàk-grà-yaan pen mǎi khráp',
+    japanese: '自転車に乗れますか',
+    words: [
+      { thai: 'ขี่', pronunciation: 'khìi', japanese: '(乗り物に)乗る' },
+      { thai: 'จักรยาน', pronunciation: 'jàk-grà-yaan', japanese: '自転車' },
+      { thai: 'เป็น', pronunciation: 'pen', japanese: 'できる' },
+      { thai: 'ไหม', pronunciation: 'mǎi', japanese: '〜ですか' },
+      { thai: 'ครับ', pronunciation: 'khráp', japanese: '(男性の丁寧語)' },
+    ]
+  },
+  {
+    speaker: 'B',
+    thai: 'เป็นค่ะ ขี่ได้ดี',
+    pronunciation: 'pen khâ khìi dâi dii',
+    japanese: 'できます、上手に乗れます',
+    words: [
+      { thai: 'เป็น', pronunciation: 'pen', japanese: 'できる' },
+      { thai: 'ค่ะ', pronunciation: 'khâ', japanese: '(女性の丁寧語)' },
+      { thai: 'ขี่', pronunciation: 'khìi', japanese: '乗る' },
+      { thai: 'ได้ดี', pronunciation: 'dâi dii', japanese: '上手にできる' },
+    ]
+  },
+];
+
+// b-polite-requests: 丁寧なお願いと許可
+export const beginnerPoliteRequests: ConversationLine[] = [
+  {
+    speaker: 'A',
+    thai: 'ขอถ่ายรูปได้ไหมครับ',
+    pronunciation: 'khɔ̌ɔ thàai-rûup dâi mǎi khráp',
+    japanese: '写真を撮ってもいいですか',
+    words: [
+      { thai: 'ขอ', pronunciation: 'khɔ̌ɔ', japanese: '〜をお願いします' },
+      { thai: 'ถ่ายรูป', pronunciation: 'thàai-rûup', japanese: '写真を撮る' },
+      { thai: 'ได้ไหม', pronunciation: 'dâi mǎi', japanese: '〜できますか' },
+      { thai: 'ครับ', pronunciation: 'khráp', japanese: '(男性の丁寧語)' },
+    ]
+  },
+  {
+    speaker: 'B',
+    thai: 'ได้ค่ะ เชิญเลยค่ะ',
+    pronunciation: 'dâi khâ chəən ləəi khâ',
+    japanese: 'はい、どうぞ',
+    words: [
+      { thai: 'ได้', pronunciation: 'dâi', japanese: 'できる' },
+      { thai: 'ค่ะ', pronunciation: 'khâ', japanese: '(女性の丁寧語)' },
+      { thai: 'เชิญเลย', pronunciation: 'chəən ləəi', japanese: 'どうぞどうぞ' },
+    ]
+  },
+  {
+    speaker: 'A',
+    thai: 'ช่วยถ่ายให้หน่อยได้ไหมครับ',
+    pronunciation: 'chûai thàai hâi nɔ̀i dâi mǎi khráp',
+    japanese: '写真を撮っていただけますか',
+    words: [
+      { thai: 'ช่วย', pronunciation: 'chûai', japanese: '手伝う' },
+      { thai: 'ถ่าย', pronunciation: 'thàai', japanese: '撮る' },
+      { thai: 'ให้', pronunciation: 'hâi', japanese: '〜してあげる' },
+      { thai: 'หน่อย', pronunciation: 'nɔ̀i', japanese: 'ちょっと' },
+      { thai: 'ได้ไหม', pronunciation: 'dâi mǎi', japanese: '〜できますか' },
+      { thai: 'ครับ', pronunciation: 'khráp', japanese: '(男性の丁寧語)' },
+    ],
+    grammarPoint: {
+      title: '依頼表現「ช่วย〜ให้หน่อย」',
+      explanation: '「ช่วย(手伝う)」+動詞+「ให้(〜してあげる)」+「หน่อย(ちょっと)」で丁寧な依頼になります。',
+      examples: [
+        { thai: 'ช่วยบอกให้หน่อย', pronunciation: 'chûai bɔ̀ɔk hâi nɔ̀i', japanese: 'ちょっと教えてください' },
+        { thai: 'ช่วยเปิดประตูให้หน่อย', pronunciation: 'chûai pə̀ət prà-tuu hâi nɔ̀i', japanese: 'ドアを開けてください' },
+      ]
+    }
+  },
+  {
+    speaker: 'B',
+    thai: 'ได้เลยค่ะ ยืนตรงนี้นะคะ',
+    pronunciation: 'dâi ləəi khâ yʉʉn trong níi ná khá',
+    japanese: 'いいですよ、ここに立ってくださいね',
+    words: [
+      { thai: 'ได้เลย', pronunciation: 'dâi ləəi', japanese: 'もちろんできます' },
+      { thai: 'ค่ะ', pronunciation: 'khâ', japanese: '(女性の丁寧語)' },
+      { thai: 'ยืน', pronunciation: 'yʉʉn', japanese: '立つ' },
+      { thai: 'ตรงนี้', pronunciation: 'trong níi', japanese: 'ここ' },
+      { thai: 'นะคะ', pronunciation: 'ná khá', japanese: '〜ね(確認・女性)' },
+    ]
+  },
+];
+
+// b-time-expressions: 時間に関する表現
+export const beginnerTimeExpressions: ConversationLine[] = [
+  {
+    speaker: 'A',
+    thai: 'ตอนนี้กี่โมงครับ',
+    pronunciation: 'tɔɔn-níi gìi moong khráp',
+    japanese: '今何時ですか',
+    words: [
+      { thai: 'ตอนนี้', pronunciation: 'tɔɔn-níi', japanese: '今' },
+      { thai: 'กี่โมง', pronunciation: 'gìi moong', japanese: '何時' },
+      { thai: 'ครับ', pronunciation: 'khráp', japanese: '(男性の丁寧語)' },
+    ]
+  },
+  {
+    speaker: 'B',
+    thai: 'สามโมงเย็นค่ะ',
+    pronunciation: 'sǎam moong yen khâ',
+    japanese: '午後3時です',
+    words: [
+      { thai: 'สามโมง', pronunciation: 'sǎam moong', japanese: '3時' },
+      { thai: 'เย็น', pronunciation: 'yen', japanese: '午後(1-6時)' },
+      { thai: 'ค่ะ', pronunciation: 'khâ', japanese: '(女性の丁寧語)' },
+    ],
+    grammarPoint: {
+      title: 'タイ語の時刻表現',
+      explanation: 'タイ語の時刻は独特です。朝(เช้า)、昼(เที่ยง)、午後(บ่าย/เย็น)、夜(ทุ่ม)、深夜(ตี)で区別します。',
+      examples: [
+        { thai: 'เจ็ดโมงเช้า', pronunciation: 'jèt moong cháao', japanese: '午前7時' },
+        { thai: 'สองทุ่ม', pronunciation: 'sɔ̌ɔng thûm', japanese: '午後8時' },
+      ]
+    }
+  },
+  {
+    speaker: 'A',
+    thai: 'วันนี้วันอะไรครับ',
+    pronunciation: 'wan-níi wan à-rai khráp',
+    japanese: '今日は何曜日ですか',
+    words: [
+      { thai: 'วันนี้', pronunciation: 'wan-níi', japanese: '今日' },
+      { thai: 'วัน', pronunciation: 'wan', japanese: '日、曜日' },
+      { thai: 'อะไร', pronunciation: 'à-rai', japanese: '何' },
+      { thai: 'ครับ', pronunciation: 'khráp', japanese: '(男性の丁寧語)' },
+    ]
+  },
+  {
+    speaker: 'B',
+    thai: 'วันจันทร์ค่ะ',
+    pronunciation: 'wan-jan khâ',
+    japanese: '月曜日です',
+    words: [
+      { thai: 'วันจันทร์', pronunciation: 'wan-jan', japanese: '月曜日' },
+      { thai: 'ค่ะ', pronunciation: 'khâ', japanese: '(女性の丁寧語)' },
+    ]
+  },
+];
+
+// b-location-movement: 場所と移動
+export const beginnerLocationMovement: ConversationLine[] = [
+  {
+    speaker: 'A',
+    thai: 'ห้องน้ำอยู่ที่ไหนครับ',
+    pronunciation: 'hɔ̂ng-náam yùu thîi-nǎi khráp',
+    japanese: 'トイレはどこですか',
+    words: [
+      { thai: 'ห้องน้ำ', pronunciation: 'hɔ̂ng-náam', japanese: 'トイレ' },
+      { thai: 'อยู่', pronunciation: 'yùu', japanese: 'ある、いる' },
+      { thai: 'ที่ไหน', pronunciation: 'thîi-nǎi', japanese: 'どこ' },
+      { thai: 'ครับ', pronunciation: 'khráp', japanese: '(男性の丁寧語)' },
+    ]
+  },
+  {
+    speaker: 'B',
+    thai: 'อยู่ตรงนั้นค่ะ',
+    pronunciation: 'yùu trong nán khâ',
+    japanese: 'あそこにあります',
+    words: [
+      { thai: 'อยู่', pronunciation: 'yùu', japanese: 'ある' },
+      { thai: 'ตรงนั้น', pronunciation: 'trong nán', japanese: 'あそこ' },
+      { thai: 'ค่ะ', pronunciation: 'khâ', japanese: '(女性の丁寧語)' },
+    ]
+  },
+  {
+    speaker: 'A',
+    thai: 'ไปยังไงครับ',
+    pronunciation: 'pai yang-ngai khráp',
+    japanese: 'どうやって行きますか',
+    words: [
+      { thai: 'ไป', pronunciation: 'pai', japanese: '行く' },
+      { thai: 'ยังไง', pronunciation: 'yang-ngai', japanese: 'どのように' },
+      { thai: 'ครับ', pronunciation: 'khráp', japanese: '(男性の丁寧語)' },
+    ]
+  },
+  {
+    speaker: 'B',
+    thai: 'เดินตรงไปแล้วเลี้ยวซ้ายค่ะ',
+    pronunciation: 'dəən trong pai lɛ́ɛo líao sáai khâ',
+    japanese: 'まっすぐ行って左に曲がってください',
+    words: [
+      { thai: 'เดิน', pronunciation: 'dəən', japanese: '歩く' },
+      { thai: 'ตรงไป', pronunciation: 'trong pai', japanese: 'まっすぐ行く' },
+      { thai: 'แล้ว', pronunciation: 'lɛ́ɛo', japanese: 'そして' },
+      { thai: 'เลี้ยวซ้าย', pronunciation: 'líao sáai', japanese: '左に曲がる' },
+      { thai: 'ค่ะ', pronunciation: 'khâ', japanese: '(女性の丁寧語)' },
+    ]
+  },
+];
+
+// b-family: 家族について
+export const beginnerFamily: ConversationLine[] = [
+  {
+    speaker: 'A',
+    thai: 'ครอบครัวคุณมีกี่คนครับ',
+    pronunciation: 'khrɔ̂ɔp-khrua khun mii gìi khon khráp',
+    japanese: 'ご家族は何人ですか',
+    words: [
+      { thai: 'ครอบครัว', pronunciation: 'khrɔ̂ɔp-khrua', japanese: '家族' },
+      { thai: 'คุณ', pronunciation: 'khun', japanese: 'あなた' },
+      { thai: 'มี', pronunciation: 'mii', japanese: 'いる' },
+      { thai: 'กี่คน', pronunciation: 'gìi khon', japanese: '何人' },
+      { thai: 'ครับ', pronunciation: 'khráp', japanese: '(男性の丁寧語)' },
+    ]
+  },
+  {
+    speaker: 'B',
+    thai: 'มีสี่คนค่ะ พ่อ แม่ พี่ชาย กับฉัน',
+    pronunciation: 'mii sìi khon khâ phɔ̂ɔ mɛ̂ɛ phîi-chaai gàp chǎn',
+    japanese: '4人です。父、母、兄と私です',
+    words: [
+      { thai: 'มี', pronunciation: 'mii', japanese: 'いる' },
+      { thai: 'สี่คน', pronunciation: 'sìi khon', japanese: '4人' },
+      { thai: 'ค่ะ', pronunciation: 'khâ', japanese: '(女性の丁寧語)' },
+      { thai: 'พ่อ', pronunciation: 'phɔ̂ɔ', japanese: '父' },
+      { thai: 'แม่', pronunciation: 'mɛ̂ɛ', japanese: '母' },
+      { thai: 'พี่ชาย', pronunciation: 'phîi-chaai', japanese: '兄' },
+      { thai: 'กับ', pronunciation: 'gàp', japanese: 'と' },
+      { thai: 'ฉัน', pronunciation: 'chǎn', japanese: '私' },
+    ]
+  },
+  {
+    speaker: 'A',
+    thai: 'พี่ชายทำงานอะไรครับ',
+    pronunciation: 'phîi-chaai tham-ngaan à-rai khráp',
+    japanese: 'お兄さんは何の仕事をしていますか',
+    words: [
+      { thai: 'พี่ชาย', pronunciation: 'phîi-chaai', japanese: '兄' },
+      { thai: 'ทำงาน', pronunciation: 'tham-ngaan', japanese: '働く' },
+      { thai: 'อะไร', pronunciation: 'à-rai', japanese: '何' },
+      { thai: 'ครับ', pronunciation: 'khráp', japanese: '(男性の丁寧語)' },
+    ]
+  },
+  {
+    speaker: 'B',
+    thai: 'เขาเป็นวิศวกรค่ะ',
+    pronunciation: 'khǎo pen wít-sà-wá-gɔɔn khâ',
+    japanese: '彼はエンジニアです',
+    words: [
+      { thai: 'เขา', pronunciation: 'khǎo', japanese: '彼/彼女' },
+      { thai: 'เป็น', pronunciation: 'pen', japanese: '〜である' },
+      { thai: 'วิศวกร', pronunciation: 'wít-sà-wá-gɔɔn', japanese: 'エンジニア' },
+      { thai: 'ค่ะ', pronunciation: 'khâ', japanese: '(女性の丁寧語)' },
+    ]
+  },
+];
+
+// b-asking-about-people: 人について尋ねる
+export const beginnerAskingAboutPeople: ConversationLine[] = [
+  {
+    speaker: 'A',
+    thai: 'คนนั้นใครครับ',
+    pronunciation: 'khon nán khrai khráp',
+    japanese: 'あの人は誰ですか',
+    words: [
+      { thai: 'คนนั้น', pronunciation: 'khon nán', japanese: 'あの人' },
+      { thai: 'ใคร', pronunciation: 'khrai', japanese: '誰' },
+      { thai: 'ครับ', pronunciation: 'khráp', japanese: '(男性の丁寧語)' },
+    ]
+  },
+  {
+    speaker: 'B',
+    thai: 'เขาเป็นเพื่อนของฉันค่ะ',
+    pronunciation: 'khǎo pen phʉ̂an khɔ̌ɔng chǎn khâ',
+    japanese: '彼は私の友達です',
+    words: [
+      { thai: 'เขา', pronunciation: 'khǎo', japanese: '彼/彼女' },
+      { thai: 'เป็น', pronunciation: 'pen', japanese: '〜である' },
+      { thai: 'เพื่อน', pronunciation: 'phʉ̂an', japanese: '友達' },
+      { thai: 'ของ', pronunciation: 'khɔ̌ɔng', japanese: '〜の' },
+      { thai: 'ฉัน', pronunciation: 'chǎn', japanese: '私' },
+      { thai: 'ค่ะ', pronunciation: 'khâ', japanese: '(女性の丁寧語)' },
+    ]
+  },
+  {
+    speaker: 'A',
+    thai: 'เขาอายุเท่าไหร่ครับ',
+    pronunciation: 'khǎo aa-yú thâo-rài khráp',
+    japanese: '彼は何歳ですか',
+    words: [
+      { thai: 'เขา', pronunciation: 'khǎo', japanese: '彼/彼女' },
+      { thai: 'อายุ', pronunciation: 'aa-yú', japanese: '年齢' },
+      { thai: 'เท่าไหร่', pronunciation: 'thâo-rài', japanese: 'いくつ' },
+      { thai: 'ครับ', pronunciation: 'khráp', japanese: '(男性の丁寧語)' },
+    ]
+  },
+  {
+    speaker: 'B',
+    thai: 'อายุยี่สิบห้าปีค่ะ',
+    pronunciation: 'aa-yú yîi-sìp-hâa pii khâ',
+    japanese: '25歳です',
+    words: [
+      { thai: 'อายุ', pronunciation: 'aa-yú', japanese: '年齢' },
+      { thai: 'ยี่สิบห้า', pronunciation: 'yîi-sìp-hâa', japanese: '25' },
+      { thai: 'ปี', pronunciation: 'pii', japanese: '歳' },
+      { thai: 'ค่ะ', pronunciation: 'khâ', japanese: '(女性の丁寧語)' },
+    ]
+  },
+];
+
 /**
  * 会話データマップ
  * トピックIDをキーとして、対応する会話データを取得
@@ -879,16 +2246,40 @@ export const conversationData: Record<string, ConversationLine[]> = {
   // 初級
   'b-greetings-status': beginnerGreetingsStatus,
   'b-self-introduction': beginnerSelfIntroduction,
+  'b-numbers': beginnerNumbers,
+  'b-understanding-questions': beginnerUnderstandingQuestions,
+  'b-language-learning': beginnerLanguageLearning,
+  'b-hobbies-preferences': beginnerHobbiesPreferences,
+  'b-abilities-possessions': beginnerAbilitiesPossessions,
+  'b-polite-requests': beginnerPoliteRequests,
+  'b-time-expressions': beginnerTimeExpressions,
   'b-shopping-basic': beginnerShoppingBasic,
   'b-restaurant-basics': beginnerRestaurantBasics,
+  'b-location-movement': beginnerLocationMovement,
+  'b-family': beginnerFamily,
+  'b-asking-about-people': beginnerAskingAboutPeople,
 
   // 中級
   'i-transport-taxi': intermediateTaxi,
+  'i-asking-directions': intermediateAskingDirections,
+  'i-shopping-advanced': intermediateShoppingAdvanced,
   'i-restaurant-requests': intermediateRestaurantRequests,
+  'i-hotel-checkin': intermediateHotelCheckin,
+  'i-health-symptoms': intermediateHealthSymptoms,
+  'i-hobbies': intermediateHobbies,
+  'i-making-plans': intermediateMakingPlans,
+  'i-phone-call': intermediatePhoneCall,
+  'i-describing-people': intermediateDescribingPeople,
 
   // 上級
   'a-renting-apartment': advancedRentingApartment,
+  'a-opening-bank-account': advancedOpeningBankAccount,
   'a-job-interview': advancedJobInterview,
+  'a-business-meeting': advancedBusinessMeeting,
+  'a-discussing-news': advancedDiscussingNews,
+  'a-thai-culture': advancedThaiCulture,
+  'a-expressing-emotions': advancedExpressingEmotions,
+  'a-making-complaint': advancedMakingComplaint,
 };
 
 /**
