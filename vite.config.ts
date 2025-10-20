@@ -26,26 +26,44 @@ export default defineConfig(({ mode }) => {
         minify: 'esbuild',
         rollupOptions: {
           output: {
-            manualChunks: {
+            manualChunks: (id) => {
               // Vendor chunks
-              'vendor-react': ['react', 'react-dom', 'react-router-dom'],
-              'vendor-google': ['@google/generative-ai'],
+              if (id.includes('node_modules')) {
+                if (id.includes('react') || id.includes('react-dom')) {
+                  return 'vendor-react';
+                }
+                if (id.includes('react-router-dom')) {
+                  return 'vendor-router';
+                }
+                if (id.includes('@google/generative-ai')) {
+                  return 'vendor-google';
+                }
+                // Other node_modules
+                return 'vendor';
+              }
 
-              // Route chunks (lazy loaded)
-              // These are automatically split by dynamic imports
+              // Split contexts separately
+              if (id.includes('/contexts/')) {
+                return 'contexts';
+              }
 
-              // Shared components
-              'ui-components': [
-                './components/common/Icon.tsx',
-                './components/WordChip.tsx',
-                './components/LoadingFallback.tsx',
-              ],
+              // Split hooks separately
+              if (id.includes('/hooks/')) {
+                return 'hooks';
+              }
+
+              // Split data files (large constants)
+              if (id.includes('/data/')) {
+                return 'data';
+              }
+
+              // Split common components
+              if (id.includes('/components/common/') || id.includes('WordChip') || id.includes('LoadingFallback')) {
+                return 'ui-components';
+              }
             },
             // Better chunk naming for debugging
-            chunkFileNames: (chunkInfo) => {
-              const facadeModuleId = chunkInfo.facadeModuleId ? chunkInfo.facadeModuleId.split('/').pop() : 'chunk';
-              return `assets/[name]-[hash].js`;
-            },
+            chunkFileNames: 'assets/[name]-[hash].js',
             entryFileNames: 'assets/[name]-[hash].js',
             assetFileNames: 'assets/[name]-[hash].[ext]',
           },

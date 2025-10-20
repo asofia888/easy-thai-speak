@@ -46,8 +46,8 @@ export const useConversationData = (topicId: string | undefined, topicTitle: str
 
             // 定型トピックの場合はローカルデータを使用
             try {
-                // ローカルデータから会話を取得
-                const localData = getConversationByTopicId(topicId);
+                // ローカルデータから会話を取得（非同期）
+                const localData = await getConversationByTopicId(topicId);
 
                 if (localData) {
                     // データが存在する場合は即座に表示
