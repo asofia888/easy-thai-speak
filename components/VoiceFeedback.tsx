@@ -26,7 +26,7 @@ export const VoiceFeedback: React.FC<VoiceFeedbackProps> = ({
   const [error, setError] = useState<string>('');
 
   const mediaStreamRef = useRef<MediaStream | null>(null);
-  const animationFrameRef = useRef<number>();
+  const animationFrameRef = useRef<number | undefined>(undefined);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const initializeService = useCallback(async () => {

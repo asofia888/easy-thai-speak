@@ -184,22 +184,28 @@ export const withFallback = async <T>(
 export const withErrorBoundary = <T extends Record<string, any>>(
   Component: React.ComponentType<T>,
   FallbackComponent?: React.ComponentType<{ error: AppError; retry: () => void }>
-) => {
-  const WrappedComponent = React.forwardRef<any, T>((props, ref) => {
-    const ErrorBoundary = React.lazy(() => import('../components/ErrorBoundary'));
-    
-    return (
-      <React.Suspense fallback={<div>Loading...</div>}>
-        <ErrorBoundary fallback={FallbackComponent}>
-          <Component {...props} ref={ref} />
-        </ErrorBoundary>
-      </React.Suspense>
+): React.ComponentType<T> => {
+  const WrappedComponent: React.FC<T> = (props) => {
+    const ErrorBoundary = React.lazy(() =>
+      import('../components/ErrorBoundary').then(module => ({ default: module.ErrorBoundary }))
     );
-  });
-  
+
+    return React.createElement(
+      React.Suspense,
+      { fallback: React.createElement('div', null, 'Loading...') },
+      React.createElement(
+        ErrorBoundary,
+        {
+          fallback: FallbackComponent ? React.createElement(FallbackComponent, { error: {} as any, retry: () => {} }) : undefined,
+          children: React.createElement(Component, props)
+        }
+      )
+    );
+  };
+
   WrappedComponent.displayName = `withErrorBoundary(${Component.displayName || Component.name})`;
-  
-  return WrappedComponent;
+
+  return WrappedComponent as React.ComponentType<T>;
 };
 
 /**

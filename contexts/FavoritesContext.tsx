@@ -33,10 +33,12 @@ export const FavoritesProvider = ({ children }: { children: ReactNode }) => {
 
         const newFavorite: FavoriteWord = {
             ...word,
+            id: `${word.thai}-${Date.now()}`,
             repetition: 0,
             interval: 0,
             easeFactor: 2.5,
             nextReviewDate: today.toISOString(),
+            addedAt: new Date().toISOString(),
         };
         setFavorites(prev => [...prev, newFavorite].sort((a,b) => a.thai.localeCompare(b.thai, 'th')));
     };
