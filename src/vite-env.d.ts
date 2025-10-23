@@ -1,7 +1,8 @@
 /// <reference types="vite/client" />
 
 interface ImportMetaEnv {
-  readonly VITE_GEMINI_API_KEY?: string;
+  // Note: VITE_GEMINI_API_KEY is NOT used in client-side code for security
+  // All API requests go through server-side endpoints (/api/*)
   readonly VITE_GOOGLE_CLOUD_REGION?: string;
   readonly VITE_TTS_PREFERRED_ENGINE?: string;
   readonly VITE_TTS_DEFAULT_VOICE?: string;
