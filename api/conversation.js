@@ -75,7 +75,7 @@ export default async function handler(req, res) {
                 properties: {
                     speaker: { type: SchemaType.STRING, description: "話者名 (例: A, B, 店員)" },
                     thai: { type: SchemaType.STRING, description: "タイ語のセリフ" },
-                    pronunciation: { type: SchemaType.STRING, description: "Paiboon+方式のローマ字発音表記" },
+                    pronunciation: { type: SchemaType.STRING, description: "Paiboon+方式ローマ字発音（例: sà-wàt-dii khráp）声調記号付き、音節ハイフン区切り" },
                     japanese: { type: SchemaType.STRING, description: "日本語訳" },
                     words: {
                         type: SchemaType.ARRAY,
@@ -84,7 +84,7 @@ export default async function handler(req, res) {
                             type: SchemaType.OBJECT,
                             properties: {
                                 thai: { type: SchemaType.STRING, description: "単語のタイ語表記" },
-                                pronunciation: { type: SchemaType.STRING, description: "単語のPaiboon+方式ローマ字発音表記" },
+                                pronunciation: { type: SchemaType.STRING, description: "単語のPaiboon+発音（例: khráp）声調記号付き" },
                                 japanese: { type: SchemaType.STRING, description: "単語の日本語訳" },
                             },
                             required: ["thai", "pronunciation", "japanese"],
@@ -103,7 +103,7 @@ export default async function handler(req, res) {
                                     type: SchemaType.OBJECT,
                                     properties: {
                                         thai: { type: SchemaType.STRING, description: "例文のタイ語表記" },
-                                        pronunciation: { type: SchemaType.STRING, description: "例文のPaiboon+方式ローマ字発音表記" },
+                                        pronunciation: { type: SchemaType.STRING, description: "例文のPaiboon+発音（声調記号付き）" },
                                         japanese: { type: SchemaType.STRING, description: "例文の日本語訳" },
                                     },
                                     required: ["thai", "pronunciation", "japanese"],
@@ -151,11 +151,23 @@ export default async function handler(req, res) {
 【学習者への配慮】
 - 口語表現を使った場合は、grammarPointで丁寧形との違いを解説
 - 初心者でも理解できるよう、極端なスラングは避ける
-- 発音表記はPaiboon+方式を厳守
+
+【発音表記ルール】★厳守★
+Paiboon+方式のローマ字表記を使用:
+- 声調記号付き母音: à(低), á(高), â(下降), ǎ(上昇), a(中)
+- 長母音は二重化: aa, ii, uu, ee, oo, ɔɔ, ʉʉ
+- 音節はハイフンで区切る
+- 単語間はスペースで区切る
+
+例:
+- สวัสดีครับ → "sà-wàt-dii khráp"
+- ขอบคุณค่ะ → "khɔ̀ɔp-khun khâ"
+- เป็นไงบ้าง → "pen-ngai bâang"
+- อร่อยมาก → "à-rɔ̀i mâak"
 
 【必須項目】
 1. 二人の話者間（AとB）の自然な会話
-2. Paiboon+方式のローマ字発音表記
+2. 上記Paiboon+方式の発音表記（声調記号必須）
 3. 各セリフの単語分割（助詞も独立して分割）
 4. 口語表現・カジュアル表現のgrammarPoint解説
 
