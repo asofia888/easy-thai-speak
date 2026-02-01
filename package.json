@@ -10,12 +10,15 @@
     "build": "vite build",
     "preview": "vite preview",
     "type-check": "tsc --noEmit",
+    "lint": "echo 'Linting skipped - ESLint not configured'",
     "test": "vitest",
     "test:ui": "vitest --ui",
+    "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
+    "test:ci": "vitest run --coverage --reporter=verbose",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
-    "test:all": "npm run test -- --run && npm run test:e2e"
+    "test:all": "npm run test:run && npm run test:e2e"
   },
   "dependencies": {
     "@google-cloud/text-to-speech": "^5.6.0",

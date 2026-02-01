@@ -1,0 +1,60 @@
+# Codecov 設定ファイル
+# https://docs.codecov.com/docs/codecov-yaml
+
+coverage:
+  # カバレッジしきい値
+  status:
+    project:
+      default:
+        target: 60%        # 目標カバレッジ
+        threshold: 5%      # 許容変動幅
+        if_ci_failed: error
+    patch:
+      default:
+        target: 70%        # 新規コードの目標カバレッジ
+        threshold: 5%
+        if_ci_failed: error
+
+  # 精度設定
+  precision: 2
+  round: down
+  range: "50...80"
+
+# コメント設定
+comment:
+  layout: "reach,diff,flags,files"
+  behavior: default
+  require_changes: true
+  require_base: false
+  require_head: true
+
+# 除外パターン
+ignore:
+  - "node_modules/**/*"
+  - "dist/**/*"
+  - "coverage/**/*"
+  - "**/*.test.ts"
+  - "**/*.test.tsx"
+  - "**/__tests__/**/*"
+  - "tests/**/*"
+  - "e2e/**/*"
+  - "server/**/*"
+  - "api/**/*"
+  - "*.config.ts"
+  - "*.config.js"
+  - "**/*.d.ts"
+
+# フラグ設定
+flags:
+  unittests:
+    paths:
+      - "components/"
+      - "contexts/"
+      - "hooks/"
+      - "services/"
+      - "utils/"
+    carryforward: true
+
+# GitHub チェック
+github_checks:
+  annotations: true

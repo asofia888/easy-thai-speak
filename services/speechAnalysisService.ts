@@ -1,5 +1,20 @@
 import { handleApiError } from '../utils/errorHandling';
 
+// Safari互換性のためのWebKit AudioContext型定義
+interface WebKitWindow extends Window {
+  webkitAudioContext: typeof AudioContext;
+}
+
+function getAudioContextConstructor(): typeof AudioContext {
+  if (typeof window.AudioContext !== 'undefined') {
+    return window.AudioContext;
+  }
+  if (typeof (window as unknown as WebKitWindow).webkitAudioContext !== 'undefined') {
+    return (window as unknown as WebKitWindow).webkitAudioContext;
+  }
+  throw new Error('AudioContext is not supported in this browser');
+}
+
 export interface PitchAnalysis {
   frequency: number[];
   timestamps: number[];
@@ -33,7 +48,8 @@ export class SpeechAnalysisService {
 
   async initializeAudioContext(): Promise<void> {
     try {
-      this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const AudioContextConstructor = getAudioContextConstructor();
+      this.audioContext = new AudioContextConstructor();
       this.analyser = this.audioContext.createAnalyser();
       this.analyser.fftSize = 2048;
     } catch (error) {

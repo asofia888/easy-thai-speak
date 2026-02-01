@@ -85,7 +85,7 @@ describe('SavedConversationsContext', () => {
       conversationId = result.current.saveConversation('Test Topic', mockConversation);
     });
 
-    const loaded = result.current.getConversationById(conversationId);
+    const loaded = result.current.getConversation(conversationId);
 
     expect(loaded).toBeTruthy();
     expect(loaded?.title).toBe('Test Topic');

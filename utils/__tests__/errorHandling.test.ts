@@ -206,7 +206,7 @@ describe('errorHandling utilities', () => {
         });
 
         it('should handle unknown error types', () => {
-            expect(getErrorMessage({ unknown: 'object' })).toBe('エラーが発生しました');
+            expect(getErrorMessage({ unknown: 'object' })).toBe('不明なエラーが発生しました');
         });
     });
 

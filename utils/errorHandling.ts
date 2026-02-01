@@ -7,14 +7,42 @@ export interface ApiError {
   message: string;
   retryable: boolean;
   retryAfter?: number;
-  details?: Record<string, any>;
+  details?: Record<string, unknown>;
 }
 
 export interface AppError {
   component: string;
   error: Error | ApiError;
-  context?: Record<string, any>;
+  context?: Record<string, unknown>;
   timestamp: Date;
+}
+
+// 型ガード: statusプロパティを持つオブジェクト
+interface ErrorWithStatus {
+  status: number;
+}
+
+function hasStatus(error: unknown): error is ErrorWithStatus {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'status' in error &&
+    typeof (error as ErrorWithStatus).status === 'number'
+  );
+}
+
+// 型ガード: messageプロパティを持つオブジェクト
+interface ErrorWithMessage {
+  message: string;
+}
+
+function hasMessage(error: unknown): error is ErrorWithMessage {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'message' in error &&
+    typeof (error as ErrorWithMessage).message === 'string'
+  );
 }
 
 /**
@@ -32,9 +60,9 @@ export const handleApiError = (error: unknown, context: string): ApiError => {
   }
 
   // Handle HTTP errors
-  if (error && typeof error === 'object' && 'status' in error) {
-    const status = (error as any).status;
-    
+  if (hasStatus(error)) {
+    const status = error.status;
+
     switch (status) {
       case 401:
         return {
@@ -75,9 +103,9 @@ export const handleApiError = (error: unknown, context: string): ApiError => {
   }
 
   // Handle validation errors
-  if (error && typeof error === 'object' && 'message' in error) {
-    const message = (error as any).message;
-    if (message?.includes('validation') || message?.includes('invalid')) {
+  if (hasMessage(error)) {
+    const message = error.message;
+    if (message.includes('validation') || message.includes('invalid')) {
       return {
         type: 'validation',
         message: '入力データが無効です。内容を確認してください。',
@@ -105,20 +133,20 @@ export const withRetry = async <T>(
     maxRetries?: number;
     delay?: number;
     backoffMultiplier?: number;
-    shouldRetry?: (error: any) => boolean;
+    shouldRetry?: (error: unknown) => boolean;
   } = {}
 ): Promise<T> => {
   const {
     maxRetries = 3,
     delay = 1000,
     backoffMultiplier = 2,
-    shouldRetry = (error) => {
+    shouldRetry = (error: unknown) => {
       const apiError = handleApiError(error, 'retry');
       return apiError.retryable;
     }
   } = options;
 
-  let lastError: any;
+  let lastError: unknown;
 
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
@@ -181,7 +209,7 @@ export const withFallback = async <T>(
 /**
  * Error boundary HOC for wrapping components with error handling
  */
-export const withErrorBoundary = <T extends Record<string, any>>(
+export const withErrorBoundary = <T extends Record<string, unknown>>(
   Component: React.ComponentType<T>,
   FallbackComponent?: React.ComponentType<{ error: AppError; retry: () => void }>
 ): React.ComponentType<T> => {
@@ -190,13 +218,19 @@ export const withErrorBoundary = <T extends Record<string, any>>(
       import('../components/ErrorBoundary').then(module => ({ default: module.ErrorBoundary }))
     );
 
+    const defaultAppError: AppError = {
+      component: 'Unknown',
+      error: new Error('An error occurred'),
+      timestamp: new Date()
+    };
+
     return React.createElement(
       React.Suspense,
       { fallback: React.createElement('div', null, 'Loading...') },
       React.createElement(
         ErrorBoundary,
         {
-          fallback: FallbackComponent ? React.createElement(FallbackComponent, { error: {} as any, retry: () => {} }) : undefined,
+          fallback: FallbackComponent ? React.createElement(FallbackComponent, { error: defaultAppError, retry: () => {} }) : undefined,
           children: React.createElement(Component, props)
         }
       )
@@ -276,9 +310,86 @@ export const safeAsync = async <T>(
     return { data, error: null };
   } catch (err) {
     const error = handleApiError(err, context);
-    return { 
-      data: fallbackValue ?? null, 
-      error 
+    return {
+      data: fallbackValue ?? null,
+      error
     };
   }
+};
+
+/**
+ * Extract error message from various error types
+ */
+export const getErrorMessage = (error: unknown): string => {
+  if (error === null || error === undefined) {
+    return '不明なエラーが発生しました';
+  }
+
+  if (typeof error === 'string') {
+    return error;
+  }
+
+  if (error instanceof Error) {
+    return error.message;
+  }
+
+  if (typeof error === 'object' && 'message' in error) {
+    return String((error as { message: unknown }).message);
+  }
+
+  if (typeof error === 'object' && 'type' in error) {
+    const apiError = error as ApiError;
+    return apiError.message;
+  }
+
+  return '不明なエラーが発生しました';
+};
+
+/**
+ * Error severity levels
+ */
+export type ErrorSeverity = 'info' | 'warning' | 'error';
+
+/**
+ * Get error severity based on error type
+ */
+export const getErrorSeverity = (error: unknown): ErrorSeverity => {
+  if (error === null || error === undefined) {
+    return 'info';
+  }
+
+  if (typeof error === 'object' && 'type' in error) {
+    const apiError = error as ApiError;
+    switch (apiError.type) {
+      case 'network':
+      case 'timeout':
+        return 'warning';
+      case 'validation':
+        return 'warning';
+      case 'auth':
+      case 'server':
+        return 'error';
+      case 'rate_limit':
+        return 'warning';
+      default:
+        return 'error';
+    }
+  }
+
+  return 'error';
+};
+
+/**
+ * Check if an error is retryable
+ */
+export const isRetryableError = (error: unknown): boolean => {
+  if (error === null || error === undefined) {
+    return false;
+  }
+
+  if (typeof error === 'object' && 'retryable' in error) {
+    return Boolean((error as { retryable: unknown }).retryable);
+  }
+
+  return false;
 };

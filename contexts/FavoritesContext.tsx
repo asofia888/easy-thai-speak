@@ -26,21 +26,23 @@ export const FavoritesProvider = ({ children }: { children: ReactNode }) => {
     }, [favorites]);
 
     const addFavorite = (word: Word) => {
-        if (favorites.some(fav => fav.thai === word.thai)) return;
+        setFavorites(prev => {
+            if (prev.some(fav => fav.thai === word.thai)) return prev;
 
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
 
-        const newFavorite: FavoriteWord = {
-            ...word,
-            id: `${word.thai}-${Date.now()}`,
-            repetition: 0,
-            interval: 0,
-            easeFactor: 2.5,
-            nextReviewDate: today.toISOString(),
-            addedAt: new Date().toISOString(),
-        };
-        setFavorites(prev => [...prev, newFavorite].sort((a,b) => a.thai.localeCompare(b.thai, 'th')));
+            const newFavorite: FavoriteWord = {
+                ...word,
+                id: `${word.thai}-${Date.now()}`,
+                repetition: 0,
+                interval: 0,
+                easeFactor: 2.5,
+                nextReviewDate: today.toISOString(),
+                addedAt: new Date().toISOString(),
+            };
+            return [...prev, newFavorite].sort((a, b) => a.thai.localeCompare(b.thai, 'th'));
+        });
     };
 
     const removeFavorite = (thai: string) => {
@@ -52,42 +54,44 @@ export const FavoritesProvider = ({ children }: { children: ReactNode }) => {
     };
 
     const updateFavorite = (thai: string, performance: PerformanceRating) => {
-        const word = favorites.find(f => f.thai === thai);
-        if (!word) return;
+        setFavorites(prev => {
+            const word = prev.find(f => f.thai === thai);
+            if (!word) return prev;
 
-        let { repetition, interval, easeFactor } = word;
+            let { repetition, interval, easeFactor } = word;
 
-        if (performance === 'again') {
-            repetition = 0;
-            interval = 1; 
-        } else {
-            repetition += 1;
-            if (repetition === 1) {
+            if (performance === 'again') {
+                repetition = 0;
                 interval = 1;
-            } else if (repetition === 2) {
-                interval = 6;
             } else {
-                interval = Math.ceil(interval * easeFactor);
+                repetition += 1;
+                if (repetition === 1) {
+                    interval = 1;
+                } else if (repetition === 2) {
+                    interval = 6;
+                } else {
+                    interval = Math.ceil(interval * easeFactor);
+                }
+
+                if (performance === 'easy') {
+                    easeFactor += 0.15;
+                }
             }
 
-            if (performance === 'easy') {
-                easeFactor += 0.15;
-            }
-        }
-        
-        const newNextReviewDate = new Date();
-        newNextReviewDate.setDate(newNextReviewDate.getDate() + interval);
-        newNextReviewDate.setHours(0, 0, 0, 0);
+            const newNextReviewDate = new Date();
+            newNextReviewDate.setDate(newNextReviewDate.getDate() + interval);
+            newNextReviewDate.setHours(0, 0, 0, 0);
 
-        const updatedWord: FavoriteWord = {
-            ...word,
-            repetition,
-            interval,
-            easeFactor,
-            nextReviewDate: newNextReviewDate.toISOString(),
-        };
+            const updatedWord: FavoriteWord = {
+                ...word,
+                repetition,
+                interval,
+                easeFactor,
+                nextReviewDate: newNextReviewDate.toISOString(),
+            };
 
-        setFavorites(prev => prev.map(f => (f.thai === thai ? updatedWord : f)));
+            return prev.map(f => (f.thai === thai ? updatedWord : f));
+        });
     };
 
 

@@ -25,7 +25,8 @@ global.speechSynthesis = {
   addEventListener: vi.fn(),
   removeEventListener: vi.fn(),
   dispatchEvent: vi.fn(),
-} as any;
+  onvoiceschanged: null,
+} as unknown as SpeechSynthesis;
 
 // Mock localStorage
 const localStorageMock = (() => {
